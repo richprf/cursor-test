@@ -148,6 +148,13 @@ cd backend  && npm test && npm run lint && npm run build
 cd frontend && npx tsc --noEmit && npm run lint && npm run build
 ```
 
+هنگام `next build` این هشدار از کتابخانهٔ `jose` (وابستگی next-auth) نمایش داده می‌شود و
+بی‌خطر است؛ `CompressionStream` فقط برای JWE فشرده لازم است که Auth.js تولید نمی‌کند:
+
+```
+A Node.js API is used (CompressionStream …) which is not supported in the Edge Runtime.
+```
+
 ## نکات امنیتی پیاده‌سازی‌شده
 
 - پسوردها فقط به‌صورت هش bcrypt (۱۲ round) ذخیره می‌شوند؛ کاربران گوگلی `passwordHash` ندارند.

@@ -51,7 +51,7 @@ export class UsersService {
       where: { email },
       update: {
         googleId: profile.googleId,
-        // Only fill in details Google knows and we are missing.
+        // Refresh the profile details Google returned, keep ours when it sent none.
         name: profile.name ?? undefined,
         image: profile.image ?? undefined,
       },

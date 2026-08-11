@@ -21,6 +21,11 @@ class BackendUnavailable extends CredentialsSignin {
   code = 'backend_unavailable';
 }
 
+/** The API's brute-force limiter kicked in. */
+class TooManyRequests extends CredentialsSignin {
+  code = 'too_many_requests';
+}
+
 const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60; // keep in sync with JWT_EXPIRES_IN
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -60,7 +65,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             throw new InvalidCredentials();
           }
           if (error instanceof BackendError && error.status === 429) {
-            throw new CredentialsSignin('too_many_requests', { cause: error });
+            throw new TooManyRequests();
           }
           console.error('[auth] credentials login failed', error);
           throw new BackendUnavailable();
