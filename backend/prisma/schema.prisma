@@ -1,0 +1,48 @@
+// Prisma schema — PostgreSQL is the source of truth for users.
+// Prisma 7 generates a Rust-free client into src/, so the client is imported like
+// any other module in the project (see src/prisma/prisma.service.ts).
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+  runtime      = "nodejs"
+}
+
+// The connection URL lives in prisma.config.ts (CLI) and in the driver adapter
+// (runtime) — Prisma 7 no longer accepts `url` here.
+datasource db {
+  provider = "postgresql"
+}
+
+enum AuthProvider {
+  CREDENTIALS
+  GOOGLE
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id    String  @id @default(uuid())
+  email String  @unique
+  name  String?
+  image String?
+
+  /// Null for accounts that only sign in through Google.
+  passwordHash String?
+
+  /// How the account was created; a Google sign-in on an existing
+  /// credentials account links `googleId` instead of changing this.
+  provider AuthProvider @default(CREDENTIALS)
+  googleId String?      @unique
+
+  role Role @default(USER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
