@@ -107,6 +107,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
 
+    // Note: whatever lands on `session` is also returned by `/api/auth/session`, so
+    // the access token is readable by the browser. That is intentional here (client
+    // components may need it); drop it below to keep the token server-only.
     session({ session, token }) {
       session.user.id = token.userId ?? session.user.id;
       session.user.role = token.role ?? 'USER';

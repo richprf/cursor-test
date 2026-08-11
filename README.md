@@ -162,7 +162,12 @@ cd frontend && npx tsc --noEmit && npm run lint && npm run build
   در نبود کاربر هم یک مقایسهٔ bcrypt ساختگی انجام می‌شود تا زمان پاسخ لو ندهد.
 - `ValidationPipe` با `whitelist` و `forbidNonWhitelisted` جلوی فیلدهای ناشناخته (مثل `role`) را می‌گیرد.
 - CORS فقط برای دامنه‌های `CORS_ORIGINS` باز است.
-- access token هرگز به مرورگر داده نمی‌شود؛ همهٔ تماس‌ها با NestJS از سمت سرور Next.js انجام می‌شود.
+- access token در کوکی رمزنگاری‌شدهٔ session نگهداری می‌شود و در این پروژه همهٔ تماس‌ها با NestJS
+  از سمت سرور Next.js انجام می‌شود. توجه: چون توکن روی آبجکت `session` قرار داده شده، مسیر
+  استاندارد `/api/auth/session` آن را به مرورگر هم می‌دهد (طبق خواستهٔ همین طراحی، تا کامپوننت‌های
+  کلاینت هم بتوانند API صدا بزنند). اگر می‌خواهید توکن فقط سمت سرور بماند، `session.accessToken`
+  را از callback `session` در `frontend/auth.ts` بردارید و در سرور با `getToken` از
+  `next-auth/jwt` بخوانید.
 - پارامتر `callbackUrl` فقط مسیر نسبی را می‌پذیرد (جلوگیری از open redirect).
 
 در production حتماً HTTPS، `NODE_ENV=production` و secret های تازه استفاده کنید. اگر روزی API را
