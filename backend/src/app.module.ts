@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { AuthThrottlerGuard } from './common/guards/auth-throttler.guard';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -17,13 +18,13 @@ import { validateEnv } from './config/env.validation';
     }),
     // Baseline rate limit for the whole API; `/auth/*` tightens it further.
     ThrottlerModule.forRoot({
-      throttlers: [{ ttl: 60_000, limit: 100 }],
+      throttlers: [{ ttl: 60_000, limit: 300 }],
     }),
     PrismaModule,
     UsersModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
+  providers: [{ provide: APP_GUARD, useClass: AuthThrottlerGuard }],
 })
 export class AppModule {}

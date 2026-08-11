@@ -32,6 +32,7 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
 │       │   ├── strategies/      # JwtStrategy (Passport)
 │       │   └── auth.service.spec.ts
 │       ├── users/               # UsersModule (دسترسی به جدول users)
+│       ├── common/guards/       # AuthThrottlerGuard (rate limit بر اساس ایمیل)
 │       ├── prisma/              # PrismaService (driver adapter برای Postgres)
 │       ├── config/              # اعتبارسنجی متغیرهای محیطی
 │       └── main.ts              # CORS + ValidationPipe سراسری
@@ -152,8 +153,10 @@ cd frontend && npx tsc --noEmit && npm run lint && npm run build
 - پسوردها فقط به‌صورت هش bcrypt (۱۲ round) ذخیره می‌شوند؛ کاربران گوگلی `passwordHash` ندارند.
 - JWT با انقضای مشخص (`JWT_EXPIRES_IN`) صادر می‌شود و انقضای آن در session هم نگه‌داری می‌شود؛
   پس از انقضا کاربر مجبور به ورود مجدد می‌شود.
-- Rate limiting با `@nestjs/throttler`: سراسری ۱۰۰/دقیقه و روی `/auth/login` و `/auth/register`
-  فقط ۵/دقیقه (جلوگیری از brute-force).
+- Rate limiting با `@nestjs/throttler`: سراسری ۳۰۰/دقیقه و روی `/auth/login` و `/auth/register`
+  فقط ۵/دقیقه. چون همهٔ درخواست‌ها از سرور Next.js می‌آید و IP یکسان است، شمارش این مسیرها
+  **بر اساس ایمیل** انجام می‌شود (`AuthThrottlerGuard`) تا حملهٔ brute-force روی یک حساب،
+  بقیهٔ کاربران را قفل نکند.
 - `id_token` گوگل در بک‌اند با `google-auth-library` verify می‌شود؛ ایمیل تأییدنشده رد می‌شود.
 - پیام خطای ورود همیشه «ایمیل یا رمز عبور اشتباه است» است (بدون افشای وجود یا نبود کاربر) و
   در نبود کاربر هم یک مقایسهٔ bcrypt ساختگی انجام می‌شود تا زمان پاسخ لو ندهد.
@@ -162,5 +165,5 @@ cd frontend && npx tsc --noEmit && npm run lint && npm run build
 - access token هرگز به مرورگر داده نمی‌شود؛ همهٔ تماس‌ها با NestJS از سمت سرور Next.js انجام می‌شود.
 - پارامتر `callbackUrl` فقط مسیر نسبی را می‌پذیرد (جلوگیری از open redirect).
 
-در production حتماً HTTPS، `NODE_ENV=production` و secret های تازه استفاده کنید. اگر API پشت
-reverse proxy است، برای درست کار کردن rate limiting باید `trust proxy` را در Express فعال کنید.
+در production حتماً HTTPS، `NODE_ENV=production` و secret های تازه استفاده کنید. اگر روزی API را
+مستقیم در اختیار مرورگر گذاشتید، برای درست شدن `req.ip` باید `trust proxy` را در Express فعال کنید.

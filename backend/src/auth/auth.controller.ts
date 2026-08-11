@@ -14,7 +14,7 @@ export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
   @Post('register')
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Throttle({ default: { limit: 5, ttl: 60_000 } }) // per email address, see AuthThrottlerGuard
   register(@Body() dto: RegisterDto): Promise<AuthResponse> {
     return this.auth.register(dto);
   }
@@ -22,7 +22,7 @@ export class AuthController {
   /** Called server-side by the NextAuth `CredentialsProvider`. */
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @Throttle({ default: { limit: 5, ttl: 60_000 } }) // brute-force protection
+  @Throttle({ default: { limit: 5, ttl: 60_000 } }) // brute-force protection, per email address
   login(@Body() dto: LoginDto): Promise<AuthResponse> {
     return this.auth.login(dto);
   }
