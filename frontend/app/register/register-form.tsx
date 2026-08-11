@@ -69,7 +69,6 @@ export function RegisterForm() {
             id="password"
             type="password"
             autoComplete="new-password"
-            dir="ltr"
             placeholder="حداقل ۸ کاراکتر"
             className={inputClass}
             disabled={isSubmitting}

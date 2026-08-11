@@ -28,6 +28,8 @@ export function LoginForm({
   const router = useRouter();
   const [formError, setFormError] = useState<string | null>(initialError);
   const [googlePending, setGooglePending] = useState(false);
+  // Sign-in succeeded and we are waiting for the navigation to `callbackUrl`.
+  const [redirecting, setRedirecting] = useState(false);
 
   const {
     register,
@@ -49,11 +51,13 @@ export function LoginForm({
       return;
     }
 
+    setRedirecting(true);
     router.replace(callbackUrl);
     router.refresh(); // re-render server components with the new session
   });
 
-  const disabled = isSubmitting || googlePending;
+  const pending = isSubmitting || redirecting;
+  const disabled = pending || googlePending;
 
   return (
     <div className="space-y-5">
@@ -82,8 +86,6 @@ export function LoginForm({
             id="password"
             type="password"
             autoComplete="current-password"
-            dir="ltr"
-            placeholder="••••••••"
             className={inputClass}
             disabled={disabled}
             aria-invalid={Boolean(errors.password)}
@@ -93,8 +95,8 @@ export function LoginForm({
         </div>
 
         <button type="submit" className={primaryButtonClass} disabled={disabled}>
-          {isSubmitting && <Spinner />}
-          {isSubmitting ? 'در حال ورود…' : 'ورود'}
+          {pending && <Spinner />}
+          {pending ? 'در حال ورود…' : 'ورود'}
         </button>
       </form>
 
