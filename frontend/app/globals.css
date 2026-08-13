@@ -59,9 +59,9 @@ body {
     #bf953f 76%,
     #b38728 100%
   );
-  /* Twice as wide as the element, centred so the bright band always shows; hovering
-     slides the band across for a metallic sheen. */
-  background-size: 200% 100%;
+  /* Half again as wide as the element and centred, so the bright band stays wide
+     enough on small buttons too; hovering slides it across for a metallic sheen. */
+  background-size: 150% 100%;
   background-position: 50% 0;
   transition: background-position 450ms ease;
 }
