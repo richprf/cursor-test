@@ -12,7 +12,7 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section id={id} className={`relative scroll-mt-24 py-20 sm:py-28 ${className}`}>
+    <section id={id} className={`relative scroll-mt-24 py-16 sm:py-24 ${className}`}>
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">{children}</div>
     </section>
   );

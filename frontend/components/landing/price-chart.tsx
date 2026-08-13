@@ -8,13 +8,15 @@ import { Reveal } from './reveal';
 
 const WIDTH = 620;
 const HEIGHT = 240;
+/** Keeps the end marker's halo from being clipped by the viewBox edges. */
+const PADDING_X = 16;
 
-/** Mock closing prices for the last six months (index → month label). */
+/** Mock closing prices for the last year (every second point has a month label). */
 const SERIES = [38, 52, 46, 74, 96, 88, 128, 150, 142, 178, 196, 214];
 const MONTHS = ['فروردین', 'خرداد', 'مرداد', 'مهر', 'آذر', 'بهمن'];
 
 const points = SERIES.map((value, index) => ({
-  x: (index / (SERIES.length - 1)) * WIDTH,
+  x: PADDING_X + (index / (SERIES.length - 1)) * (WIDTH - PADDING_X * 2),
   // Higher price → smaller y. 24px of headroom keeps the peak inside the viewBox.
   y: HEIGHT - 24 - (value / 220) * (HEIGHT - 56),
 }));
@@ -83,8 +85,9 @@ export function PriceChart() {
   }, []);
 
   const linePath = buildSmoothPath(points);
-  const areaPath = `${linePath} L ${WIDTH} ${HEIGHT} L 0 ${HEIGHT} Z`;
+  const first = points[0];
   const last = points[points.length - 1];
+  const areaPath = `${linePath} L ${last.x} ${HEIGHT} L ${first.x} ${HEIGHT} Z`;
 
   return (
     <Section id="prices">
@@ -112,7 +115,9 @@ export function PriceChart() {
 
           <svg
             viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-            className="mt-6 h-52 w-full sm:h-64"
+            // No fixed height: the viewBox ratio decides it, so the curve always spans
+            // the full card width and lines up with the month labels below.
+            className="mt-6 w-full"
             role="img"
             aria-label="نمودار نمایشی روند قیمت طلا در یک سال گذشته"
           >
