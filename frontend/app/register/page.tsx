@@ -3,7 +3,7 @@ import { Card } from '@/components/ui';
 import { Brand } from '@/components/brand';
 import { RegisterForm } from './register-form';
 
-export const metadata = { title: 'ثبت‌نام | زرین‌سرمایه' };
+export const metadata = { title: 'ثبت‌نام' };
 
 export default function RegisterPage() {
   return (

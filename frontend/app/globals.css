@@ -1,21 +1,23 @@
 @import 'tailwindcss';
 
-/* Luxury dark theme for a gold / investment app: near-black navy surfaces with a
+/* Luxury dark theme for a gold / investment app: neutral near-black surfaces with a
    single gold accent ramp used for actions, focus rings and icons. */
 :root {
   color-scheme: dark;
 
-  --background: #05070f;
-  --background-elevated: #0a0f1d;
-  --foreground: #f3f1ea;
-  --surface: #0d1426;
-  --border: #1e2740;
-  --muted: #98a2bd;
+  --background: #0d0d0f;
+  --background-elevated: #14141a;
+  --surface: #1a1a1f;
+  --foreground: #f4f1ea;
+  --border: #2a2a33;
+  --muted: #a2a2b0;
 
-  --gold-100: #f7e6a8;
+  /* Gold ramp: #D4AF37 → #F5C542, plus the metallic highlight/shadow stops. */
+  --gold-100: #fcf6ba;
   --gold-300: #f5c542;
   --gold-500: #d4af37;
-  --gold-700: #9c7c1f;
+  --gold-600: #bf953f;
+  --gold-700: #b38728;
 }
 
 @theme inline {
@@ -32,33 +34,35 @@
   --color-gold-100: var(--gold-100);
   --color-gold-300: var(--gold-300);
   --color-gold-500: var(--gold-500);
+  --color-gold-600: var(--gold-600);
   --color-gold-700: var(--gold-700);
 }
 
 body {
-  /* Soft gold glows over the dark base, so the card sits in warm light. */
+  /* Soft gold glows over the dark base, so content sits in warm light. */
   background:
-    radial-gradient(760px 460px at 82% -8%, rgba(212, 175, 55, 0.26), transparent 68%),
-    radial-gradient(620px 400px at 12% 108%, rgba(245, 197, 66, 0.16), transparent 68%),
-    radial-gradient(1100px 700px at 50% 45%, rgba(30, 39, 64, 0.5), transparent 70%),
+    radial-gradient(760px 460px at 82% -8%, rgba(212, 175, 55, 0.22), transparent 68%),
+    radial-gradient(620px 400px at 12% 108%, rgba(245, 197, 66, 0.12), transparent 68%),
     var(--background);
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans);
 }
 
-/* Metallic sweep used by the primary button. */
+/* Metallic sweep (#BF953F → #FCF6BA → #B38728) used by primary buttons. */
 .bg-gold-metallic {
   background-image: linear-gradient(
     100deg,
-    var(--gold-700) 0%,
-    var(--gold-500) 22%,
-    var(--gold-100) 50%,
-    var(--gold-500) 78%,
-    var(--gold-700) 100%
+    #b38728 0%,
+    #bf953f 24%,
+    #fcf6ba 50%,
+    #bf953f 76%,
+    #b38728 100%
   );
+  /* Twice as wide as the element, centred so the bright band always shows; hovering
+     slides the band across for a metallic sheen. */
   background-size: 200% 100%;
-  background-position: 100% 0;
+  background-position: 50% 0;
   transition: background-position 450ms ease;
 }
 
@@ -66,7 +70,24 @@ body {
   background-position: 0 0;
 }
 
-/* Hairline gold gradient, for dividers and the card's top edge. */
+/* Entrance animation for above-the-fold content: pure CSS, so the hero paints in its
+   final state without waiting for hydration. Stagger comes from `animation-delay`. */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* Hairline gold gradient, for dividers and card top edges. */
 .border-gold-hairline {
   background-image: linear-gradient(
     to left,
@@ -85,6 +106,27 @@ body {
   color: transparent;
 }
 
+/* Faint grid behind the hero, faded out towards the edges. */
+.bg-hero-grid {
+  background-image:
+    linear-gradient(to left, rgba(212, 175, 55, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.07) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(70% 60% at 50% 35%, black, transparent);
+}
+
 ::selection {
   background: rgba(245, 197, 66, 0.3);
+}
+
+/* Users who ask for less motion get the finished state, never a half-played one. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -10,13 +10,16 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata: Metadata = {
-  title: 'ورود به حساب | زرین‌سرمایه',
-  description: 'خرید و سرمایه‌گذاری طلا — ورود با گوگل یا ایمیل و رمز عبور',
+  title: {
+    default: 'زرین‌سرمایه | خرید و سرمایه‌گذاری طلا',
+    template: '%s | زرین‌سرمایه',
+  },
+  description: 'خرید، نگهداری و فروش آنلاین طلای ۱۸ عیار با امکان تحویل فیزیکی شمش.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl" className={vazirmatn.variable}>
+    <html lang="fa" dir="rtl" className={`${vazirmatn.variable} scroll-smooth`}>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

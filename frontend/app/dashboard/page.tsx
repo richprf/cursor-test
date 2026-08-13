@@ -6,7 +6,7 @@ import { Brand } from '@/components/brand';
 import { SignOutButton } from '@/components/sign-out-button';
 import type { BackendUser } from '@/types/api';
 
-export const metadata = { title: 'داشبورد | NextAuth + NestJS' };
+export const metadata = { title: 'داشبورد' };
 
 /**
  * Protected page. `middleware.ts` already bounces anonymous visitors, and this

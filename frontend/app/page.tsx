@@ -1,43 +1,44 @@
-import Link from 'next/link';
 import { auth } from '@/auth';
-import { primaryButtonClass, secondaryButtonClass } from '@/components/ui';
-import { Brand } from '@/components/brand';
+import { SiteHeader } from '@/components/landing/site-header';
+import { Hero } from '@/components/landing/hero';
+import { TrustBar } from '@/components/landing/trust-bar';
+import { Features } from '@/components/landing/features';
+import { HowItWorks } from '@/components/landing/how-it-works';
+import { PriceChart } from '@/components/landing/price-chart';
+import { Testimonials } from '@/components/landing/testimonials';
+import { Faq } from '@/components/landing/faq';
+import { FinalCta } from '@/components/landing/final-cta';
+import { SiteFooter } from '@/components/landing/site-footer';
+
+export const metadata = {
+  title: 'خرید و سرمایه‌گذاری طلا',
+  description:
+    'با زرین‌سرمایه از هر مبلغی طلای ۱۸ عیار بخرید، در خزانهٔ بیمه‌شده نگه دارید و هر لحظه بفروشید یا فیزیکی تحویل بگیرید.',
+};
 
 export default async function HomePage() {
   const session = await auth();
 
+  // Signed-in visitors get pointed at their dashboard instead of the sign-up flow.
+  const ctaHref = session ? '/dashboard' : '/register';
+  const ctaLabel = session ? 'داشبورد' : 'شروع کنید';
+
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-9 p-6">
-      <Brand />
+    <>
+      <SiteHeader ctaHref={ctaHref} ctaLabel={session ? 'داشبورد' : 'ورود'} />
 
-      <div className="w-full max-w-lg space-y-8 text-center">
-        <div className="space-y-3">
-          <h1 className="text-2xl font-bold sm:text-3xl">
-            سرمایه‌گذاری روی <span className="text-gold-gradient">طلا</span>، ساده و امن
-          </h1>
-          <p className="text-sm leading-7 text-muted">
-            با گوگل یا ایمیل و رمز عبور وارد شوید. NextAuth لایهٔ session است و NestJS منبع اصلی
-            کاربران و صادرکنندهٔ توکن دسترسی.
-          </p>
-        </div>
+      <main>
+        <Hero ctaHref={ctaHref} ctaLabel={ctaLabel} />
+        <TrustBar />
+        <Features />
+        <HowItWorks />
+        <PriceChart />
+        <Testimonials />
+        <Faq />
+        <FinalCta ctaHref={ctaHref} ctaLabel={session ? 'رفتن به داشبورد' : 'ثبت‌نام رایگان'} />
+      </main>
 
-        <div className="mx-auto flex max-w-xs flex-col gap-3">
-          {session ? (
-            <Link href="/dashboard" className={primaryButtonClass}>
-              رفتن به داشبورد
-            </Link>
-          ) : (
-            <>
-              <Link href="/login" className={primaryButtonClass}>
-                ورود
-              </Link>
-              <Link href="/register" className={secondaryButtonClass}>
-                ثبت‌نام
-              </Link>
-            </>
-          )}
-        </div>
-      </div>
-    </main>
+      <SiteFooter />
+    </>
   );
 }

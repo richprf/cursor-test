@@ -14,6 +14,17 @@ export const primaryButtonClass =
   'hover:shadow-gold-500/30 focus:outline-none focus:ring-4 focus:ring-gold-500/30 ' +
   'disabled:cursor-not-allowed disabled:opacity-55 disabled:shadow-none';
 
+/** Inline (auto-width) call to action used across the landing page. */
+export const ctaPrimaryClass =
+  'bg-gold-metallic inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 ' +
+  'text-sm font-semibold text-[#231a05] shadow-lg shadow-gold-500/20 transition ' +
+  'hover:shadow-xl hover:shadow-gold-500/30 focus:outline-none focus:ring-4 focus:ring-gold-500/30';
+
+export const ctaSecondaryClass =
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-gold-500/30 ' +
+  'bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-foreground transition ' +
+  'hover:border-gold-500/60 hover:bg-white/[0.06] focus:outline-none focus:ring-4 focus:ring-gold-500/20';
+
 export const secondaryButtonClass =
   'inline-flex w-full items-center justify-center gap-3 rounded-xl border border-gold-500/25 ' +
   'bg-white/[0.03] px-4 py-3 text-sm font-medium text-foreground transition ' +

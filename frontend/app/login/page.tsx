@@ -4,7 +4,7 @@ import { Card, ShieldIcon } from '@/components/ui';
 import { Brand } from '@/components/brand';
 import { LoginForm } from './login-form';
 
-export const metadata = { title: 'ورود | زرین‌سرمایه' };
+export const metadata = { title: 'ورود' };
 
 /** NextAuth redirects failed sign-ins back here with `?error=` and sometimes `?code=`. */
 export default async function LoginPage({
