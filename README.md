@@ -44,10 +44,24 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
     │   ├── login/               # صفحهٔ ورود (فرم + دکمهٔ گوگل)
     │   ├── register/            # صفحهٔ ثبت‌نام (server action)
     │   └── dashboard/           # صفحهٔ محافظت‌شده (فراخوانی GET /auth/me)
+    ├── components/ui.tsx        # پریمیتیوهای مشترک (input، دکمه، کارت، Alert)
+    ├── components/brand.tsx     # لوگو (شمش‌های طلا) و ورد‌مارک
     ├── lib/backend.ts           # کلاینت سمت-سرور برای NestJS
     ├── lib/validation.ts        # اسکیماهای zod مشترک
     └── types/next-auth.d.ts     # افزودن accessToken و role به Session/JWT
 ```
+
+## ظاهر (تم تیرهٔ لوکس با لهجهٔ طلایی)
+
+- توکن‌های رنگ و فونت در `frontend/app/globals.css` هستند: `--background`/`--surface` (مشکی–سرمه‌ای)
+  و طیف طلایی `--gold-100` تا `--gold-700` (‏`#F7E6A8` → `#F5C542` → `#D4AF37` → `#9C7C1F`).
+  برای تغییر پالت فقط همین متغیرها را عوض کنید.
+- سه کلاس کمکی در همان فایل: `.bg-gold-metallic` (گرادیانت متالیک دکمهٔ اصلی که در hover حرکت
+  می‌کند)، `.border-gold-hairline` (خط موییِ طلایی برای لبهٔ کارت و divider) و `.text-gold-gradient`.
+- فونت **Vazirmatn** با `next/font/google` در `app/layout.tsx` لود می‌شود (subset های `arabic` و
+  `latin`) و `dir="rtl"` روی `<html>` است. فیلد ایمیل `dir="ltr"` دارد تا آدرس‌ها درست نمایش داده شوند.
+- دکمهٔ گوگل هم‌راستا با تم تیره است (پس‌زمینهٔ تیره + بوردر طلایی کم‌رنگ)، نه دکمهٔ سفید پیش‌فرض.
+- نام برند («زرین‌سرمایه») و آیکون شمش طلا در `components/brand.tsx` است و با یک فایل عوض می‌شود.
 
 ## جریان احراز هویت
 

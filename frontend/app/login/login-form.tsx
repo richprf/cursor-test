@@ -9,6 +9,7 @@ import { loginSchema, type LoginInput } from '@/lib/validation';
 import { authErrorMessage } from '@/lib/auth-errors';
 import {
   Alert,
+  Divider,
   FieldError,
   GoogleIcon,
   Label,
@@ -100,11 +101,7 @@ export function LoginForm({
         </button>
       </form>
 
-      <div className="flex items-center gap-3 text-xs text-muted">
-        <span className="h-px flex-1 bg-border" />
-        یا
-        <span className="h-px flex-1 bg-border" />
-      </div>
+      <Divider>یا</Divider>
 
       <button
         type="button"

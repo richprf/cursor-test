@@ -1,17 +1,22 @@
 import Link from 'next/link';
 import { auth } from '@/auth';
 import { primaryButtonClass, secondaryButtonClass } from '@/components/ui';
+import { Brand } from '@/components/brand';
 
 export default async function HomePage() {
   const session = await auth();
 
   return (
-    <main className="flex min-h-dvh items-center justify-center p-6">
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-9 p-6">
+      <Brand />
+
       <div className="w-full max-w-lg space-y-8 text-center">
         <div className="space-y-3">
-          <h1 className="text-2xl font-semibold sm:text-3xl">احراز هویت Next.js + NestJS</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">
+            سرمایه‌گذاری روی <span className="text-gold-gradient">طلا</span>، ساده و امن
+          </h1>
           <p className="text-sm leading-7 text-muted">
-            ورود با گوگل یا ایمیل و رمز عبور. NextAuth لایهٔ session است و NestJS منبع اصلی
+            با گوگل یا ایمیل و رمز عبور وارد شوید. NextAuth لایهٔ session است و NestJS منبع اصلی
             کاربران و صادرکنندهٔ توکن دسترسی.
           </p>
         </div>

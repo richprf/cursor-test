@@ -1,39 +1,90 @@
 @import 'tailwindcss';
 
-@theme inline {
-  --font-sans: 'Vazirmatn', 'IRANSans', 'Segoe UI', Tahoma, system-ui, sans-serif;
-}
-
+/* Luxury dark theme for a gold / investment app: near-black navy surfaces with a
+   single gold accent ramp used for actions, focus rings and icons. */
 :root {
-  --background: #f6f7fb;
-  --foreground: #101828;
-  --surface: #ffffff;
-  --border: #e4e7ec;
-  --muted: #667085;
-}
+  color-scheme: dark;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0b1020;
-    --foreground: #e8eaf2;
-    --surface: #131a2e;
-    --border: #263049;
-    --muted: #9aa4bf;
-  }
+  --background: #05070f;
+  --background-elevated: #0a0f1d;
+  --foreground: #f3f1ea;
+  --surface: #0d1426;
+  --border: #1e2740;
+  --muted: #98a2bd;
+
+  --gold-100: #f7e6a8;
+  --gold-300: #f5c542;
+  --gold-500: #d4af37;
+  --gold-700: #9c7c1f;
 }
 
 @theme inline {
+  --font-sans: var(--font-vazirmatn), 'Vazirmatn', 'IRANSans', 'Segoe UI', Tahoma, system-ui,
+    sans-serif;
+
   --color-background: var(--background);
+  --color-background-elevated: var(--background-elevated);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
   --color-border: var(--border);
   --color-muted: var(--muted);
+
+  --color-gold-100: var(--gold-100);
+  --color-gold-300: var(--gold-300);
+  --color-gold-500: var(--gold-500);
+  --color-gold-700: var(--gold-700);
 }
 
 body {
+  /* Soft gold glows over the dark base, so the card sits in warm light. */
   background:
-    radial-gradient(1200px 600px at 100% -10%, color-mix(in srgb, #4f46e5 12%, transparent), transparent),
+    radial-gradient(760px 460px at 82% -8%, rgba(212, 175, 55, 0.26), transparent 68%),
+    radial-gradient(620px 400px at 12% 108%, rgba(245, 197, 66, 0.16), transparent 68%),
+    radial-gradient(1100px 700px at 50% 45%, rgba(30, 39, 64, 0.5), transparent 70%),
     var(--background);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/* Metallic sweep used by the primary button. */
+.bg-gold-metallic {
+  background-image: linear-gradient(
+    100deg,
+    var(--gold-700) 0%,
+    var(--gold-500) 22%,
+    var(--gold-100) 50%,
+    var(--gold-500) 78%,
+    var(--gold-700) 100%
+  );
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  transition: background-position 450ms ease;
+}
+
+.bg-gold-metallic:hover:not(:disabled) {
+  background-position: 0 0;
+}
+
+/* Hairline gold gradient, for dividers and the card's top edge. */
+.border-gold-hairline {
+  background-image: linear-gradient(
+    to left,
+    transparent,
+    rgba(212, 175, 55, 0.55),
+    rgba(245, 197, 66, 0.9),
+    rgba(212, 175, 55, 0.55),
+    transparent
+  );
+}
+
+.text-gold-gradient {
+  background-image: linear-gradient(120deg, var(--gold-500), var(--gold-100) 55%, var(--gold-300));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+::selection {
+  background: rgba(245, 197, 66, 0.3);
 }
