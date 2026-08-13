@@ -46,6 +46,8 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
     │   └── dashboard/           # صفحهٔ محافظت‌شده (فراخوانی GET /auth/me)
     ├── components/ui.tsx        # پریمیتیوهای مشترک (input، دکمه، کارت، Alert)
     ├── components/brand.tsx     # لوگو (شمش‌های طلا) و ورد‌مارک
+    ├── components/landing/      # بخش‌های صفحهٔ لندینگ (هر Section یک فایل)
+    ├── lib/gsap.ts              # ثبت ScrollTrigger در سمت کلاینت
     ├── lib/backend.ts           # کلاینت سمت-سرور برای NestJS
     ├── lib/validation.ts        # اسکیماهای zod مشترک
     └── types/next-auth.d.ts     # افزودن accessToken و role به Session/JWT
@@ -62,6 +64,36 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
   `latin`) و `dir="rtl"` روی `<html>` است. فیلد ایمیل `dir="ltr"` دارد تا آدرس‌ها درست نمایش داده شوند.
 - دکمهٔ گوگل هم‌راستا با تم تیره است (پس‌زمینهٔ تیره + بوردر طلایی کم‌رنگ)، نه دکمهٔ سفید پیش‌فرض.
 - نام برند («زرین‌سرمایه») و آیکون شمش طلا در `components/brand.tsx` است و با یک فایل عوض می‌شود.
+
+## صفحهٔ لندینگ و انیمیشن‌ها
+
+صفحهٔ `/` یک لندینگ کامل است و از ۹ بخش تشکیل شده که هر کدام در `components/landing/` یک فایل
+جداگانه دارد: `hero`، `trust-bar`، `features`، `how-it-works`، `price-chart`، `testimonials`،
+`faq`، `final-cta` و `site-footer` (به‌همراه `site-header` چسبان).
+
+تقسیم کار بین دو کتابخانه:
+
+- **Framer Motion** برای انیمیشن کامپوننت‌ها: reveal با `whileInView` (یک‌بار، هنگام ورود به دید) و
+  `staggerChildren` در `reveal.tsx`، شمارش عدد در trust bar، کاروسل نظرات (`AnimatePresence`)،
+  آکاردئون FAQ، پارالاکس ماوس روی ویژوال Hero و منوی موبایل.
+- **GSAP + ScrollTrigger** برای کارهای اسکرول‌محور: پارالاکس اسکرول ویژوال Hero، خط پیشرفت
+  timeline در «نحوهٔ کار» (`scrub` و در RTL از راست به چپ) و رسم شدن مسیر نمودار قیمت
+  (`strokeDashoffset`).
+
+اصولی که رعایت شده:
+
+- انیمیشن ورود Hero با **CSS keyframes** است (نه JS) تا تیتر بدون انتظار برای hydration رنگ
+  بگیرد؛ بقیهٔ بخش‌ها که زیر fold هستند با Framer Motion انیمیت می‌شوند.
+- مدت انیمیشن‌ها ۳۰۰ تا ۶۰۰ میلی‌ثانیه با easing نرم `cubic-bezier(0.22, 0.61, 0.36, 1)`.
+- فقط `transform` و `opacity` انیمیت می‌شوند؛ تنها استثنا `height` در آکاردئون FAQ است که ماهیت
+  همان کامپوننت است.
+- `prefers-reduced-motion`: همهٔ ScrollTrigger ها داخل `gsap.matchMedia('(prefers-reduced-motion:
+  no-preference)')` ثبت می‌شوند و **حالت پایهٔ CSS همان حالت نهایی است**؛ یعنی اگر انیمیشنی اجرا
+  نشود، کاربر UI کامل را می‌بیند (نمودار رسم‌شده، خط timeline کامل، اعداد نهایی). در Framer Motion
+  هم با `useReducedMotion()` جابه‌جایی‌ها حذف و فقط opacity محو می‌شود، و autoplay کاروسل خاموش است.
+- روی موبایل پارالاکس اسکرول Hero اجرا نمی‌شود (فقط `min-width: 1024px`) و پارالاکس ماوس تنها با
+  `pointerType === 'mouse'` فعال می‌شود.
+- ارقام، نمودار و نظرات کاربران **نمایشی** هستند و باید با داده‌های واقعی جای‌گزین شوند.
 
 ## جریان احراز هویت
 

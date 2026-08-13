@@ -45,8 +45,8 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
   }, []);
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    // Fine pointers only; on touch this would fight with scrolling.
-    if (reduceMotion || !window.matchMedia('(pointer: fine)').matches) return;
+    // Mouse only: on touch, a pointermove means the user is dragging the page.
+    if (reduceMotion || event.pointerType !== 'mouse') return;
 
     const bounds = event.currentTarget.getBoundingClientRect();
     const offsetX = (event.clientX - bounds.left) / bounds.width - 0.5;
