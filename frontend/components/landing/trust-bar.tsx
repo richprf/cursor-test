@@ -2,15 +2,21 @@
 
 import { useEffect, useRef, useState, type ComponentType } from 'react';
 import { animate, useInView, useReducedMotion } from 'framer-motion';
-import { BadgeCheck, Landmark, ShieldCheck, Users, type LucideProps } from 'lucide-react';
 import { toPersianNumber } from '@/lib/format';
+import {
+  CommunityIcon,
+  InsuredShieldIcon,
+  SupportBadgeIcon,
+  TreasuryIcon,
+  type GoldIconProps,
+} from './gold-icons';
 import { EASE_OUT } from './reveal';
 
 const STATS = [
-  { icon: Users, value: 100_000, suffix: '+', label: 'کاربر فعال' },
-  { icon: Landmark, value: 4_200, suffix: ' میلیارد تومان', label: 'ارزش طلای نگهداری‌شده' },
-  { icon: ShieldCheck, value: 100, suffix: '٪', label: 'تحویل فیزیکی تضمین‌شده' },
-  { icon: BadgeCheck, value: 24, suffix: ' ساعته', label: 'پشتیبانی و امکان معامله' },
+  { icon: CommunityIcon, value: 100_000, suffix: '+', label: 'کاربر فعال' },
+  { icon: TreasuryIcon, value: 4_200, suffix: ' میلیارد تومان', label: 'ارزش طلای نگهداری‌شده' },
+  { icon: InsuredShieldIcon, value: 100, suffix: '٪', label: 'تحویل فیزیکی تضمین‌شده' },
+  { icon: SupportBadgeIcon, value: 24, suffix: ' ساعته', label: 'پشتیبانی و امکان معامله' },
 ];
 
 export function TrustBar() {
@@ -31,7 +37,7 @@ function Stat({
   suffix,
   label,
 }: {
-  icon: ComponentType<LucideProps>;
+  icon: ComponentType<GoldIconProps>;
   value: number;
   suffix: string;
   label: string;
@@ -39,9 +45,6 @@ function Stat({
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.6 });
   const reduceMotion = useReducedMotion();
-
-  // Rendered as the final number so it is correct without JS; the client resets it
-  // to zero after hydration and counts up once the stat scrolls into view.
   const [display, setDisplay] = useState(value);
 
   useEffect(() => {
@@ -55,7 +58,6 @@ function Stat({
       duration: 1.4,
       ease: EASE_OUT,
       onUpdate: (latest) => setDisplay(Math.round(latest)),
-      // Guarantees the exact number, whatever the last frame rounded to.
       onComplete: () => setDisplay(value),
     });
 
@@ -63,9 +65,9 @@ function Stat({
   }, [isInView, reduceMotion, value]);
 
   return (
-    <div ref={ref} className="flex items-start gap-3">
-      <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-gold-500/20 bg-gold-500/[0.12] text-gold-700">
-        <Icon className="size-5" aria-hidden />
+    <div ref={ref} className="group flex items-start gap-3">
+      <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-gold-500/20 bg-gold-500/[0.12] text-gold-700 transition-colors duration-300 group-hover:bg-gold-500/[0.18]">
+        <Icon className="size-5" />
       </span>
       <span>
         <span className="block text-lg font-bold tabular-nums sm:text-xl">

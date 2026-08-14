@@ -54,8 +54,37 @@ export function createFallbackSnapshot(): GoldPriceSnapshot {
   };
 }
 
+/** True when `incoming` is newer than what we already show. */
+export function isNewerTick(current: GoldPriceTick, incoming: GoldPriceTick): boolean {
+  if (incoming.t > current.t) return true;
+  if (incoming.t < current.t) return false;
+  return incoming.price !== current.price;
+}
+
+/**
+ * Applies a full server snapshot only when it is at least as fresh as local state.
+ * Prevents a connect-time snapshot from rolling back a tick that arrived first.
+ */
+export function mergeSnapshot(
+  current: GoldPriceSnapshot,
+  incoming: GoldPriceSnapshot,
+): GoldPriceSnapshot {
+  if (!isNewerTick(current.current, incoming.current)) return current;
+  return incoming;
+}
+
 /** Keeps the window at `CHART_POINTS` by dropping the oldest point. */
 export function appendTick(snapshot: GoldPriceSnapshot, tick: GoldPriceTick): GoldPriceSnapshot {
+  if (!isNewerTick(snapshot.current, tick)) return snapshot;
+
+  if (tick.t === snapshot.current.t) {
+    const history = [...snapshot.history];
+    if (history.length > 0) {
+      history[history.length - 1] = { t: tick.t, price: tick.price };
+    }
+    return { ...snapshot, current: tick, history };
+  }
+
   const history = [...snapshot.history, { t: tick.t, price: tick.price }].slice(-CHART_POINTS);
   return { ...snapshot, current: tick, history };
 }

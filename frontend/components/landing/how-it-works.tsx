@@ -1,23 +1,23 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { CreditCard, ShieldCheck, UserPlus } from 'lucide-react';
 import { gsap, registerScrollTrigger } from '@/lib/gsap';
+import { BuyGoldIcon, SignUpIcon, WalletChargeIcon } from './gold-icons';
 import { Section, SectionHeading } from './section';
 
 const STEPS = [
   {
-    icon: UserPlus,
+    icon: SignUpIcon,
     title: 'ثبت‌نام و احراز هویت',
     description: 'با ایمیل یا حساب گوگل وارد شوید و احراز هویت را در چند دقیقه کامل کنید.',
   },
   {
-    icon: CreditCard,
+    icon: WalletChargeIcon,
     title: 'شارژ کیف پول',
     description: 'از هر کارت بانکی، کیف پول خود را با مبلغ دلخواه شارژ کنید.',
   },
   {
-    icon: ShieldCheck,
+    icon: BuyGoldIcon,
     title: 'خرید طلا',
     description: 'به‌اندازهٔ دلخواه طلا بخرید؛ در خزانه نگه دارید یا فیزیکی تحویل بگیرید.',
   },
@@ -28,12 +28,6 @@ export function HowItWorks() {
   const horizontalLineRef = useRef<HTMLDivElement>(null);
   const verticalLineRef = useRef<HTMLDivElement>(null);
 
-  /**
-   * The timeline line is drawn as the section scrolls (scrub), with the step badges
-   * lighting up as it passes them. Horizontal on desktop — right to left, because the
-   * page is RTL — and vertical on mobile. Skipped entirely for reduced motion, where
-   * the CSS base state already shows the finished timeline.
-   */
   useEffect(() => {
     registerScrollTrigger();
     const mm = gsap.matchMedia();
@@ -80,7 +74,6 @@ export function HowItWorks() {
       />
 
       <div ref={rootRef} className="relative mt-14">
-        {/* Desktop rail, aligned with the centre of the step badges. */}
         <div
           aria-hidden
           className="absolute inset-x-0 top-6 hidden h-px bg-border md:block"
@@ -89,19 +82,18 @@ export function HowItWorks() {
           <div ref={horizontalLineRef} className="border-gold-hairline h-px w-full origin-right" />
         </div>
 
-        {/* Mobile rail. */}
         <div aria-hidden className="absolute inset-y-2 right-6 w-px bg-border md:hidden">
           <div ref={verticalLineRef} className="border-gold-hairline h-full w-px origin-top" />
         </div>
 
         <ol className="grid gap-10 md:grid-cols-3 md:gap-8">
           {STEPS.map((step, index) => (
-            <li key={step.title} className="relative flex gap-4 md:block">
+            <li key={step.title} className="group relative flex gap-4 md:block">
               <span
                 data-step-badge
-                className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl border border-gold-500/30 bg-background-elevated text-gold-700 shadow-md shadow-black/[0.07]"
+                className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl border border-gold-500/30 bg-background-elevated text-gold-700 shadow-md shadow-black/[0.07] transition-shadow duration-300 group-hover:shadow-[0_8px_24px_-6px_rgba(191,149,63,0.35)]"
               >
-                <step.icon className="size-5" strokeWidth={1.6} aria-hidden />
+                <step.icon className="size-5" />
               </span>
 
               <div className="md:mt-6">

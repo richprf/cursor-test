@@ -3,9 +3,10 @@
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
-import { ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { ctaPrimaryClass, ctaSecondaryClass } from '@/components/ui';
 import { gsap, registerScrollTrigger } from '@/lib/gsap';
+import { SparkleBadgeIcon, VaultTrustIcon } from './gold-icons';
 import { GoldBarVisual } from './gold-bar-visual';
 import { LivePriceBadge } from './live-price';
 
@@ -73,7 +74,7 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
             style={stagger(0)}
             className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-gold-500/25 bg-gold-500/[0.12] px-3.5 py-1.5 text-xs font-medium text-gold-700"
           >
-            <Sparkles className="size-3.5" aria-hidden />
+            <SparkleBadgeIcon className="size-3.5" />
             خرید طلای آب‌شده با کارمزد صفر
           </span>
 
@@ -134,7 +135,7 @@ function TrustPill({ className }: { className: string }) {
       className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/25 bg-white/85 px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
     >
       <span className="grid size-8 place-items-center rounded-xl bg-gold-500/12 text-gold-700">
-        <ShieldCheck className="size-4" aria-hidden />
+        <VaultTrustIcon className="size-4" />
       </span>
       <span className="leading-tight">
         <span className="block text-[11px] text-muted">خزانهٔ بانکی</span>

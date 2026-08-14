@@ -32,9 +32,7 @@ describe('GoldPriceService', () => {
     const collected = firstValueFrom(service.ticks.pipe(take(3), toArray()));
 
     for (let i = 0; i < 3; i += 1) {
-      jest.advanceTimersByTime(1000);
-      // Let the service's promise chain settle between ticks.
-      await Promise.resolve();
+      await jest.advanceTimersByTimeAsync(1000);
     }
 
     const ticks = await collected;
@@ -51,8 +49,7 @@ describe('GoldPriceService', () => {
     service.onModuleInit();
 
     for (let i = 0; i < 500; i += 1) {
-      jest.advanceTimersByTime(100);
-      await Promise.resolve();
+      await jest.advanceTimersByTimeAsync(100);
     }
 
     const { current } = service.getSnapshot();
@@ -85,7 +82,28 @@ describe('GoldPriceService', () => {
     fetchSpy.mockRestore();
   }, 10_000);
 
+  it('parses string prices from an external feed', async () => {
+    jest.useFakeTimers();
+    const fetchSpy = jest
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(JSON.stringify({ price: '4100000' })));
+
+    const service = createService({
+      GOLD_PRICE_API_URL: 'http://feed.test/price',
+      GOLD_PRICE_INTERVAL_MS: 100,
+    });
+    service.onModuleInit();
+
+    const tick = firstValueFrom(service.ticks);
+    await jest.advanceTimersByTimeAsync(100);
+    await expect(tick).resolves.toMatchObject({ price: 4_100_000 });
+
+    service.onModuleDestroy();
+    fetchSpy.mockRestore();
+  });
+
   it('falls back to the simulation when the feed fails', async () => {
+    jest.useFakeTimers();
     const fetchSpy = jest.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('offline'));
 
     const service = createService({
@@ -94,8 +112,9 @@ describe('GoldPriceService', () => {
     });
     service.onModuleInit();
 
-    const tick = await firstValueFrom(service.ticks);
-    expect(tick.price).toBeGreaterThan(0);
+    const tick = firstValueFrom(service.ticks);
+    await jest.advanceTimersByTimeAsync(50);
+    await expect(tick).resolves.toMatchObject({ price: expect.any(Number) });
 
     service.onModuleDestroy();
     fetchSpy.mockRestore();
