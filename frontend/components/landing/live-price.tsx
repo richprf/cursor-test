@@ -2,34 +2,48 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { animate, useReducedMotion } from 'framer-motion';
-import { ArrowDownRight, ArrowUpRight, TrendingUp } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { toPersianNumber } from '@/lib/format';
 import type { GoldPriceStatus } from '@/lib/use-gold-price-socket';
+import { LiveSparklineIcon } from './gold-icons';
 import { EASE_OUT } from './reveal';
 import { useGoldPrice } from './gold-price-provider';
 
-/** Counts from the previous price to the new one instead of jumping. */
+/**
+ * Smoothly transitions between server prices but always converges to the exact
+ * pushed value — including when a new tick interrupts an in-flight tween.
+ */
 function useAnimatedPrice(value: number): number {
   const reduceMotion = useReducedMotion();
   const [display, setDisplay] = useState(value);
-  const from = useRef(value);
+  const displayRef = useRef(value);
 
   useEffect(() => {
-    if (reduceMotion) {
-      from.current = value;
+    if (reduceMotion || displayRef.current === value) {
+      displayRef.current = value;
       setDisplay(value);
       return;
     }
 
-    const controls = animate(from.current, value, {
-      duration: 0.9,
+    const controls = animate(displayRef.current, value, {
+      duration: 0.55,
       ease: EASE_OUT,
-      onUpdate: (latest) => setDisplay(Math.round(latest)),
-      onComplete: () => setDisplay(value),
+      onUpdate: (latest) => {
+        const rounded = Math.round(latest);
+        displayRef.current = rounded;
+        setDisplay(rounded);
+      },
+      onComplete: () => {
+        displayRef.current = value;
+        setDisplay(value);
+      },
     });
-    from.current = value;
 
-    return () => controls.stop();
+    return () => {
+      controls.stop();
+      displayRef.current = value;
+      setDisplay(value);
+    };
   }, [value, reduceMotion]);
 
   return display;
@@ -114,7 +128,7 @@ export function LivePriceBadge({ className = '' }: { className?: string }) {
       className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/25 bg-white/85 px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
     >
       <span className="grid size-8 place-items-center rounded-xl bg-gold-500/12 text-gold-700">
-        <TrendingUp className="size-4" aria-hidden />
+        <LiveSparklineIcon className="size-4" />
       </span>
       <span className="leading-tight">
         <span className="flex items-center gap-1.5 text-[11px] text-muted">

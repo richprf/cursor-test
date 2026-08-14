@@ -20,6 +20,7 @@ export class GoldPriceService implements OnModuleInit, OnModuleDestroy {
   private history: GoldPricePoint[] = [];
   private current!: GoldPriceTick;
   private timer?: NodeJS.Timeout;
+  private running = false;
 
   private readonly intervalMs: number;
   /** When set, prices come from this endpoint instead of the simulation. */
@@ -32,15 +33,26 @@ export class GoldPriceService implements OnModuleInit, OnModuleDestroy {
   }
 
   onModuleInit() {
-    this.timer = setInterval(() => void this.publishNextPrice(), this.intervalMs);
+    this.running = true;
+    this.scheduleNextPublish();
     this.logger.log(
       `Publishing gold prices every ${this.intervalMs}ms (${this.feedUrl ? `feed: ${this.feedUrl}` : 'simulated'})`,
     );
   }
 
   onModuleDestroy() {
-    if (this.timer) clearInterval(this.timer);
+    this.running = false;
+    if (this.timer) clearTimeout(this.timer);
     this.ticks$.complete();
+  }
+
+  /** Wait for the current publish to finish before scheduling the next one. */
+  private scheduleNextPublish() {
+    if (!this.running) return;
+
+    this.timer = setTimeout(() => {
+      void this.publishNextPrice().finally(() => this.scheduleNextPublish());
+    }, this.intervalMs);
   }
 
   /** Stream of published prices; the gateway broadcasts whatever arrives here. */
@@ -116,9 +128,10 @@ export class GoldPriceService implements OnModuleInit, OnModuleDestroy {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const body: unknown = await response.json();
-      const price = (body as { price?: unknown })?.price;
+      const raw = (body as { price?: unknown })?.price;
+      const price = typeof raw === 'number' ? raw : Number(raw);
 
-      if (typeof price !== 'number' || !Number.isFinite(price) || price <= 0) {
+      if (!Number.isFinite(price) || price <= 0) {
         throw new Error('payload has no numeric `price`');
       }
       return Math.round(price);

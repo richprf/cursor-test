@@ -78,9 +78,17 @@ export function GoldBarVisual({ className = '' }: { className?: string }) {
         </text>
       </g>
 
-      {/* Floating coin, animated by the parent (float + parallax). */}
+      {/* Floating coin — gentle bob on its own rhythm. */}
       <g transform="translate(96 96)">
-        <circle cx="0" cy="0" r="41" fill="url(#coin-face)" />
+        <g>
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            values="0 0; 0 -6; 0 0"
+            dur="5.5s"
+            repeatCount="indefinite"
+          />
+          <circle cx="0" cy="0" r="41" fill="url(#coin-face)" />
         <circle cx="0" cy="0" r="41" fill="none" stroke="#8d6a1c" strokeOpacity="0.5" />
         <circle cx="0" cy="0" r="31" fill="none" stroke="#8d6a1c" strokeOpacity="0.45" />
         <text
@@ -94,6 +102,7 @@ export function GoldBarVisual({ className = '' }: { className?: string }) {
         >
           AU
         </text>
+        </g>
       </g>
     </svg>
   );

@@ -5,6 +5,7 @@ import { io, type Socket } from 'socket.io-client';
 import {
   GOLD_PRICE_EVENTS,
   appendTick,
+  mergeSnapshot,
   type GoldPriceSnapshot,
   type GoldPriceTick,
 } from '@/lib/gold-price';
@@ -86,7 +87,7 @@ export function useGoldPriceSocket(initialSnapshot: GoldPriceSnapshot): GoldPric
 
     const onSnapshot = (incoming: GoldPriceSnapshot) => {
       if (!active) return;
-      setSnapshot(incoming);
+      setSnapshot((current) => mergeSnapshot(current, incoming));
       setStatus('live');
     };
 
