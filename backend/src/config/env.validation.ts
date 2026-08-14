@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUrl,
   MinLength,
   validateSync,
 } from 'class-validator';
@@ -45,6 +46,19 @@ export class EnvironmentVariables {
   @IsString()
   @IsOptional()
   GOOGLE_CLIENT_ID?: string;
+
+  /** How often the gold price WebSocket publishes a new price. */
+  @IsNumber()
+  @IsOptional()
+  GOLD_PRICE_INTERVAL_MS: number = 3000;
+
+  /**
+   * Optional real price feed returning `{ "price": <number> }`. Without it the
+   * service simulates a random walk.
+   */
+  @IsUrl({ require_tld: false })
+  @IsOptional()
+  GOLD_PRICE_API_URL?: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

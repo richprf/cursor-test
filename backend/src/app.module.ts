@@ -5,6 +5,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthThrottlerGuard } from './common/guards/auth-throttler.guard';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { GoldPriceModule } from './gold-price/gold-price.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { validateEnv } from './config/env.validation';
@@ -23,6 +24,7 @@ import { validateEnv } from './config/env.validation';
     PrismaModule,
     UsersModule,
     AuthModule,
+    GoldPriceModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: AuthThrottlerGuard }],
