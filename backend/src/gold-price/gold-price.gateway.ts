@@ -1,8 +1,9 @@
-import { Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common';
+import { Logger, type OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
+  OnGatewayInit,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -20,7 +21,7 @@ import { GOLD_PRICE_EVENTS } from './gold-price.types';
   cors: { origin: true, credentials: true },
 })
 export class GoldPriceGateway
-  implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit, OnModuleDestroy
+  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, OnModuleDestroy
 {
   private readonly logger = new Logger(GoldPriceGateway.name);
   private subscription?: Subscription;
@@ -33,10 +34,11 @@ export class GoldPriceGateway
     private readonly config: ConfigService,
   ) {}
 
-  onModuleInit() {
-    // One subscription for the whole namespace; every tick is broadcast to all clients.
+  afterInit() {
+    // Subscribe once the namespace server exists; ticks emitted before this are still
+    // available via getSnapshot() when a client connects.
     this.subscription = this.goldPrice.ticks.subscribe((tick) => {
-      this.server?.emit(GOLD_PRICE_EVENTS.tick, tick);
+      this.server.emit(GOLD_PRICE_EVENTS.tick, tick);
     });
   }
 

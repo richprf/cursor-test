@@ -17,6 +17,10 @@ export interface GoldPriceState extends GoldPriceSnapshot {
   direction: 'up' | 'down' | 'flat';
 }
 
+function normalizeWsBaseUrl(url: string): string {
+  return url.replace(/\/+$/, '');
+}
+
 /**
  * Subscribes to the NestJS `/gold-price` namespace and keeps the latest price plus a
  * fixed-length history in state. socket.io reconnects on its own; the status here
@@ -38,34 +42,84 @@ export function useGoldPriceSocket(initialSnapshot: GoldPriceSnapshot): GoldPric
       return;
     }
 
-    const socket: Socket = io(`${baseUrl}/gold-price`, {
+    let active = true;
+
+    const socket: Socket = io(`${normalizeWsBaseUrl(baseUrl)}/gold-price`, {
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 8000,
       timeout: 6000,
+      // Fresh manager per mount so React Strict Mode remounts do not reuse a stale socket.
+      forceNew: true,
     });
 
-    socket.on('connect', () => setStatus('live'));
-    socket.on('disconnect', () => setStatus('reconnecting'));
-    socket.io.on('reconnect_attempt', () => setStatus('reconnecting'));
-    socket.on('connect_error', () => {
-      // First attempt failed → offline; a later failure means we are retrying.
+    const setStatusSafe = (next: GoldPriceStatus) => {
+      if (active) setStatus(next);
+    };
+
+    const setSnapshotSafe = (updater: (current: GoldPriceSnapshot) => GoldPriceSnapshot) => {
+      if (active) setSnapshot(updater);
+    };
+
+    const onConnect = () => setStatusSafe('live');
+
+    const onDisconnect = (reason: Socket.DisconnectReason) => {
+      // Server or client intentionally closed the socket — socket.io will not retry.
+      if (reason === 'io server disconnect' || reason === 'io client disconnect') {
+        setStatusSafe('offline');
+        return;
+      }
+      setStatusSafe('reconnecting');
+    };
+
+    const onReconnectAttempt = () => setStatusSafe('reconnecting');
+
+    const onReconnect = () => setStatusSafe('live');
+
+    const onReconnectFailed = () => setStatusSafe('offline');
+
+    const onConnectError = () => {
+      if (!active) return;
       setStatus((current) => (current === 'connecting' ? 'offline' : 'reconnecting'));
-    });
+    };
 
-    socket.on(GOLD_PRICE_EVENTS.snapshot, (incoming: GoldPriceSnapshot) => {
+    const onSnapshot = (incoming: GoldPriceSnapshot) => {
+      if (!active) return;
       setSnapshot(incoming);
       setStatus('live');
-    });
+    };
 
-    socket.on(GOLD_PRICE_EVENTS.tick, (tick: GoldPriceTick) => {
-      setSnapshot((current) => appendTick(current, tick));
-      setStatus('live');
-    });
+    const onTick = (tick: GoldPriceTick) => {
+      setSnapshotSafe((current) => appendTick(current, tick));
+      setStatusSafe('live');
+    };
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('connect_error', onConnectError);
+    socket.on(GOLD_PRICE_EVENTS.snapshot, onSnapshot);
+    socket.on(GOLD_PRICE_EVENTS.tick, onTick);
+
+    socket.io.on('reconnect_attempt', onReconnectAttempt);
+    socket.io.on('reconnect', onReconnect);
+    socket.io.on('reconnect_failed', onReconnectFailed);
 
     return () => {
-      socket.removeAllListeners();
+      active = false;
+
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('connect_error', onConnectError);
+      socket.off(GOLD_PRICE_EVENTS.snapshot, onSnapshot);
+      socket.off(GOLD_PRICE_EVENTS.tick, onTick);
+
+      socket.io.off('reconnect_attempt', onReconnectAttempt);
+      socket.io.off('reconnect', onReconnect);
+      socket.io.off('reconnect_failed', onReconnectFailed);
+
+      // Stop any in-flight reconnect loop before tearing down the socket.
+      socket.io.reconnection(false);
       socket.disconnect();
     };
   }, []);
