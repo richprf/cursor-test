@@ -79,7 +79,7 @@ export function SiteFooter() {
   );
 
   return (
-    <footer className="border-t border-border bg-black/30">
+    <footer className="border-t border-border bg-background-elevated">
       <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="space-y-4">
@@ -97,7 +97,7 @@ export function SiteFooter() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={social.label}
-                  className="grid size-9 place-items-center rounded-xl border border-border text-muted transition hover:border-gold-500/40 hover:text-gold-300"
+                  className="grid size-9 place-items-center rounded-xl border border-border text-muted transition hover:border-gold-500/40 hover:text-gold-700"
                 >
                   <social.icon className="size-4" aria-hidden />
                 </a>
@@ -112,11 +112,11 @@ export function SiteFooter() {
                 {group.links.map((link) => (
                   <li key={link.href}>
                     {link.href.startsWith('/') ? (
-                      <Link href={link.href} className="transition hover:text-gold-300">
+                      <Link href={link.href} className="transition hover:text-gold-700">
                         {link.label}
                       </Link>
                     ) : (
-                      <a href={link.href} className="transition hover:text-gold-300">
+                      <a href={link.href} className="transition hover:text-gold-700">
                         {link.label}
                       </a>
                     )}

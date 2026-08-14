@@ -60,7 +60,7 @@ export function Testimonials() {
       />
 
       <div className="mx-auto mt-12 max-w-3xl">
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-surface/60 p-7 backdrop-blur-sm sm:p-9">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-white p-7 shadow-lg shadow-black/[0.05] sm:p-9">
           <Quote className="size-8 text-gold-500/40" aria-hidden />
 
           {/* One slide at a time; AnimatePresence cross-fades the outgoing quote. */}
@@ -78,7 +78,7 @@ export function Testimonials() {
                 <footer className="mt-5 flex items-center gap-3">
                   <span
                     aria-hidden
-                    className="grid size-10 place-items-center rounded-full border border-gold-500/30 bg-gold-500/10 text-sm font-bold text-gold-300"
+                    className="grid size-10 place-items-center rounded-full border border-gold-500/30 bg-gold-500/10 text-sm font-bold text-gold-700"
                   >
                     {active.name.charAt(0)}
                   </span>
@@ -137,7 +137,7 @@ function CarouselButton({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="grid size-9 place-items-center rounded-xl border border-border bg-white/[0.03] text-muted transition hover:border-gold-500/50 hover:text-gold-300 focus:outline-none focus:ring-4 focus:ring-gold-500/20"
+      className="grid size-9 place-items-center rounded-xl border border-border bg-white text-muted transition hover:border-gold-500/50 hover:text-gold-700 focus:outline-none focus:ring-4 focus:ring-gold-500/20"
     >
       {children}
     </button>

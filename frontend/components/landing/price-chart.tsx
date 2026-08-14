@@ -1,35 +1,33 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { useEffect, useMemo, useRef } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { gsap, registerScrollTrigger } from '@/lib/gsap';
+import { CHART_POINTS, type GoldPricePoint } from '@/lib/gold-price';
 import { Section, SectionHeading } from './section';
-import { Reveal } from './reveal';
+import { Reveal, EASE_OUT } from './reveal';
+import { useGoldPrice } from './gold-price-provider';
+import { LivePriceHeadline } from './live-price';
 
 const WIDTH = 620;
 const HEIGHT = 240;
 /** Keeps the end marker's halo from being clipped by the viewBox edges. */
 const PADDING_X = 16;
-
-/** Mock closing prices for the last year (every second point has a month label). */
-const SERIES = [38, 52, 46, 74, 96, 88, 128, 150, 142, 178, 196, 214];
-const MONTHS = ['فروردین', 'خرداد', 'مرداد', 'مهر', 'آذر', 'بهمن'];
-
-const points = SERIES.map((value, index) => ({
-  x: PADDING_X + (index / (SERIES.length - 1)) * (WIDTH - PADDING_X * 2),
-  // Higher price → smaller y. 24px of headroom keeps the peak inside the viewBox.
-  y: HEIGHT - 24 - (value / 220) * (HEIGHT - 56),
-}));
+const PADDING_Y = 26;
 
 export function PriceChart() {
+  const { history, intervalMs, simulated } = useGoldPrice();
+  const reduceMotion = useReducedMotion();
+
   const lineRef = useRef<SVGPathElement>(null);
   const areaRef = useRef<SVGPathElement>(null);
-  const markerRef = useRef<SVGGElement>(null);
+
+  const { linePath, areaPath, last } = useMemo(() => buildChartGeometry(history), [history]);
 
   /**
-   * Path drawing: the line starts fully hidden behind its own dash gap and is drawn
-   * once the chart scrolls into view. The SVG's base state is the finished chart, so
-   * reduced-motion visitors simply see it drawn.
+   * Path drawing on first view. `immediateRender: false` matters: without it GSAP
+   * would apply the hidden "from" state on load, leaving the chart blank if the tween
+   * never runs. Live updates afterwards are handled by Framer Motion below.
    */
   useEffect(() => {
     registerScrollTrigger();
@@ -42,21 +40,19 @@ export function PriceChart() {
       const length = line.getTotalLength();
 
       const timeline = gsap.timeline({
-        scrollTrigger: { trigger: line, start: 'top 80%', once: true },
+        scrollTrigger: { trigger: line, start: 'top 85%', once: true },
       });
 
-      // `immediateRender: false` matters here: without it GSAP would apply the hidden
-      // "from" state on page load, leaving the chart blank if the tween never runs.
       timeline
         .fromTo(
           line,
           { strokeDasharray: length, strokeDashoffset: length },
           {
             strokeDashoffset: 0,
-            duration: 1.7,
+            duration: 1.6,
             ease: 'power2.out',
             immediateRender: false,
-            // Drop the inline dash styles afterwards, leaving a plain drawn path.
+            // Drop the inline dash styles so live path updates are not clipped.
             onComplete: () => gsap.set(line, { clearProps: 'strokeDasharray,strokeDashoffset' }),
           },
         )
@@ -64,72 +60,50 @@ export function PriceChart() {
           areaRef.current,
           { opacity: 0 },
           { opacity: 1, duration: 0.8, immediateRender: false },
-          0.35,
-        )
-        .fromTo(
-          markerRef.current,
-          { opacity: 0, scale: 0.6 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.4,
-            ease: 'back.out(2)',
-            transformOrigin: 'center',
-            immediateRender: false,
-          },
-          '-=0.25',
+          0.3,
         );
     });
 
     return () => mm.revert();
   }, []);
 
-  const linePath = buildSmoothPath(points);
-  const first = points[0];
-  const last = points[points.length - 1];
-  const areaPath = `${linePath} L ${last.x} ${HEIGHT} L ${first.x} ${HEIGHT} Z`;
+  // Morph over roughly one publish interval, so the line moves continuously
+  // instead of stepping whenever a new price arrives.
+  const morph = { duration: Math.min(intervalMs / 1000, 1.1), ease: EASE_OUT };
 
   return (
     <Section id="prices">
       <SectionHeading
         eyebrow="بازار طلا"
         title="قیمت‌ها را لحظه‌ای دنبال کنید"
-        description="نمودار زیر نمونه‌ای نمایشی از روند قیمت طلای ۱۸ عیار در یک سال گذشته است."
+        description={
+          simulated
+            ? 'قیمت از طریق WebSocket و به‌صورت زنده به‌روزرسانی می‌شود. در این نسخه فید قیمت روی سرور شبیه‌سازی شده است.'
+            : 'قیمت از طریق WebSocket و به‌صورت زنده از فید بازار به‌روزرسانی می‌شود.'
+        }
       />
 
       <Reveal className="mt-12" y={30}>
-        <div className="rounded-3xl border border-gold-500/20 bg-surface/60 p-5 shadow-2xl shadow-black/50 backdrop-blur-sm sm:p-7">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs text-muted">طلای ۱۸ عیار (هر گرم)</p>
-              <p className="mt-1 flex items-center gap-2 text-2xl font-bold tabular-nums">
-                ۳٬۲۴۰٬۰۰۰
-                <span className="text-sm font-medium text-muted">تومان</span>
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500/12 px-2.5 py-1.5 text-sm font-semibold text-emerald-400">
-              <ArrowUpRight className="size-4" aria-hidden />
-              ٪۲۴٫۶ در یک سال
-            </span>
-          </div>
+        <div className="rounded-3xl border border-border bg-white p-5 shadow-xl shadow-black/[0.06] sm:p-7">
+          <LivePriceHeadline />
 
           <svg
             viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
             // No fixed height: the viewBox ratio decides it, so the curve always spans
-            // the full card width and lines up with the month labels below.
+            // the full card width and lines up with the labels below.
             className="mt-6 w-full"
             role="img"
-            aria-label="نمودار نمایشی روند قیمت طلا در یک سال گذشته"
+            aria-label="نمودار زندهٔ قیمت طلای ۱۸ عیار"
           >
             <defs>
-              {/* Brightest towards the latest price, on the right of the series. */}
+              {/* Richer gold towards the latest price, on the right of the series. */}
               <linearGradient id="chart-line" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#b38728" />
-                <stop offset="50%" stopColor="#f5c542" />
-                <stop offset="100%" stopColor="#fcf6ba" />
+                <stop offset="0%" stopColor="#e6c65c" />
+                <stop offset="55%" stopColor="#d4af37" />
+                <stop offset="100%" stopColor="#a97c17" />
               </linearGradient>
               <linearGradient id="chart-area" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#d4af37" stopOpacity="0.35" />
+                <stop offset="0%" stopColor="#d4af37" stopOpacity="0.28" />
                 <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
               </linearGradient>
             </defs>
@@ -148,8 +122,14 @@ export function PriceChart() {
               />
             ))}
 
-            <path ref={areaRef} d={areaPath} fill="url(#chart-area)" />
-            <path
+            <motion.path
+              ref={areaRef}
+              d={areaPath}
+              fill="url(#chart-area)"
+              animate={reduceMotion ? undefined : { d: areaPath }}
+              transition={morph}
+            />
+            <motion.path
               ref={lineRef}
               d={linePath}
               fill="none"
@@ -157,19 +137,25 @@ export function PriceChart() {
               strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"
+              animate={reduceMotion ? undefined : { d: linePath }}
+              transition={morph}
             />
 
-            <g ref={markerRef}>
-              <circle cx={last.x} cy={last.y} r="12" fill="#f5c542" opacity="0.18" />
-              <circle cx={last.x} cy={last.y} r="5" fill="#fcf6ba" />
-            </g>
+            <motion.g
+              animate={reduceMotion ? undefined : { x: last.x, y: last.y }}
+              initial={{ x: last.x, y: last.y }}
+              transition={morph}
+            >
+              <circle r="12" fill="#f5c542" opacity="0.25" />
+              <circle r="5" fill="#d4af37" stroke="#ffffff" strokeWidth="2" />
+            </motion.g>
           </svg>
 
-          <div className="mt-4 flex justify-between text-[11px] text-muted" dir="ltr">
-            {/* dir=ltr so the months stay left-to-right in the same order as the chart. */}
-            {MONTHS.map((month) => (
-              <span key={month}>{month}</span>
-            ))}
+          <div className="mt-4 flex justify-between text-[11px] text-muted">
+            <span>
+              بازهٔ نمایش: {toPersianCount(history.length)} به‌روزرسانی اخیر
+            </span>
+            <span>هر {toPersianCount(Math.round(intervalMs / 1000))} ثانیه یک قیمت جدید</span>
           </div>
         </div>
       </Reveal>
@@ -177,11 +163,36 @@ export function PriceChart() {
   );
 }
 
-/** Catmull-Rom style smoothing, so the mock series reads as a curve, not a zig-zag. */
+/** Maps the price window onto the viewBox and builds the line and area paths. */
+function buildChartGeometry(history: GoldPricePoint[]) {
+  const points = history.slice(-CHART_POINTS);
+  const prices = points.map((point) => point.price);
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  // Flat windows would divide by zero; give them a small artificial range.
+  const range = max - min || Math.max(max * 0.001, 1);
+
+  const scaled = points.map((point, index) => ({
+    x: PADDING_X + (index / (points.length - 1)) * (WIDTH - PADDING_X * 2),
+    y: HEIGHT - PADDING_Y - ((point.price - min) / range) * (HEIGHT - PADDING_Y * 2),
+  }));
+
+  const linePath = buildSmoothPath(scaled);
+  const first = scaled[0];
+  const last = scaled[scaled.length - 1];
+
+  return {
+    linePath,
+    areaPath: `${linePath} L ${last.x} ${HEIGHT} L ${first.x} ${HEIGHT} Z`,
+    last,
+  };
+}
+
+/** Catmull-Rom style smoothing, so the series reads as a curve, not a zig-zag. */
 function buildSmoothPath(data: { x: number; y: number }[]): string {
   if (data.length < 2) return '';
 
-  let path = `M ${data[0].x} ${data[0].y}`;
+  let path = `M ${round(data[0].x)} ${round(data[0].y)}`;
 
   for (let i = 0; i < data.length - 1; i += 1) {
     const previous = data[i - 1] ?? data[i];
@@ -189,17 +200,22 @@ function buildSmoothPath(data: { x: number; y: number }[]): string {
     const next = data[i + 1];
     const afterNext = data[i + 2] ?? next;
 
-    const control1 = {
-      x: current.x + (next.x - previous.x) / 6,
-      y: current.y + (next.y - previous.y) / 6,
-    };
-    const control2 = {
-      x: next.x - (afterNext.x - current.x) / 6,
-      y: next.y - (afterNext.y - current.y) / 6,
-    };
+    const c1x = current.x + (next.x - previous.x) / 6;
+    const c1y = current.y + (next.y - previous.y) / 6;
+    const c2x = next.x - (afterNext.x - current.x) / 6;
+    const c2y = next.y - (afterNext.y - current.y) / 6;
 
-    path += ` C ${control1.x} ${control1.y} ${control2.x} ${control2.y} ${next.x} ${next.y}`;
+    path += ` C ${round(c1x)} ${round(c1y)} ${round(c2x)} ${round(c2y)} ${round(next.x)} ${round(next.y)}`;
   }
 
   return path;
+}
+
+/** Fewer decimals keeps the animated `d` attribute cheap to interpolate. */
+function round(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+function toPersianCount(value: number): string {
+  return value.toLocaleString('en-US').replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
 }

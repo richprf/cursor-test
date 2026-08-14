@@ -1,23 +1,26 @@
 @import 'tailwindcss';
 
-/* Luxury dark theme for a gold / investment app: neutral near-black surfaces with a
-   single gold accent ramp used for actions, focus rings and icons. */
+/* Light theme for a gold / investment app: white and cream surfaces, soft shadows,
+   and a single gold accent ramp for actions, focus rings and icons. */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  --background: #0d0d0f;
-  --background-elevated: #14141a;
-  --surface: #1a1a1f;
-  --foreground: #f4f1ea;
-  --border: #2a2a33;
-  --muted: #a2a2b0;
+  --background: #ffffff;
+  /* Cream, for strips and inputs that need to sit slightly back from white. */
+  --background-elevated: #faf9f6;
+  --surface: #ffffff;
+  --foreground: #1a1a1a;
+  --border: #e8e5df;
+  --muted: #5f6470;
 
-  /* Gold ramp: #D4AF37 → #F5C542, plus the metallic highlight/shadow stops. */
+  /* Gold ramp: #D4AF37 → #F5C542, plus the metallic highlight and the darker
+     shades that keep gold text readable on white. */
   --gold-100: #fcf6ba;
   --gold-300: #f5c542;
   --gold-500: #d4af37;
   --gold-600: #bf953f;
   --gold-700: #b38728;
+  --gold-800: #8a6a15;
 }
 
 @theme inline {
@@ -36,13 +39,14 @@
   --color-gold-500: var(--gold-500);
   --color-gold-600: var(--gold-600);
   --color-gold-700: var(--gold-700);
+  --color-gold-800: var(--gold-800);
 }
 
 body {
-  /* Soft gold glows over the dark base, so content sits in warm light. */
+  /* Barely-there warm glows, so white does not look flat. */
   background:
-    radial-gradient(760px 460px at 82% -8%, rgba(212, 175, 55, 0.22), transparent 68%),
-    radial-gradient(620px 400px at 12% 108%, rgba(245, 197, 66, 0.12), transparent 68%),
+    radial-gradient(760px 460px at 84% -10%, rgba(212, 175, 55, 0.16), transparent 70%),
+    radial-gradient(620px 420px at 8% 106%, rgba(212, 175, 55, 0.1), transparent 70%),
     var(--background);
   background-attachment: fixed;
   color: var(--foreground);
@@ -70,6 +74,39 @@ body {
   background-position: 0 0;
 }
 
+/* Hairline gold gradient, for dividers and card top edges. */
+.border-gold-hairline {
+  background-image: linear-gradient(
+    to left,
+    transparent,
+    rgba(212, 175, 55, 0.35),
+    rgba(191, 149, 63, 0.85),
+    rgba(212, 175, 55, 0.35),
+    transparent
+  );
+}
+
+/* Darker stops than the button gradient: gold text needs contrast against white. */
+.text-gold-gradient {
+  background-image: linear-gradient(120deg, #b38728, #d4af37 45%, #a97c17);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Faint grid behind the hero, faded out towards the edges. */
+.bg-hero-grid {
+  background-image:
+    linear-gradient(to left, rgba(191, 149, 63, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(191, 149, 63, 0.12) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(70% 60% at 50% 35%, black, transparent);
+}
+
+::selection {
+  background: rgba(245, 197, 66, 0.35);
+}
+
 /* Entrance animation for above-the-fold content: pure CSS, so the hero paints in its
    final state without waiting for hydration. Stagger comes from `animation-delay`. */
 @keyframes fade-up {
@@ -85,38 +122,6 @@ body {
 
 .animate-fade-up {
   animation: fade-up 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
-}
-
-/* Hairline gold gradient, for dividers and card top edges. */
-.border-gold-hairline {
-  background-image: linear-gradient(
-    to left,
-    transparent,
-    rgba(212, 175, 55, 0.55),
-    rgba(245, 197, 66, 0.9),
-    rgba(212, 175, 55, 0.55),
-    transparent
-  );
-}
-
-.text-gold-gradient {
-  background-image: linear-gradient(120deg, var(--gold-500), var(--gold-100) 55%, var(--gold-300));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* Faint grid behind the hero, faded out towards the edges. */
-.bg-hero-grid {
-  background-image:
-    linear-gradient(to left, rgba(212, 175, 55, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(212, 175, 55, 0.07) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(70% 60% at 50% 35%, black, transparent);
-}
-
-::selection {
-  background: rgba(245, 197, 66, 0.3);
 }
 
 /* Users who ask for less motion get the finished state, never a half-played one. */

@@ -1,4 +1,7 @@
 import { auth } from '@/auth';
+import { getGoldPriceSnapshot } from '@/lib/backend';
+import { createFallbackSnapshot, type GoldPriceSnapshot } from '@/lib/gold-price';
+import { GoldPriceProvider } from '@/components/landing/gold-price-provider';
 import { SiteHeader } from '@/components/landing/site-header';
 import { Hero } from '@/components/landing/hero';
 import { TrustBar } from '@/components/landing/trust-bar';
@@ -17,14 +20,14 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const session = await auth();
+  const [session, priceSnapshot] = await Promise.all([auth(), loadPriceSnapshot()]);
 
   // Signed-in visitors get pointed at their dashboard instead of the sign-up flow.
   const ctaHref = session ? '/dashboard' : '/register';
   const ctaLabel = session ? 'داشبورد' : 'شروع کنید';
 
   return (
-    <>
+    <GoldPriceProvider initialSnapshot={priceSnapshot}>
       <SiteHeader ctaHref={ctaHref} ctaLabel={session ? 'داشبورد' : 'ورود'} />
 
       <main>
@@ -39,6 +42,16 @@ export default async function HomePage() {
       </main>
 
       <SiteFooter />
-    </>
+    </GoldPriceProvider>
   );
+}
+
+/** A price on first paint is nice to have, not worth failing the page for. */
+async function loadPriceSnapshot(): Promise<GoldPriceSnapshot> {
+  try {
+    return await getGoldPriceSnapshot();
+  } catch (error) {
+    console.error('[landing] gold price snapshot unavailable', error);
+    return createFallbackSnapshot();
+  }
 }

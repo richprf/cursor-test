@@ -26,7 +26,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
         isScrolled || isMenuOpen
-          ? 'border-b border-border/80 bg-background/85 backdrop-blur-xl'
+          ? 'border-b border-border/80 bg-white/85 backdrop-blur-xl'
           : 'border-b border-transparent'
       }`}
     >
@@ -37,7 +37,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
 
         <nav className="hidden items-center gap-7 text-sm text-muted lg:flex">
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className="transition hover:text-gold-300">
+            <a key={link.href} href={link.href} className="transition hover:text-gold-700">
               {link.label}
             </a>
           ))}
@@ -46,7 +46,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
         <div className="flex items-center gap-2">
           <Link
             href={ctaHref}
-            className="rounded-xl border border-gold-500/30 bg-gold-500/[0.08] px-4 py-2 text-sm font-semibold text-gold-300 transition hover:border-gold-500/60 hover:bg-gold-500/[0.14]"
+            className="rounded-xl border border-gold-500/30 bg-gold-500/[0.12] px-4 py-2 text-sm font-semibold text-gold-700 transition hover:border-gold-500/60 hover:bg-gold-500/[0.18]"
           >
             {ctaLabel}
           </Link>
@@ -56,7 +56,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
             onClick={() => setIsMenuOpen((open) => !open)}
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? 'بستن منو' : 'باز کردن منو'}
-            className="grid size-9 place-items-center rounded-xl border border-border text-muted transition hover:text-gold-300 lg:hidden"
+            className="grid size-9 place-items-center rounded-xl border border-border text-muted transition hover:text-gold-700 lg:hidden"
           >
             {isMenuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
           </button>
@@ -78,7 +78,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
                   <a
                     href={link.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className="block rounded-xl px-3 py-2.5 text-sm text-muted transition hover:bg-white/[0.04] hover:text-gold-300"
+                    className="block rounded-xl px-3 py-2.5 text-sm text-muted transition hover:bg-background-elevated hover:text-gold-700"
                   >
                     {link.label}
                   </a>

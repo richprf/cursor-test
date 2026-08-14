@@ -3,11 +3,12 @@ export function BrandMark({ className = 'size-7' }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <defs>
+        {/* Darker stops than the button gradient, to stay visible on light surfaces. */}
         <linearGradient id="brand-gold" x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0%" stopColor="#9C7C1F" />
-          <stop offset="45%" stopColor="#D4AF37" />
-          <stop offset="75%" stopColor="#F7E6A8" />
-          <stop offset="100%" stopColor="#F5C542" />
+          <stop offset="0%" stopColor="#8A6A15" />
+          <stop offset="45%" stopColor="#BF953F" />
+          <stop offset="75%" stopColor="#F5C542" />
+          <stop offset="100%" stopColor="#D4AF37" />
         </linearGradient>
       </defs>
       <g fill="url(#brand-gold)">
@@ -22,7 +23,7 @@ export function BrandMark({ className = 'size-7' }: { className?: string }) {
 export function Brand() {
   return (
     <div className="flex items-center justify-center gap-2.5">
-      <span className="grid size-11 place-items-center rounded-2xl border border-gold-500/30 bg-gold-500/10 shadow-inner shadow-gold-500/10">
+      <span className="grid size-11 place-items-center rounded-2xl border border-gold-500/30 bg-gold-500/[0.12] shadow-sm shadow-gold-700/10">
         <BrandMark />
       </span>
       <span className="text-gold-gradient text-lg font-bold tracking-tight">زرین‌سرمایه</span>

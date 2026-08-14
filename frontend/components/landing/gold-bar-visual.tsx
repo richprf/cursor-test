@@ -23,8 +23,8 @@ export function GoldBarVisual({ className = '' }: { className?: string }) {
           <stop offset="100%" stopColor="#b38728" />
         </linearGradient>
         <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#f5c542" stopOpacity="0.4" />
-          <stop offset="60%" stopColor="#d4af37" stopOpacity="0.12" />
+          <stop offset="0%" stopColor="#f5c542" stopOpacity="0.3" />
+          <stop offset="60%" stopColor="#d4af37" stopOpacity="0.1" />
           <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
         </radialGradient>
         {/* Moving highlight that sweeps across the ingot's top face. */}

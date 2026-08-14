@@ -34,14 +34,14 @@ export default async function LoginPage({
 
         <p className="mt-7 text-center text-sm text-muted">
           حساب ندارید؟{' '}
-          <Link href="/register" className="font-medium text-gold-300 hover:text-gold-100">
+          <Link href="/register" className="font-medium text-gold-700 hover:text-gold-800">
             ثبت‌نام کنید
           </Link>
         </p>
       </Card>
 
       <p className="flex items-center gap-1.5 text-xs text-muted">
-        <ShieldIcon className="size-3.5 text-gold-500" />
+        <ShieldIcon className="size-3.5 text-gold-700" />
         ورود شما روی بستر رمزنگاری‌شده انجام می‌شود.
       </p>
     </main>

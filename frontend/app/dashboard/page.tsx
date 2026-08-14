@@ -47,7 +47,7 @@ export default async function DashboardPage() {
               className="size-12 rounded-full ring-2 ring-gold-500/40"
             />
           ) : (
-            <div className="grid size-12 place-items-center rounded-full border border-gold-500/30 bg-gold-500/10 text-lg font-semibold text-gold-300">
+            <div className="grid size-12 place-items-center rounded-full border border-gold-500/30 bg-gold-500/10 text-lg font-semibold text-gold-700">
               {(session.user.name ?? session.user.email ?? '?').charAt(0).toUpperCase()}
             </div>
           )}
@@ -62,7 +62,7 @@ export default async function DashboardPage() {
         {profileError && <Alert>{profileError}</Alert>}
 
         {profile && (
-          <dl className="divide-y divide-border/70 rounded-xl border border-border bg-background-elevated/60 text-sm">
+          <dl className="divide-y divide-border/70 rounded-xl border border-border bg-background-elevated text-sm">
             <Row label="شناسه کاربر" value={profile.id} mono />
             <Row label="نقش" value={profile.role} />
             <Row label="روش ثبت‌نام" value={profile.provider === 'GOOGLE' ? 'گوگل' : 'ایمیل و رمز عبور'} />
@@ -71,11 +71,11 @@ export default async function DashboardPage() {
 
         <p className="mt-5 text-xs leading-6 text-muted">
           این اطلاعات از مسیر محافظت‌شدهٔ{' '}
-          <code dir="ltr" className="text-gold-300/90">
+          <code dir="ltr" className="text-gold-800">
             GET /auth/me
           </code>{' '}
           و با هدر{' '}
-          <code dir="ltr" className="text-gold-300/90">
+          <code dir="ltr" className="text-gold-800">
             Authorization: Bearer …
           </code>{' '}
           از NestJS خوانده شده است.

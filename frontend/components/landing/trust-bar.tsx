@@ -15,7 +15,7 @@ const STATS = [
 
 export function TrustBar() {
   return (
-    <section className="border-y border-border/70 bg-white/[0.015]">
+    <section className="border-y border-border/70 bg-background-elevated">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-x-6 gap-y-9 px-5 py-10 sm:px-8 lg:grid-cols-4">
         {STATS.map((stat) => (
           <Stat key={stat.label} {...stat} />
@@ -64,13 +64,13 @@ function Stat({
 
   return (
     <div ref={ref} className="flex items-start gap-3">
-      <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-gold-500/20 bg-gold-500/[0.08] text-gold-300">
+      <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-gold-500/20 bg-gold-500/[0.12] text-gold-700">
         <Icon className="size-5" aria-hidden />
       </span>
       <span>
         <span className="block text-lg font-bold tabular-nums sm:text-xl">
           {toPersianNumber(display)}
-          <span className="text-sm font-semibold text-gold-300">{suffix}</span>
+          <span className="text-sm font-semibold text-gold-700">{suffix}</span>
         </span>
         <span className="mt-0.5 block text-xs leading-6 text-muted sm:text-sm">{label}</span>
       </span>

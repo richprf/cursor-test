@@ -99,7 +99,7 @@ export function HowItWorks() {
             <li key={step.title} className="relative flex gap-4 md:block">
               <span
                 data-step-badge
-                className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl border border-gold-500/30 bg-background-elevated text-gold-300 shadow-lg shadow-black/40"
+                className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl border border-gold-500/30 bg-background-elevated text-gold-700 shadow-md shadow-black/[0.07]"
               >
                 <step.icon className="size-5" strokeWidth={1.6} aria-hidden />
               </span>

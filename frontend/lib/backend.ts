@@ -1,4 +1,5 @@
 import type { AuthResponse, BackendUser } from '@/types/api';
+import type { GoldPriceSnapshot } from '@/lib/gold-price';
 
 /**
  * Thin client for the NestJS API. Everything here runs on the server only —
@@ -25,9 +26,9 @@ function apiUrl(path: string): string {
 
 async function request<T>(path: string, init: RequestInit): Promise<T> {
   const response = await fetch(apiUrl(path), {
+    cache: 'no-store',
     ...init,
     headers: { 'Content-Type': 'application/json', ...init.headers },
-    cache: 'no-store',
   });
 
   const body: unknown = await response.json().catch(() => null);
@@ -75,6 +76,11 @@ export function exchangeGoogleIdToken(idToken: string): Promise<AuthResponse> {
     method: 'POST',
     body: JSON.stringify({ idToken }),
   });
+}
+
+/** Price snapshot for the first server render; the browser's WebSocket takes over afterwards. */
+export function getGoldPriceSnapshot(): Promise<GoldPriceSnapshot> {
+  return request<GoldPriceSnapshot>('/gold-price/snapshot', { method: 'GET' });
 }
 
 /** Example of calling a protected NestJS route with the session's access token. */

@@ -22,7 +22,7 @@ export default function RegisterPage() {
 
         <p className="mt-7 text-center text-sm text-muted">
           حساب دارید؟{' '}
-          <Link href="/login" className="font-medium text-gold-300 hover:text-gold-100">
+          <Link href="/login" className="font-medium text-gold-700 hover:text-gold-800">
             وارد شوید
           </Link>
         </p>

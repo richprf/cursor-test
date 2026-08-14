@@ -34,7 +34,7 @@ export function SectionHeading({
   return (
     <Reveal className={`mx-auto flex max-w-2xl flex-col gap-3 ${alignment}`}>
       {eyebrow && (
-        <span className="inline-flex items-center gap-2 rounded-full border border-gold-500/25 bg-gold-500/[0.07] px-3 py-1 text-xs font-medium text-gold-300">
+        <span className="inline-flex items-center gap-2 rounded-full border border-gold-500/25 bg-gold-500/[0.12] px-3 py-1 text-xs font-medium text-gold-700">
           {eyebrow}
         </span>
       )}

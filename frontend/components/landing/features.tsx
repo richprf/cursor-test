@@ -66,14 +66,14 @@ function FeatureCard({
       // Hover lifts the card; only `transform` and `opacity` are animated.
       whileHover={reduceMotion ? undefined : { y: -6 }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className="group relative h-full overflow-hidden rounded-2xl border border-border bg-surface/60 p-6 backdrop-blur-sm"
+      className="group relative h-full overflow-hidden rounded-2xl border border-border bg-white p-6 shadow-lg shadow-black/[0.05]"
     >
       {/* Gold border glow, faded in on hover via opacity. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-2xl border border-gold-500/45 opacity-0 shadow-[0_0_40px_-12px_rgba(212,175,55,0.55)] transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 rounded-2xl border border-gold-500/60 opacity-0 shadow-[0_10px_30px_-8px_rgba(191,149,63,0.45)] transition-opacity duration-300 group-hover:opacity-100"
       />
-      <span className="grid size-11 place-items-center rounded-xl border border-gold-500/25 bg-gold-500/[0.08] text-gold-300">
+      <span className="grid size-11 place-items-center rounded-xl border border-gold-500/25 bg-gold-500/[0.12] text-gold-700">
         <Icon className="size-5" strokeWidth={1.6} aria-hidden />
       </span>
       <h3 className="mt-5 text-base font-bold">{title}</h3>

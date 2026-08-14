@@ -3,10 +3,11 @@
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
-import { ArrowLeft, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
 import { ctaPrimaryClass, ctaSecondaryClass } from '@/components/ui';
 import { gsap, registerScrollTrigger } from '@/lib/gsap';
 import { GoldBarVisual } from './gold-bar-visual';
+import { LivePriceBadge } from './live-price';
 
 /** Chained entrance: each element starts 90ms after the previous one. */
 function stagger(step: number) {
@@ -70,7 +71,7 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
         <div className="space-y-7">
           <span
             style={stagger(0)}
-            className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-gold-500/25 bg-gold-500/[0.07] px-3.5 py-1.5 text-xs font-medium text-gold-300"
+            className="animate-fade-up inline-flex items-center gap-2 rounded-full border border-gold-500/25 bg-gold-500/[0.12] px-3.5 py-1.5 text-xs font-medium text-gold-700"
           >
             <Sparkles className="size-3.5" aria-hidden />
             خرید طلای آب‌شده با کارمزد صفر
@@ -114,21 +115,12 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
               animate={reduceMotion ? undefined : { y: [0, -14, 0] }}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <GoldBarVisual className="mx-auto w-full max-w-md drop-shadow-[0_30px_60px_rgba(0,0,0,0.55)]" />
+              <GoldBarVisual className="mx-auto w-full max-w-md drop-shadow-[0_24px_50px_rgba(120,90,20,0.22)]" />
             </motion.div>
 
-            <PricePill
-              className="right-0 top-6 sm:right-4"
-              label="انس جهانی"
-              value="۲,۳۴۵ دلار"
-              change="۰٫۸٪"
-            />
-            <PricePill
-              className="bottom-8 left-0 sm:left-2"
-              label="طلای ۱۸ عیار"
-              value="۳,۲۴۰,۰۰۰ تومان"
-              change="۱٫۲٪"
-            />
+            {/* Live price from the shared WebSocket connection. */}
+            <LivePriceBadge className="right-0 top-6 sm:right-4" />
+            <TrustPill className="bottom-8 left-0 sm:left-2" />
           </motion.div>
         </div>
       </div>
@@ -136,30 +128,17 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
   );
 }
 
-function PricePill({
-  className,
-  label,
-  value,
-  change,
-}: {
-  className: string;
-  label: string;
-  value: string;
-  change: string;
-}) {
+function TrustPill({ className }: { className: string }) {
   return (
     <div
-      className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/20 bg-surface/80 px-3.5 py-2.5 shadow-xl shadow-black/50 backdrop-blur-md ${className}`}
+      className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/25 bg-white/85 px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
     >
-      <span className="grid size-8 place-items-center rounded-xl bg-gold-500/12 text-gold-300">
-        <TrendingUp className="size-4" aria-hidden />
+      <span className="grid size-8 place-items-center rounded-xl bg-gold-500/12 text-gold-700">
+        <ShieldCheck className="size-4" aria-hidden />
       </span>
       <span className="leading-tight">
-        <span className="block text-[11px] text-muted">{label}</span>
-        <span className="block text-xs font-semibold">{value}</span>
-      </span>
-      <span className="rounded-lg bg-emerald-500/12 px-1.5 py-0.5 text-[11px] font-medium text-emerald-400">
-        ▲ {change}
+        <span className="block text-[11px] text-muted">خزانهٔ بانکی</span>
+        <span className="block text-xs font-semibold">نگهداری بیمه‌شده</span>
       </span>
     </div>
   );

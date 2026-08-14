@@ -33,6 +33,7 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
 │       │   └── auth.service.spec.ts
 │       ├── users/               # UsersModule (دسترسی به جدول users)
 │       ├── common/guards/       # AuthThrottlerGuard (rate limit بر اساس ایمیل)
+│       ├── gold-price/          # فید قیمت لحظه‌ای (REST snapshot + WebSocket)
 │       ├── prisma/              # PrismaService (driver adapter برای Postgres)
 │       ├── config/              # اعتبارسنجی متغیرهای محیطی
 │       └── main.ts              # CORS + ValidationPipe سراسری
@@ -47,22 +48,25 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
     ├── components/ui.tsx        # پریمیتیوهای مشترک (input، دکمه، کارت، Alert)
     ├── components/brand.tsx     # لوگو (شمش‌های طلا) و ورد‌مارک
     ├── components/landing/      # بخش‌های صفحهٔ لندینگ (هر Section یک فایل)
+    ├── lib/use-gold-price-socket.ts  # اتصال WebSocket به فید قیمت
     ├── lib/gsap.ts              # ثبت ScrollTrigger در سمت کلاینت
     ├── lib/backend.ts           # کلاینت سمت-سرور برای NestJS
     ├── lib/validation.ts        # اسکیماهای zod مشترک
     └── types/next-auth.d.ts     # افزودن accessToken و role به Session/JWT
 ```
 
-## ظاهر (تم تیرهٔ لوکس با لهجهٔ طلایی)
+## ظاهر (تم روشن با لهجهٔ طلایی)
 
-- توکن‌های رنگ و فونت در `frontend/app/globals.css` هستند: `--background`/`--surface` (مشکی–سرمه‌ای)
-  و طیف طلایی `--gold-100` تا `--gold-700` (‏`#F7E6A8` → `#F5C542` → `#D4AF37` → `#9C7C1F`).
+- توکن‌های رنگ و فونت در `frontend/app/globals.css` هستند: `--background` سفید (`#FFFFFF`) و
+  `--background-elevated` کرم (`#FAF9F6`)، متن `--foreground` مشکی نرم (`#1A1A1A`)، و طیف طلایی
+  `--gold-100` تا `--gold-800` (‏`#FCF6BA` → `#F5C542` → `#D4AF37` → `#B38728`).
   برای تغییر پالت فقط همین متغیرها را عوض کنید.
-- سه کلاس کمکی در همان فایل: `.bg-gold-metallic` (گرادیانت متالیک دکمهٔ اصلی که در hover حرکت
-  می‌کند)، `.border-gold-hairline` (خط موییِ طلایی برای لبهٔ کارت و divider) و `.text-gold-gradient`.
+- کارت‌ها سفید با سایهٔ ملایم و بوردر خاکستری خیلی کم‌رنگ / طلایی نیمه‌شفاف هستند.
+- سه کلاس کمکی در همان فایل: `.bg-gold-metallic` (گرادیانت متالیک دکمهٔ اصلی: `#BF953F` → `#FCF6BA` → `#B38728`)،
+  `.border-gold-hairline` و `.text-gold-gradient`.
 - فونت **Vazirmatn** با `next/font/google` در `app/layout.tsx` لود می‌شود (subset های `arabic` و
   `latin`) و `dir="rtl"` روی `<html>` است. فیلد ایمیل `dir="ltr"` دارد تا آدرس‌ها درست نمایش داده شوند.
-- دکمهٔ گوگل هم‌راستا با تم تیره است (پس‌زمینهٔ تیره + بوردر طلایی کم‌رنگ)، نه دکمهٔ سفید پیش‌فرض.
+- دکمهٔ گوگل روی تم روشن، سفید با بوردر خاکستری است (نه دکمهٔ سفید پیش‌فرض گوگل با پس‌زمینهٔ شلوغ).
 - نام برند («زرین‌سرمایه») و آیکون شمش طلا در `components/brand.tsx` است و با یک فایل عوض می‌شود.
 
 ## صفحهٔ لندینگ و انیمیشن‌ها
@@ -93,7 +97,22 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
   هم با `useReducedMotion()` جابه‌جایی‌ها حذف و فقط opacity محو می‌شود، و autoplay کاروسل خاموش است.
 - روی موبایل پارالاکس اسکرول Hero اجرا نمی‌شود (فقط `min-width: 1024px`) و پارالاکس ماوس تنها با
   `pointerType === 'mouse'` فعال می‌شود.
-- ارقام، نمودار و نظرات کاربران **نمایشی** هستند و باید با داده‌های واقعی جای‌گزین شوند.
+- نظرات کاربران **نمایشی** هستند. قیمت طلا واقعی است و از WebSocket می‌آید (در حالت پیش‌فرض روی
+  سرور شبیه‌سازی می‌شود مگر `GOLD_PRICE_API_URL` تنظیم شود).
+
+## قیمت لحظه‌ای طلا (WebSocket)
+
+بک‌اند روی namespaceی `gold-price` (socket.io) هر چند ثانیه یک قیمت جدید به کلاینت‌های متصل
+push می‌کند. مسیر REST `GET /gold-price/snapshot` هم همان داده را برای رندر اولیهٔ سرور می‌دهد.
+
+- سرویس `GoldPriceService` به‌صورت پیش‌فرض یک random walk با mean-reversion شبیه‌سازی می‌کند.
+  اگر `GOLD_PRICE_API_URL` روی یک endpoint با شکل `{ "price": <number> }` تنظیم شود، از آن فید
+  استفاده می‌کند و در صورت خطا همان تیک را شبیه‌سازی می‌کند (استریم قطع نمی‌شود).
+- Gateway مبدأ را با همان `CORS_ORIGINS` چک می‌کند؛ اتصال از دامنه‌های دیگر قطع می‌شود.
+- هوک `useGoldPriceSocket` در فرانت اتصال، reconnect خودکار (socket.io) و قطع اتصال هنگام unmount
+  را مدیریت می‌کند. `GoldPriceProvider` یک سوکت مشترک برای Hero و نمودار نگه می‌دارد.
+- عدد قیمت با انیمیشن count (نه پرش) عوض می‌شود و برای حدود ۱٫۴ ثانیه سبز/قرمز flash می‌کند.
+  خط نمودار با `d` path به‌صورت morph به‌روز می‌شود.
 
 ## جریان احراز هویت
 
@@ -123,6 +142,8 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
 | `POST` | `/auth/login`         | بررسی ایمیل/پسورد و صدور JWT — ۵ درخواست در دقیقه       |
 | `POST` | `/auth/oauth/google`  | verify کردن `idToken` گوگل، upsert کاربر، صدور JWT      |
 | `GET`  | `/auth/me`            | اطلاعات کاربر جاری (محافظت‌شده با `JwtAuthGuard`)        |
+| `GET`  | `/gold-price/snapshot` | آخرین قیمت + تاریخچهٔ نمودار (بدون احراز هویت)          |
+| `WS`   | `/gold-price`         | namespaceی socket.io — رویدادهای `gold-price:snapshot` و `gold-price:tick` |
 | `GET`  | `/health`             | health check                                            |
 
 ## راه‌اندازی
@@ -155,6 +176,8 @@ DATABASE_URL=postgresql://authapp:authapp@localhost:5432/authdb?schema=public
 JWT_SECRET=...                # openssl rand -base64 32
 JWT_EXPIRES_IN=7d
 GOOGLE_CLIENT_ID=...          # همان client id فرانت‌اند (برای verify کردن id_token)
+GOLD_PRICE_INTERVAL_MS=3000   # فاصلهٔ ارسال قیمت روی WebSocket
+# GOLD_PRICE_API_URL=         # اختیاری؛ بدون آن قیمت شبیه‌سازی می‌شود
 ```
 
 ### ۳) فرانت‌اند (Next.js)
@@ -174,6 +197,7 @@ NEXTAUTH_SECRET=...           # openssl rand -base64 32
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
 NEST_API_URL=http://localhost:4000
+NEXT_PUBLIC_WS_URL=http://localhost:4000   # WebSocket قیمت طلا (قابل دسترس از مرورگر)
 ```
 
 ### ۴) تنظیم Google OAuth

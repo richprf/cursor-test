@@ -42,7 +42,7 @@ export function Faq() {
     <Section id="faq">
       <SectionHeading eyebrow="سوالات متداول" title="پاسخ سوال‌های پرتکرار" />
 
-      <div className="mx-auto mt-12 max-w-3xl divide-y divide-border overflow-hidden rounded-3xl border border-border bg-surface/50">
+      <div className="mx-auto mt-12 max-w-3xl divide-y divide-border overflow-hidden rounded-3xl border border-border bg-white shadow-lg shadow-black/[0.05]">
         {FAQS.map((faq, index) => {
           const isOpen = openIndex === index;
 
@@ -54,7 +54,7 @@ export function Faq() {
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   aria-expanded={isOpen}
                   aria-controls={`faq-panel-${index}`}
-                  className="flex w-full items-center justify-between gap-4 px-5 py-5 text-right text-sm font-semibold transition hover:text-gold-300 focus:outline-none focus-visible:ring-4 focus-visible:ring-gold-500/20 sm:px-6"
+                  className="flex w-full items-center justify-between gap-4 px-5 py-5 text-right text-sm font-semibold transition hover:text-gold-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-gold-500/20 sm:px-6"
                 >
                   {faq.question}
                   <motion.span
@@ -63,7 +63,7 @@ export function Faq() {
                     transition={{ duration: 0.3, ease: EASE_OUT }}
                     className={`grid size-7 shrink-0 place-items-center rounded-lg border transition-colors ${
                       isOpen
-                        ? 'border-gold-500/50 bg-gold-500/10 text-gold-300'
+                        ? 'border-gold-500/50 bg-gold-500/10 text-gold-700'
                         : 'border-border text-muted'
                     }`}
                   >

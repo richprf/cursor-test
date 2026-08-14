@@ -3,10 +3,10 @@ import type { ComponentProps, ReactNode } from 'react';
 // Small shared primitives so the forms stay readable; no UI library needed.
 
 export const inputClass =
-  'w-full rounded-xl border border-gold-500/20 bg-black/35 px-4 py-3 text-sm text-foreground ' +
-  'outline-none transition placeholder:text-muted/60 hover:border-gold-500/40 ' +
-  'focus:border-gold-500 focus:bg-black/50 focus:ring-4 focus:ring-gold-500/15 ' +
-  'aria-invalid:border-red-500/70 disabled:cursor-not-allowed disabled:opacity-60';
+  'w-full rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm text-foreground ' +
+  'outline-none transition placeholder:text-muted/70 hover:border-gold-500/50 ' +
+  'focus:border-gold-500 focus:bg-white focus:ring-4 focus:ring-gold-500/20 ' +
+  'aria-invalid:border-rose-400 disabled:cursor-not-allowed disabled:opacity-60';
 
 export const primaryButtonClass =
   'bg-gold-metallic inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 ' +
@@ -21,19 +21,19 @@ export const ctaPrimaryClass =
   'hover:shadow-xl hover:shadow-gold-500/30 focus:outline-none focus:ring-4 focus:ring-gold-500/30';
 
 export const ctaSecondaryClass =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-gold-500/30 ' +
-  'bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-foreground transition ' +
-  'hover:border-gold-500/60 hover:bg-white/[0.06] focus:outline-none focus:ring-4 focus:ring-gold-500/20';
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white ' +
+  'px-6 py-3.5 text-sm font-semibold text-foreground shadow-sm shadow-black/[0.04] transition ' +
+  'hover:border-gold-500/60 hover:bg-background-elevated focus:outline-none focus:ring-4 focus:ring-gold-500/20';
 
 export const secondaryButtonClass =
-  'inline-flex w-full items-center justify-center gap-3 rounded-xl border border-gold-500/25 ' +
-  'bg-white/[0.03] px-4 py-3 text-sm font-medium text-foreground transition ' +
-  'hover:border-gold-500/50 hover:bg-white/[0.06] focus:outline-none focus:ring-4 ' +
+  'inline-flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-white ' +
+  'px-4 py-3 text-sm font-medium text-foreground shadow-sm shadow-black/[0.04] transition ' +
+  'hover:border-gold-500/50 hover:bg-background-elevated focus:outline-none focus:ring-4 ' +
   'focus:ring-gold-500/20 disabled:cursor-not-allowed disabled:opacity-55';
 
 export function Card({ children }: { children: ReactNode }) {
   return (
-    <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gold-500/30 bg-surface/75 p-8 shadow-2xl shadow-black/70 ring-1 ring-inset ring-white/5 backdrop-blur-xl">
+    <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gold-500/25 bg-white p-8 shadow-2xl shadow-black/[0.08]">
       {/* Gold hairline along the top edge of the card. */}
       <span aria-hidden className="border-gold-hairline absolute inset-x-6 top-0 h-0.5" />
       {children}
@@ -43,7 +43,7 @@ export function Card({ children }: { children: ReactNode }) {
 
 export function Label({ children, htmlFor }: { children: ReactNode; htmlFor: string }) {
   return (
-    <label htmlFor={htmlFor} className="mb-2 block text-sm font-medium text-foreground/85">
+    <label htmlFor={htmlFor} className="mb-2 block text-sm font-medium">
       {children}
     </label>
   );
@@ -51,7 +51,7 @@ export function Label({ children, htmlFor }: { children: ReactNode; htmlFor: str
 
 export function FieldError({ children }: { children?: ReactNode }) {
   if (!children) return null;
-  return <p className="mt-1.5 text-xs text-red-400">{children}</p>;
+  return <p className="mt-1.5 text-xs text-rose-600">{children}</p>;
 }
 
 export function Alert({
@@ -62,8 +62,8 @@ export function Alert({
   children: ReactNode;
 }) {
   const tones = {
-    error: 'border-red-500/35 bg-red-950/40 text-red-300',
-    success: 'border-emerald-500/35 bg-emerald-950/40 text-emerald-300',
+    error: 'border-rose-200 bg-rose-50 text-rose-700',
+    success: 'border-emerald-200 bg-emerald-50 text-emerald-700',
   };
 
   return (
