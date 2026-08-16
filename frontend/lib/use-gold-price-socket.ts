@@ -6,6 +6,7 @@ import {
   GOLD_PRICE_EVENTS,
   appendTick,
   mergeSnapshot,
+  type GoldPricePoint,
   type GoldPriceSnapshot,
   type GoldPriceTick,
 } from '@/lib/gold-price';
@@ -30,7 +31,10 @@ function normalizeWsBaseUrl(url: string): string {
  * `initialSnapshot` comes from the server render, so the first paint already shows a
  * real price instead of a placeholder.
  */
-export function useGoldPriceSocket(initialSnapshot: GoldPriceSnapshot): GoldPriceState {
+export function useGoldPriceSocket(
+  initialSnapshot: GoldPriceSnapshot,
+  onHistoryChange?: (history: GoldPricePoint[]) => void,
+): GoldPriceState {
   const [snapshot, setSnapshot] = useState(initialSnapshot);
   const [status, setStatus] = useState<GoldPriceStatus>('connecting');
 
@@ -87,12 +91,20 @@ export function useGoldPriceSocket(initialSnapshot: GoldPriceSnapshot): GoldPric
 
     const onSnapshot = (incoming: GoldPriceSnapshot) => {
       if (!active) return;
-      setSnapshot((current) => mergeSnapshot(current, incoming));
+      setSnapshot((current) => {
+        const next = mergeSnapshot(current, incoming);
+        onHistoryChange?.(next.history);
+        return next;
+      });
       setStatus('live');
     };
 
     const onTick = (tick: GoldPriceTick) => {
-      setSnapshotSafe((current) => appendTick(current, tick));
+      setSnapshotSafe((current) => {
+        const next = appendTick(current, tick);
+        onHistoryChange?.(next.history);
+        return next;
+      });
       setStatusSafe('live');
     };
 
