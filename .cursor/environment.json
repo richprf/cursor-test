@@ -1,0 +1,21 @@
+{
+  "name": "NextAuth + NestJS auth (Postgres)",
+  "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/start.sh",
+  "terminals": [
+    {
+      "name": "backend",
+      "command": "cd backend && npm run start:dev",
+      "description": "NestJS API on http://localhost:4000 (auth + gold-price WebSocket)"
+    },
+    {
+      "name": "frontend",
+      "command": "cd frontend && npm run dev",
+      "description": "Next.js app on http://localhost:3000"
+    }
+  ],
+  "ports": [
+    { "name": "frontend", "port": 3000 },
+    { "name": "backend", "port": 4000 }
+  ]
+}
