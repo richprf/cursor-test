@@ -12,7 +12,7 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
 
 | بخش      | فناوری                                                              |
 | -------- | ------------------------------------------------------------------- |
-| فرانت‌اند | Next.js 15 (App Router)، TypeScript، next-auth v5، Tailwind CSS v4، react-hook-form + zod |
+| فرانت‌اند | Next.js 15 (App Router)، TypeScript، next-auth v5، next-themes، Tailwind CSS v4، react-hook-form + zod |
 | بک‌اند    | NestJS 11، TypeScript، Passport + JWT، bcrypt، class-validator، @nestjs/throttler |
 | دیتابیس  | PostgreSQL 16 با Prisma 7                                            |
 
@@ -61,9 +61,9 @@ NextAuth فقط لایهٔ **session** در فرانت‌اند است و **Nest
   `--background-elevated` کرم (`#FAF9F6`)، متن `--foreground` (`#1A1A1A`). حالت تاریک روی کلاس
   `.dark`: پس‌زمینه `#0D0D0F` تا سطح `#1A1A1F`، متن سفید/خاکستری روشن. طیف طلایی
   (`#D4AF37` → `#F5C542`) در هر دو حالت رنگ تاکید است.
-- سوییچ تم در هدر لندینگ و گوشهٔ صفحات ورود/ثبت‌نام/داشبورد است. انتخاب در `localStorage`
-  (و cookie) ذخیره می‌شود؛ اگر کاربر دستی انتخاب نکرده باشد، `prefers-color-scheme` اعمال می‌شود.
-- یک اسکریپت کوتاه در `<head>` قبل از اولین paint تم را روی `<html>` می‌گذارد تا صفحه چشمک نزند.
+- سوییچ تم در هدر لندینگ و گوشهٔ صفحات ورود/ثبت‌نام/داشبورد است. `next-themes` با
+  `defaultTheme="system"` و `enableSystem` تم را از `prefers-color-scheme` می‌گیرد مگر اینکه
+  کاربر دستی عوض کرده باشد (ذخیره در `localStorage`). کلاس `dark` روی `<html>` گذاشته می‌شود.
 - کارت‌ها از `bg-surface` استفاده می‌کنند تا با سوییچ تم عوض شوند.
 - سه کلاس کمکی: `.bg-gold-metallic`، `.border-gold-hairline` و `.text-gold-gradient`.
 - فونت **Vazirmatn** با `next/font/google` در `app/layout.tsx` لود می‌شود (subset های `arabic` و

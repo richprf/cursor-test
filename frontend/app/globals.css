@@ -2,6 +2,9 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* `next-themes` (attribute="class") toggles `.dark` on <html>. Palette tokens below
+   follow that class; `dark:` utilities use the same variant. */
+
 /* Gold / investment palette. Surfaces and text swap in `.dark`; gold stays the accent. */
 :root {
   color-scheme: light;
