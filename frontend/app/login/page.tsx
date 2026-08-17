@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { authErrorMessage } from '@/lib/auth-errors';
 import { Card, ShieldIcon } from '@/components/ui';
 import { Brand } from '@/components/brand';
+import { ThemeToggleDock } from '@/components/theme-toggle';
 import { LoginForm } from './login-form';
 
 export const metadata = { title: 'ورود' };
@@ -16,6 +17,7 @@ export default async function LoginPage({
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-7 p-6">
+      <ThemeToggleDock />
       <Brand />
 
       <Card>

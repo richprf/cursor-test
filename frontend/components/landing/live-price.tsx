@@ -68,8 +68,8 @@ function usePriceFlash(value: number): 'up' | 'down' | null {
 }
 
 const FLASH_CLASS = {
-  up: 'text-emerald-600 bg-emerald-500/10',
-  down: 'text-rose-600 bg-rose-500/10',
+  up: 'text-emerald-600 bg-emerald-500/10 dark:text-emerald-400',
+  down: 'text-rose-600 bg-rose-500/10 dark:text-rose-400',
 } as const;
 
 /** Big headline price used in the chart card. */
@@ -103,7 +103,7 @@ export function LivePriceHeadline() {
 
       <span
         className={`inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm font-semibold ${
-          isUp ? 'bg-emerald-500/10 text-emerald-700' : 'bg-rose-500/10 text-rose-700'
+          isUp ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-700 dark:text-rose-400'
         }`}
       >
         {isUp ? (
@@ -125,7 +125,7 @@ export function LivePriceBadge({ className = '' }: { className?: string }) {
 
   return (
     <div
-      className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/25 bg-white/85 px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
+      className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/25 bg-surface-translucent px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
     >
       <span className="grid size-8 place-items-center rounded-xl bg-gold-500/12 text-gold-700">
         <LiveSparklineIcon className="size-4" />
@@ -155,9 +155,9 @@ const STATUS_LABEL: Record<GoldPriceStatus, string> = {
 };
 
 const STATUS_TONE: Record<GoldPriceStatus, string> = {
-  connecting: 'text-amber-600',
-  live: 'text-emerald-600',
-  reconnecting: 'text-amber-600',
+  connecting: 'text-amber-600 dark:text-amber-400',
+  live: 'text-emerald-600 dark:text-emerald-400',
+  reconnecting: 'text-amber-600 dark:text-amber-400',
   offline: 'text-muted',
 };
 

@@ -71,7 +71,7 @@ function FeatureCard({
     <motion.article
       whileHover={reduceMotion ? undefined : { y: -6 }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className="group relative h-full overflow-hidden rounded-2xl border border-border bg-white p-6 shadow-lg shadow-black/[0.05]"
+      className="group relative h-full overflow-hidden rounded-2xl border border-border bg-surface p-6 shadow-lg shadow-black/[0.05] theme-fade"
     >
       <span
         aria-hidden

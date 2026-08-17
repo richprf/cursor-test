@@ -1,26 +1,62 @@
 @import 'tailwindcss';
 
-/* Light theme for a gold / investment app: white and cream surfaces, soft shadows,
-   and a single gold accent ramp for actions, focus rings and icons. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Gold / investment palette. Surfaces and text swap in `.dark`; gold stays the accent. */
 :root {
   color-scheme: light;
 
   --background: #ffffff;
-  /* Cream, for strips and inputs that need to sit slightly back from white. */
   --background-elevated: #faf9f6;
   --surface: #ffffff;
+  --surface-translucent: rgba(255, 255, 255, 0.85);
   --foreground: #1a1a1a;
   --border: #e8e5df;
   --muted: #5f6470;
+  --on-gold: #231a05;
+  --ink-on-gold: #141013;
+  --surface-on-gold: rgba(255, 255, 255, 0.72);
+  --glow: rgba(212, 175, 55, 0.16);
+  --glow-soft: rgba(212, 175, 55, 0.1);
+  --chart-grid: #e8e5df;
+  --chart-marker-stroke: #ffffff;
+  --hero-grid: rgba(191, 149, 63, 0.12);
 
-  /* Gold ramp: #D4AF37 → #F5C542, plus the metallic highlight and the darker
-     shades that keep gold text readable on white. */
+  /* Gold ramp: #D4AF37 → #F5C542, plus darker stops for text on white. */
   --gold-100: #fcf6ba;
   --gold-300: #f5c542;
   --gold-500: #d4af37;
   --gold-600: #bf953f;
   --gold-700: #b38728;
   --gold-800: #8a6a15;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #0d0d0f;
+  --background-elevated: #141418;
+  --surface: #1a1a1f;
+  --surface-translucent: rgba(26, 26, 31, 0.88);
+  --foreground: #f4f4f6;
+  --border: #2c2c34;
+  --muted: #b0b3bc;
+  --on-gold: #231a05;
+  --ink-on-gold: #141013;
+  --surface-on-gold: rgba(255, 255, 255, 0.72);
+  --glow: rgba(245, 197, 66, 0.14);
+  --glow-soft: rgba(212, 175, 55, 0.1);
+  --chart-grid: #2c2c34;
+  --chart-marker-stroke: #1a1a1f;
+  --hero-grid: rgba(245, 197, 66, 0.1);
+
+  /* Brighter gold text tokens so existing `text-gold-700` stays readable on dark. */
+  --gold-100: #fcf6ba;
+  --gold-300: #f5c542;
+  --gold-500: #d4af37;
+  --gold-600: #e4c15a;
+  --gold-700: #f5c542;
+  --gold-800: #fcf6ba;
 }
 
 @theme inline {
@@ -31,8 +67,14 @@
   --color-background-elevated: var(--background-elevated);
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
+  --color-surface-translucent: var(--surface-translucent);
   --color-border: var(--border);
   --color-muted: var(--muted);
+  --color-on-gold: var(--on-gold);
+  --color-ink-on-gold: var(--ink-on-gold);
+  --color-surface-on-gold: var(--surface-on-gold);
+  --color-chart-grid: var(--chart-grid);
+  --color-chart-marker-stroke: var(--chart-marker-stroke);
 
   --color-gold-100: var(--gold-100);
   --color-gold-300: var(--gold-300);
@@ -43,14 +85,24 @@
 }
 
 body {
-  /* Barely-there warm glows, so white does not look flat. */
   background:
-    radial-gradient(760px 460px at 84% -10%, rgba(212, 175, 55, 0.16), transparent 70%),
-    radial-gradient(620px 420px at 8% 106%, rgba(212, 175, 55, 0.1), transparent 70%),
+    radial-gradient(760px 460px at 84% -10%, var(--glow), transparent 70%),
+    radial-gradient(620px 420px at 8% 106%, var(--glow-soft), transparent 70%),
     var(--background);
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body,
+  .theme-fade {
+    transition:
+      background-color 350ms ease,
+      color 350ms ease,
+      border-color 350ms ease,
+      box-shadow 350ms ease;
+  }
 }
 
 /* Metallic sweep (#BF953F → #FCF6BA → #B38728) used by primary buttons. */
@@ -63,8 +115,6 @@ body {
     #bf953f 76%,
     #b38728 100%
   );
-  /* Half again as wide as the element and centred, so the bright band stays wide
-     enough on small buttons too; hovering slides it across for a metallic sheen. */
   background-size: 150% 100%;
   background-position: 50% 0;
   transition: background-position 450ms ease;
@@ -74,7 +124,6 @@ body {
   background-position: 0 0;
 }
 
-/* Hairline gold gradient, for dividers and card top edges. */
 .border-gold-hairline {
   background-image: linear-gradient(
     to left,
@@ -86,19 +135,17 @@ body {
   );
 }
 
-/* Darker stops than the button gradient: gold text needs contrast against white. */
 .text-gold-gradient {
-  background-image: linear-gradient(120deg, #b38728, #d4af37 45%, #a97c17);
+  background-image: linear-gradient(120deg, var(--gold-800), var(--gold-500) 45%, var(--gold-700));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* Faint grid behind the hero, faded out towards the edges. */
 .bg-hero-grid {
   background-image:
-    linear-gradient(to left, rgba(191, 149, 63, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(191, 149, 63, 0.12) 1px, transparent 1px);
+    linear-gradient(to left, var(--hero-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hero-grid) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(70% 60% at 50% 35%, black, transparent);
 }
@@ -107,8 +154,6 @@ body {
   background: rgba(245, 197, 66, 0.35);
 }
 
-/* Entrance animation for above-the-fold content: pure CSS, so the hero paints in its
-   final state without waiting for hydration. Stagger comes from `animation-delay`. */
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -124,7 +169,6 @@ body {
   animation: fade-up 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
-/* Users who ask for less motion get the finished state, never a half-played one. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

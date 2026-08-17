@@ -42,7 +42,7 @@ export function Faq() {
     <Section id="faq">
       <SectionHeading eyebrow="سوالات متداول" title="پاسخ سوال‌های پرتکرار" />
 
-      <div className="mx-auto mt-12 max-w-3xl divide-y divide-border overflow-hidden rounded-3xl border border-border bg-white shadow-lg shadow-black/[0.05]">
+      <div className="mx-auto mt-12 max-w-3xl divide-y divide-border overflow-hidden rounded-3xl border border-border bg-surface shadow-lg shadow-black/[0.05] theme-fade">
         {FAQS.map((faq, index) => {
           const isOpen = openIndex === index;
 

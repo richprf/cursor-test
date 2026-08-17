@@ -60,7 +60,7 @@ export function Testimonials() {
       />
 
       <div className="mx-auto mt-12 max-w-3xl">
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-white p-7 shadow-lg shadow-black/[0.05] sm:p-9">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-surface p-7 shadow-lg shadow-black/[0.05] theme-fade sm:p-9">
           <Quote className="size-8 text-gold-500/40" aria-hidden />
 
           {/* One slide at a time; AnimatePresence cross-fades the outgoing quote. */}
@@ -137,7 +137,7 @@ function CarouselButton({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="grid size-9 place-items-center rounded-xl border border-border bg-white text-muted transition hover:border-gold-500/50 hover:text-gold-700 focus:outline-none focus:ring-4 focus:ring-gold-500/20"
+      className="grid size-9 place-items-center rounded-xl border border-border bg-surface text-muted transition hover:border-gold-500/50 hover:text-gold-700 focus:outline-none focus:ring-4 focus:ring-gold-500/20"
     >
       {children}
     </button>

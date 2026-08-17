@@ -19,31 +19,31 @@ export function FinalCta({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: str
         transition={{ duration: 0.6, ease: EASE_OUT }}
         className="bg-gold-metallic relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] p-8 text-center shadow-2xl shadow-gold-700/20 sm:p-14"
       >
-        <div className="relative space-y-5 text-[#231a05]">
+        <div className="relative space-y-5 text-on-gold">
           <h2 className="text-2xl font-black leading-relaxed sm:text-3xl">
             امروز اولین گرم طلای خود را بخرید
           </h2>
-          <p className="mx-auto max-w-xl text-sm leading-8 font-medium text-[#231a05]/80 sm:text-base">
+          <p className="mx-auto max-w-xl text-sm leading-8 font-medium text-on-gold/80 sm:text-base">
             ثبت‌نام رایگان است و در چند دقیقه انجام می‌شود. بدون حداقل مبلغ، بدون کارمزد خرید.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link
               href={ctaHref}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#141013] px-6 py-3.5 text-sm font-semibold text-gold-100 transition hover:bg-[#1f1a1d] focus:outline-none focus:ring-4 focus:ring-black/25"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-ink-on-gold px-6 py-3.5 text-sm font-semibold text-gold-100 transition hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-black/25"
             >
               {ctaLabel}
               <ArrowLeft className="size-4" aria-hidden />
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center justify-center rounded-xl border border-[#231a05]/20 bg-white/70 px-6 py-3.5 text-sm font-semibold text-[#231a05] transition hover:bg-white focus:outline-none focus:ring-4 focus:ring-black/15"
+              className="inline-flex items-center justify-center rounded-xl border border-on-gold/20 bg-surface-on-gold px-6 py-3.5 text-sm font-semibold text-on-gold transition hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-black/15"
             >
               حساب دارم، وارد می‌شوم
             </Link>
           </div>
 
-          <p className="flex items-center justify-center gap-1.5 pt-1 text-xs font-medium text-[#231a05]/75">
+          <p className="flex items-center justify-center gap-1.5 pt-1 text-xs font-medium text-on-gold/75">
             <ShieldCheck className="size-3.5" aria-hidden />
             طلای شما بیمه و در خزانهٔ بانکی نگهداری می‌شود.
           </p>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Brand } from '@/components/brand';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { EASE_OUT } from './reveal';
 
 const NAV_LINKS = [
@@ -24,9 +25,9 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 theme-fade transition-colors duration-300 ${
         isScrolled || isMenuOpen
-          ? 'border-b border-border/80 bg-white/85 backdrop-blur-xl'
+          ? 'border-b border-border/80 bg-surface-translucent backdrop-blur-xl'
           : 'border-b border-transparent'
       }`}
     >
@@ -44,6 +45,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <Link
             href={ctaHref}
             className="rounded-xl border border-gold-500/30 bg-gold-500/[0.12] px-4 py-2 text-sm font-semibold text-gold-700 transition hover:border-gold-500/60 hover:bg-gold-500/[0.18]"

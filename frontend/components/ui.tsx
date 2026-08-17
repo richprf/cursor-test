@@ -5,35 +5,35 @@ import type { ComponentProps, ReactNode } from 'react';
 export const inputClass =
   'w-full rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm text-foreground ' +
   'outline-none transition placeholder:text-muted/70 hover:border-gold-500/50 ' +
-  'focus:border-gold-500 focus:bg-white focus:ring-4 focus:ring-gold-500/20 ' +
+  'focus:border-gold-500 focus:bg-surface focus:ring-4 focus:ring-gold-500/20 ' +
   'aria-invalid:border-rose-400 disabled:cursor-not-allowed disabled:opacity-60';
 
 export const primaryButtonClass =
   'bg-gold-metallic inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 ' +
-  'text-sm font-semibold text-[#231a05] shadow-lg shadow-gold-500/20 transition ' +
+  'text-sm font-semibold text-on-gold shadow-lg shadow-gold-500/20 transition ' +
   'hover:shadow-gold-500/30 focus:outline-none focus:ring-4 focus:ring-gold-500/30 ' +
   'disabled:cursor-not-allowed disabled:opacity-55 disabled:shadow-none';
 
 /** Inline (auto-width) call to action used across the landing page. */
 export const ctaPrimaryClass =
   'bg-gold-metallic inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 ' +
-  'text-sm font-semibold text-[#231a05] shadow-lg shadow-gold-500/20 transition ' +
+  'text-sm font-semibold text-on-gold shadow-lg shadow-gold-500/20 transition ' +
   'hover:shadow-xl hover:shadow-gold-500/30 focus:outline-none focus:ring-4 focus:ring-gold-500/30';
 
 export const ctaSecondaryClass =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white ' +
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface ' +
   'px-6 py-3.5 text-sm font-semibold text-foreground shadow-sm shadow-black/[0.04] transition ' +
   'hover:border-gold-500/60 hover:bg-background-elevated focus:outline-none focus:ring-4 focus:ring-gold-500/20';
 
 export const secondaryButtonClass =
-  'inline-flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-white ' +
+  'inline-flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-surface ' +
   'px-4 py-3 text-sm font-medium text-foreground shadow-sm shadow-black/[0.04] transition ' +
   'hover:border-gold-500/50 hover:bg-background-elevated focus:outline-none focus:ring-4 ' +
   'focus:ring-gold-500/20 disabled:cursor-not-allowed disabled:opacity-55';
 
 export function Card({ children }: { children: ReactNode }) {
   return (
-    <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gold-500/25 bg-white p-8 shadow-2xl shadow-black/[0.08]">
+    <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gold-500/25 bg-surface p-8 shadow-2xl shadow-black/[0.08] theme-fade">
       {/* Gold hairline along the top edge of the card. */}
       <span aria-hidden className="border-gold-hairline absolute inset-x-6 top-0 h-0.5" />
       {children}
@@ -51,7 +51,7 @@ export function Label({ children, htmlFor }: { children: ReactNode; htmlFor: str
 
 export function FieldError({ children }: { children?: ReactNode }) {
   if (!children) return null;
-  return <p className="mt-1.5 text-xs text-rose-600">{children}</p>;
+  return <p className="mt-1.5 text-xs text-rose-600 dark:text-rose-400">{children}</p>;
 }
 
 export function Alert({
@@ -62,8 +62,8 @@ export function Alert({
   children: ReactNode;
 }) {
   const tones = {
-    error: 'border-rose-200 bg-rose-50 text-rose-700',
-    success: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+    error: 'border-rose-500/25 bg-rose-500/10 text-rose-700 dark:text-rose-300',
+    success: 'border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
   };
 
   return (

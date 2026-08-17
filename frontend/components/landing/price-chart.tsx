@@ -27,7 +27,7 @@ export function PriceChart() {
       />
 
       <Reveal className="mt-12" y={30}>
-        <div className="rounded-3xl border border-border bg-white p-5 shadow-xl shadow-black/[0.06] sm:p-7">
+        <div className="rounded-3xl border border-border bg-surface p-5 shadow-xl shadow-black/[0.06] theme-fade sm:p-7">
           <LivePriceHeadline />
 
           <LiveGoldChart />
@@ -36,7 +36,7 @@ export function PriceChart() {
             <span>بازهٔ نمایش: {toPersianCount(CHART_POINTS)} به‌روزرسانی اخیر</span>
             <span className="flex items-center gap-2">
               <span
-                className={`inline-flex items-center gap-1 ${status === 'live' ? 'text-emerald-600' : 'text-amber-600'}`}
+                className={`inline-flex items-center gap-1 ${status === 'live' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}
               >
                 <span className="size-1.5 rounded-full bg-current" aria-hidden />
                 {status === 'live' ? 'نمودار زنده' : status === 'connecting' ? 'در حال اتصال نمودار…' : 'آخرین دادهٔ دریافتی'}

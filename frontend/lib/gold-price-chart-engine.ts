@@ -10,6 +10,7 @@ export class GoldPriceChartEngine {
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
   private readonly resizeObserver: ResizeObserver;
+  private readonly themeObserver: MutationObserver;
   private width = 0;
   private dpr = 1;
 
@@ -33,6 +34,11 @@ export class GoldPriceChartEngine {
 
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(container);
+    this.themeObserver = new MutationObserver(() => this.draw());
+    this.themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class', 'style'],
+    });
     this.resize();
   }
 
@@ -59,6 +65,7 @@ export class GoldPriceChartEngine {
   destroy() {
     cancelAnimationFrame(this.rafId);
     this.resizeObserver.disconnect();
+    this.themeObserver.disconnect();
     this.canvas.remove();
   }
 
@@ -128,8 +135,6 @@ export class GoldPriceChartEngine {
 
   private draw() {
     const { ctx } = this;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
 
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     ctx.clearRect(0, 0, this.width, HEIGHT);
@@ -145,7 +150,7 @@ export class GoldPriceChartEngine {
   private drawGrid() {
     const { ctx } = this;
     ctx.save();
-    ctx.strokeStyle = '#e8e5df';
+    ctx.strokeStyle = cssVar('--chart-grid', '#e8e5df');
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 8]);
 
@@ -226,8 +231,14 @@ export class GoldPriceChartEngine {
     ctx.arc(point.x, point.y, 4.5, 0, Math.PI * 2);
     ctx.fillStyle = '#d4af37';
     ctx.fill();
-    ctx.strokeStyle = '#ffffff';
+    ctx.strokeStyle = cssVar('--chart-marker-stroke', '#ffffff');
     ctx.lineWidth = 2;
     ctx.stroke();
   }
 }
+
+function cssVar(name: string, fallback: string): string {
+  if (typeof document === 'undefined') return fallback;
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
+

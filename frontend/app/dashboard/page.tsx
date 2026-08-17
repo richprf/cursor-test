@@ -4,6 +4,7 @@ import { BackendError, getMe } from '@/lib/backend';
 import { Alert, Card } from '@/components/ui';
 import { Brand } from '@/components/brand';
 import { SignOutButton } from '@/components/sign-out-button';
+import { ThemeToggleDock } from '@/components/theme-toggle';
 import type { BackendUser } from '@/types/api';
 
 export const metadata = { title: 'داشبورد' };
@@ -35,6 +36,7 @@ export default async function DashboardPage() {
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-7 p-6">
+      <ThemeToggleDock />
       <Brand />
 
       <Card>

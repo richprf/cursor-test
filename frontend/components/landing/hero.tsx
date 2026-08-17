@@ -132,7 +132,7 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
 function TrustPill({ className }: { className: string }) {
   return (
     <div
-      className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/25 bg-white/85 px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
+      className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/25 bg-surface-translucent px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
     >
       <span className="grid size-8 place-items-center rounded-xl bg-gold-500/12 text-gold-700">
         <VaultTrustIcon className="size-4" />
