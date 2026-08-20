@@ -1,6 +1,7 @@
 'use server';
 
 import { AuthError } from 'next-auth';
+import { redirect, unstable_rethrow } from 'next/navigation';
 import { signIn } from '@/auth';
 import { BackendError, register as registerOnBackend } from '@/lib/backend';
 import { registerSchema, type RegisterInput } from '@/lib/validation';
@@ -32,14 +33,18 @@ export async function registerAction(input: RegisterInput): Promise<RegisterResu
   }
 
   try {
-    // Throws a redirect on success, which Next.js turns into navigation.
-    await signIn('credentials', { email, password, redirectTo: '/dashboard' });
+    // `redirect: false` avoids Auth.js throwing NEXT_REDIRECT inside this action.
+    // That throw, when the action is awaited from a client component, shows up as
+    // Next.js "Internal Server Error" even though the account was created.
+    await signIn('credentials', { email, password, redirect: false });
   } catch (error) {
+    unstable_rethrow(error);
     if (error instanceof AuthError) {
       return { error: 'حساب ساخته شد، اما ورود خودکار انجام نشد. لطفاً وارد شوید.' };
     }
-    throw error;
+    console.error('[register] auto sign-in failed', error);
+    return { error: 'حساب ساخته شد، اما ورود خودکار انجام نشد. لطفاً وارد شوید.' };
   }
 
-  return { ok: true };
+  redirect('/dashboard');
 }

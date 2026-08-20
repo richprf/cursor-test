@@ -37,19 +37,41 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto): Promise<AuthResponse> {
-    const existing = await this.users.findByEmail(dto.email);
-    if (existing) {
-      throw new ConflictException('An account with this email already exists');
+    try {
+      const existing = await this.users.findByEmail(dto.email);
+      if (existing) {
+        throw new ConflictException('An account with this email already exists');
+      }
+
+      const passwordHash = await bcrypt.hash(dto.password, BCRYPT_ROUNDS);
+      const user = await this.users.createWithPassword({
+        email: dto.email,
+        passwordHash,
+        name: dto.name,
+      });
+
+      return this.buildAuthResponse(user);
+    } catch (error) {
+      if (error instanceof ConflictException) throw error;
+      if (isPrismaCode(error, 'P2002')) {
+        throw new ConflictException('An account with this email already exists');
+      }
+
+      this.logger.error('Registration failed', error instanceof Error ? error.stack : error);
+
+      if (isPrismaCode(error, 'P1001') || isPrismaCode(error, 'P1017') || isPrismaCode(error, 'P1000')) {
+        throw new InternalServerErrorException(
+          'Database is unavailable. Check DATABASE_URL and that Postgres is running.',
+        );
+      }
+      if (isPrismaCode(error, 'P2021') || isPrismaCode(error, 'P2010')) {
+        throw new InternalServerErrorException(
+          'Database schema is missing. Run `npm run prisma:migrate` in the backend.',
+        );
+      }
+
+      throw new InternalServerErrorException('Could not create the account. Please try again.');
     }
-
-    const passwordHash = await bcrypt.hash(dto.password, BCRYPT_ROUNDS);
-    const user = await this.users.createWithPassword({
-      email: dto.email,
-      passwordHash,
-      name: dto.name,
-    });
-
-    return this.buildAuthResponse(user);
   }
 
   /** Verifies email + password; used by the NextAuth `CredentialsProvider`. */
@@ -134,3 +156,13 @@ export class AuthService {
     };
   }
 }
+
+function isPrismaCode(error: unknown, code: string): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code: unknown }).code === code
+  );
+}
+

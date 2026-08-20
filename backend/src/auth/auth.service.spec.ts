@@ -84,6 +84,15 @@ describe('AuthService', () => {
         service.register({ email: 'ali@example.com', password: 'supersecret1' }),
       ).rejects.toBeInstanceOf(ConflictException);
     });
+
+    it('maps a Prisma unique-constraint error to a conflict instead of a 500', async () => {
+      users.findByEmail.mockResolvedValue(null);
+      users.createWithPassword.mockRejectedValue(Object.assign(new Error('unique'), { code: 'P2002' }));
+
+      await expect(
+        service.register({ email: 'ali@example.com', password: 'supersecret1' }),
+      ).rejects.toBeInstanceOf(ConflictException);
+    });
   });
 
   describe('login', () => {
