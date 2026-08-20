@@ -47,6 +47,7 @@ export class GoldPriceGateway
   }
 
   handleConnection(client: Socket) {
+    
     if (!this.isAllowedOrigin(client)) {
       this.logger.warn(
         `Rejected socket from origin ${client.handshake.headers.origin ?? '(none)'}`,
