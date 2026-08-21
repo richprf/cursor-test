@@ -252,6 +252,21 @@ body {
   animation: gold-shift 10.6s ease-in-out infinite;
 }
 
+.hero-photo {
+  transform: scale(1.06);
+  transform-origin: 42% 18%;
+  animation: hero-ken 18s ease-in-out infinite alternate;
+}
+
+@keyframes hero-ken {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+
 .work-cover img,
 .work-cover video,
 .work-cover .gold-plate {
@@ -269,7 +284,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .gold-plate-motion,
-  .hero-loop {
+  .hero-loop,
+  .hero-photo {
     animation: none;
   }
 }

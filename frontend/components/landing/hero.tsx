@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { toPersianNumber } from '@/lib/format';
@@ -77,7 +78,18 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
 
   return (
     <section ref={rootRef} className="relative h-dvh min-h-[640px] overflow-hidden bg-black text-[#fafafa]">
-      <div className="hero-loop absolute inset-0" aria-hidden />
+      <Image
+        src="/landing/hero.jpg"
+        alt="پرتره سیاه‌وسفید با جواهرات"
+        fill
+        priority
+        sizes="100vw"
+        className="hero-photo object-cover object-[42%_18%]"
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/30"
+        aria-hidden
+      />
 
       <h1 className="sr-only">طلای شما، همیشه در دستان شما</h1>
 
