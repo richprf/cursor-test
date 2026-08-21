@@ -1,8 +1,8 @@
 'use client';
 
 import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import Image from 'next/image';
 import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsap';
+import { CinematicMedia } from './cinematic-media';
 
 /**
  * Pixel-faithful port of hellohello `WhatWeDo` (`#about` / `data-section="whatwedo"`).
@@ -23,9 +23,21 @@ const COPY_RIGHT =
   'از خرید چند صد هزار تومانی تا تحویل شمش؛ همه در یک اپلیکیشن. بدون حداقل، بدون کارمزد خرید. با شما.';
 
 const SHOTS = [
-  { src: '/landing/whatwedo-1.jpg', label: 'خرید و فروش آنی' },
-  { src: '/landing/whatwedo-2.jpg', label: 'نگهداری در خزانه' },
-  { src: '/landing/whatwedo-3.jpg', label: 'تحویل فیزیکی' },
+  {
+    src: '/landing/whatwedo-1.jpg',
+    video: '/landing/whatwedo-1.mp4',
+    label: 'خرید و فروش آنی',
+  },
+  {
+    src: '/landing/whatwedo-2.jpg',
+    video: '/landing/whatwedo-2.mp4',
+    label: 'نگهداری در خزانه',
+  },
+  {
+    src: '/landing/whatwedo-3.jpg',
+    video: '/landing/whatwedo-3.mp4',
+    label: 'تحویل فیزیکی',
+  },
 ] as const;
 
 const DESKTOP_FRAMES: CSSProperties[] = [
@@ -296,12 +308,12 @@ export function Features() {
           className="overflow-hidden will-change-transform"
           style={frame}
         >
-          <Image
-            src={SHOTS[index].src}
+          <CinematicMedia
+            image={SHOTS[index].src}
+            video={SHOTS[index].video}
             alt={SHOTS[index].label}
-            fill
+            autoPlay
             sizes="(max-width: 640px) 90vw, 493px"
-            className="object-cover"
             priority={index === 0}
           />
         </div>

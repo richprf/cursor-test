@@ -1,8 +1,8 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Image from 'next/image';
 import { gsap } from '@/lib/gsap';
+import { CinematicMedia } from './cinematic-media';
 import { GSAP_EASE, TIMING } from '@/lib/motion';
 import { Section } from './section';
 import { Reveal } from './reveal';
@@ -12,6 +12,7 @@ const PROJECTS = [
     category: 'Fine Jewelry',
     title: 'مجموعهٔ شمش خزر',
     src: '/landing/work-jewelry.jpg',
+    video: '/landing/work-jewelry.mp4',
     description:
       'کالکشن شمش ۱۸ عیار با بسته‌بندی پلمب و اصالت‌سنجی — سطح محصول همان چیزی است که در خزانه نگه می‌دارید.',
   },
@@ -19,6 +20,7 @@ const PROJECTS = [
     category: 'Editorial Campaign',
     title: 'کمپین خزانه',
     src: '/landing/work-campaign.jpg',
+    video: '/landing/work-campaign.mp4',
     description:
       'روایت نگهداری بیمه‌شده: طلای شما در خزانهٔ بانکی است، نه در ویترین مغازه — و هر لحظه قابل نقد شدن.',
   },
@@ -26,6 +28,7 @@ const PROJECTS = [
     category: 'Product Photography',
     title: 'حلقه‌های خورشید',
     src: '/landing/work-product.jpg',
+    video: '/landing/work-product.mp4',
     description:
       'عکاسی استودیویی حلقه و گوشواره برای ویترین خرید؛ نور فلز، بدون اجرت پنهان در روایت محصول.',
   },
@@ -33,6 +36,7 @@ const PROJECTS = [
     category: 'Macro Detail',
     title: 'جزئیات ماکرو',
     src: '/landing/work-macro.jpg',
+    video: '/landing/work-macro.mp4',
     description:
       'نمای نزدیک از بافت طلای ۱۸ عیار — جزئیات فلز، حلقه و پارچه در نور گرم استودیو.',
   },
@@ -104,12 +108,12 @@ function WorkCard({
         </div>
 
         <div ref={plateRef} className="work-cover relative aspect-video w-full overflow-hidden lg:col-span-8">
-          <Image
-            src={project.src}
+          <CinematicMedia
+            image={project.src}
+            video={project.video}
             alt={project.title}
-            fill
+            playing={hovering}
             sizes="(max-width: 1024px) 100vw, 66vw"
-            className="object-cover"
           />
         </div>
       </article>

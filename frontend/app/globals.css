@@ -253,6 +253,7 @@ body {
 }
 
 .work-cover img,
+.work-cover video,
 .work-cover .gold-plate {
   transition:
     transform 0.6s ease-out,
@@ -260,6 +261,7 @@ body {
 }
 
 .work-cover.is-playing img,
+.work-cover.is-playing video,
 .work-cover.is-playing .gold-plate {
   transform: scale(1.04);
   filter: brightness(1.18) saturate(1.12);
