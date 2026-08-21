@@ -1,36 +1,40 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 import { gsap } from '@/lib/gsap';
 import { GSAP_EASE, TIMING } from '@/lib/motion';
 import { Section } from './section';
 import { Reveal } from './reveal';
-import { GoldPlate } from './gold-plate';
 
 const PROJECTS = [
   {
     category: 'Fine Jewelry',
     title: 'مجموعهٔ شمش خزر',
+    src: '/landing/work-jewelry.jpg',
     description:
       'کالکشن شمش ۱۸ عیار با بسته‌بندی پلمب و اصالت‌سنجی — سطح محصول همان چیزی است که در خزانه نگه می‌دارید.',
   },
   {
     category: 'Editorial Campaign',
     title: 'کمپین خزانه',
+    src: '/landing/work-campaign.jpg',
     description:
       'روایت نگهداری بیمه‌شده: طلای شما در خزانهٔ بانکی است، نه در ویترین مغازه — و هر لحظه قابل نقد شدن.',
   },
   {
     category: 'Product Photography',
     title: 'حلقه‌های خورشید',
+    src: '/landing/work-product.jpg',
     description:
       'عکاسی استودیویی حلقه و گوشواره برای ویترین خرید؛ نور فلز، بدون اجرت پنهان در روایت محصول.',
   },
   {
     category: 'Macro Detail',
     title: 'جزئیات ماکرو',
+    src: '/landing/work-macro.jpg',
     description:
-      'نمای نزدیک از بافت طلای ۱۸ عیار — جای خالی عکس لایسنس‌شده شما با همین نسبت تصویر.',
+      'نمای نزدیک از بافت طلای ۱۸ عیار — جزئیات فلز، حلقه و پارچه در نور گرم استودیو.',
   },
 ];
 
@@ -99,8 +103,14 @@ function WorkCard({
           </p>
         </div>
 
-        <div ref={plateRef} className="work-cover lg:col-span-8">
-          <GoldPlate animated className="aspect-video w-full rounded-md" label={project.title} />
+        <div ref={plateRef} className="work-cover relative aspect-video w-full overflow-hidden lg:col-span-8">
+          <Image
+            src={project.src}
+            alt={project.title}
+            fill
+            sizes="(max-width: 1024px) 100vw, 66vw"
+            className="object-cover"
+          />
         </div>
       </article>
     </Reveal>

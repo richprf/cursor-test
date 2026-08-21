@@ -252,12 +252,14 @@ body {
   animation: gold-shift 10.6s ease-in-out infinite;
 }
 
+.work-cover img,
 .work-cover .gold-plate {
   transition:
     transform 0.6s ease-out,
     filter 0.6s ease-out;
 }
 
+.work-cover.is-playing img,
 .work-cover.is-playing .gold-plate {
   transform: scale(1.04);
   filter: brightness(1.18) saturate(1.12);

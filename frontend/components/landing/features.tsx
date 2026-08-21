@@ -1,8 +1,8 @@
 'use client';
 
 import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import Image from 'next/image';
 import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsap';
-import { GoldPlate } from './gold-plate';
 
 /**
  * Pixel-faithful port of hellohello `WhatWeDo` (`#about` / `data-section="whatwedo"`).
@@ -10,7 +10,7 @@ import { GoldPlate } from './gold-plate';
  *   scale 0.4 + y: 50vh → scale 1 (1.5) and y 0 (3.5), starts 0 / 2.5 / 5.5
  *   pin + pinSpacing, scrub 1.5, start "top top", end += 1.7 * innerHeight
  *   mobile breakpoint: max-width 639.98px
- * Gold plates stand in for the three stills (no third-party photography).
+ * Photos fill the three still frames (object-fit cover, no radius).
  */
 const MOBILE_MQ = '(max-width: 639.98px)';
 
@@ -22,7 +22,11 @@ const COPY_LEFT =
 const COPY_RIGHT =
   'از خرید چند صد هزار تومانی تا تحویل شمش؛ همه در یک اپلیکیشن. بدون حداقل، بدون کارمزد خرید. با شما.';
 
-const SHOT_LABELS = ['خرید و فروش آنی', 'نگهداری در خزانه', 'تحویل فیزیکی'] as const;
+const SHOTS = [
+  { src: '/landing/whatwedo-1.jpg', label: 'خرید و فروش آنی' },
+  { src: '/landing/whatwedo-2.jpg', label: 'نگهداری در خزانه' },
+  { src: '/landing/whatwedo-3.jpg', label: 'تحویل فیزیکی' },
+] as const;
 
 const DESKTOP_FRAMES: CSSProperties[] = [
   {
@@ -284,7 +288,7 @@ export function Features() {
 
       {frames.map((frame, index) => (
         <div
-          key={SHOT_LABELS[index]}
+          key={SHOTS[index].src}
           ref={(el) => {
             photoRefs.current[index] = el;
           }}
@@ -292,7 +296,14 @@ export function Features() {
           className="overflow-hidden will-change-transform"
           style={frame}
         >
-          <GoldPlate className="size-full h-full" variant={index} label={SHOT_LABELS[index]} />
+          <Image
+            src={SHOTS[index].src}
+            alt={SHOTS[index].label}
+            fill
+            sizes="(max-width: 640px) 90vw, 493px"
+            className="object-cover"
+            priority={index === 0}
+          />
         </div>
       ))}
 
