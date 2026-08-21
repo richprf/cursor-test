@@ -223,6 +223,30 @@ body {
   background-size: 140% 140%, 100% 100%;
 }
 
+/* Distinct stills in the What we do collage (same gold, different light). */
+.gold-plate-shot-0 {
+  background-image:
+    radial-gradient(90% 70% at 22% 18%, #f5c542 0%, transparent 55%),
+    linear-gradient(148deg, #d4af37 0%, #b8860b 42%, #8a6a15 100%);
+  background-position: 12% 8%, 0 0;
+}
+
+.gold-plate-shot-1 {
+  background-image:
+    radial-gradient(80% 90% at 78% 30%, #fcf6ba 0%, transparent 48%),
+    linear-gradient(28deg, #f5c542 0%, #d4af37 38%, #8a6a15 100%);
+  background-position: 88% 40%, 100% 0;
+  filter: brightness(1.06) saturate(1.08);
+}
+
+.gold-plate-shot-2 {
+  background-image:
+    radial-gradient(70% 80% at 40% 88%, #d4af37 0%, transparent 50%),
+    linear-gradient(210deg, #b8860b 0%, #8a6a15 46%, #d4af37 100%);
+  background-position: 40% 100%, 50% 100%;
+  filter: brightness(0.92) saturate(1.12);
+}
+
 .gold-plate-motion,
 .hero-loop {
   animation: gold-shift 10.6s ease-in-out infinite;
