@@ -1,31 +1,13 @@
 'use client';
 
-import Image from 'next/image';
 import { Section } from './section';
 import { Reveal, RevealGroup, RevealItem } from './reveal';
+import { GoldPlate } from './gold-plate';
 
 const SHOTS = [
-  {
-    src: '/landing/gold-what-1.png',
-    alt: 'ریختن طلای مذاب در قالب',
-    caption: 'خرید و فروش آنی',
-    frame: 'lg:col-span-3',
-    aspect: 'aspect-[3/4]',
-  },
-  {
-    src: '/landing/gold-what-2.png',
-    alt: 'خزانهٔ شمش طلا',
-    caption: 'نگهداری امن و بیمه‌شده',
-    frame: 'lg:col-span-6 lg:mt-16',
-    aspect: 'aspect-[4/3]',
-  },
-  {
-    src: '/landing/gold-what-3.png',
-    alt: 'سکهٔ طلا',
-    caption: 'نقدشوندگی فوری',
-    frame: 'lg:col-span-3',
-    aspect: 'aspect-[3/4]',
-  },
+  { caption: 'خرید و فروش آنی', frame: 'lg:col-span-3', aspect: 'aspect-[3/4]' },
+  { caption: 'نگهداری امن و بیمه‌شده', frame: 'lg:col-span-6 lg:mt-16', aspect: 'aspect-[4/3]' },
+  { caption: 'نقدشوندگی فوری', frame: 'lg:col-span-3', aspect: 'aspect-[3/4]' },
 ];
 
 export function Features() {
@@ -43,19 +25,11 @@ export function Features() {
         </p>
       </Reveal>
 
-      <RevealGroup className="mt-16 grid gap-4 lg:grid-cols-12" stagger={0.12}>
+      <RevealGroup className="mt-16 grid gap-4 lg:grid-cols-12" stagger={0.08}>
         {SHOTS.map((shot) => (
-          <RevealItem key={shot.src} y={56} className={shot.frame}>
-            <figure className="group">
-              <div className={`relative overflow-hidden ${shot.aspect}`}>
-                <Image
-                  src={shot.src}
-                  alt={shot.alt}
-                  fill
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
-                />
-              </div>
+          <RevealItem key={shot.caption} className={shot.frame}>
+            <figure>
+              <GoldPlate className={`w-full ${shot.aspect}`} label={shot.caption} />
               <figcaption className="mt-3 text-sm text-muted">{shot.caption}</figcaption>
             </figure>
           </RevealItem>

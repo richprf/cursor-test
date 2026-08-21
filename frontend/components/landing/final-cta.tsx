@@ -1,36 +1,44 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowUpLeft, ShieldCheck } from 'lucide-react';
-import { EASE_OUT } from './reveal';
+import { gsap, registerScrollTrigger } from '@/lib/gsap';
+import { GSAP_EASE, TIMING } from '@/lib/motion';
 
 export function FinalCta({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string }) {
-  const reduceMotion = useReducedMotion();
+  const rootRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    registerScrollTrigger();
+    const heading = root.querySelector('[data-cta-heading]');
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        heading,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: TIMING.reveal,
+          ease: GSAP_EASE.power3Out,
+          scrollTrigger: { trigger: root, start: 'top 70%' },
+        },
+      );
+    }, root);
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section className="relative overflow-hidden bg-black text-gold-500">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          backgroundImage: 'url(/landing/gold-hero-plus.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          filter: 'grayscale(0.2) contrast(1.1)',
-        }}
-      />
-      <div className="absolute inset-0 bg-black/75" />
+    <section ref={rootRef} className="relative min-h-dvh overflow-hidden bg-black text-gold-500">
+      <div className="hero-loop pointer-events-none absolute inset-0 opacity-30" aria-hidden />
+      <div className="absolute inset-0 bg-black/70" />
 
-      <motion.div
-        initial={{ opacity: 0, y: reduceMotion ? 0 : 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.35 }}
-        transition={{ duration: 0.8, ease: EASE_OUT }}
-        className="relative mx-auto max-w-[1600px] px-5 py-20 sm:px-8 lg:px-10 lg:py-28"
-      >
-        <div className="flex flex-wrap items-start justify-between gap-6">
-          <h2 className="display-tight max-w-4xl text-[clamp(2.6rem,8vw,7rem)] font-semibold leading-[0.95] text-gold-500">
+      <div className="relative mx-auto flex min-h-dvh max-w-[1600px] flex-col justify-between px-6 py-20">
+        <div data-cta-heading className="flex flex-wrap items-start justify-between gap-6">
+          <h2 className="display-tight max-w-4xl text-[clamp(2.6rem,8vw,7rem)] font-semibold leading-[0.95]">
             امروز اولین گرم
             <br />
             طلای خود را بخرید
@@ -39,24 +47,27 @@ export function FinalCta({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: str
             ©{String(new Date().getFullYear()).slice(2)}
           </p>
         </div>
-        <p className="mt-8 max-w-lg text-sm leading-7 text-gold-500/80 sm:text-base">
-          ثبت‌نام رایگان است و در چند دقیقه انجام می‌شود. بدون حداقل مبلغ، بدون کارمزد خرید.
-        </p>
-        <p className="mt-4 flex items-center gap-1.5 text-xs text-gold-500/70">
-          <ShieldCheck className="size-3.5" aria-hidden />
-          طلای شما بیمه و در خزانهٔ بانکی نگهداری می‌شود.
-        </p>
-        <Link
-          href="/login"
-          className="mt-6 inline-block text-sm text-gold-500 underline-offset-4 hover:underline"
-        >
-          حساب دارم، وارد می‌شوم
-        </Link>
-      </motion.div>
+
+        <div>
+          <p className="max-w-lg text-sm leading-7 text-gold-500/80 sm:text-base">
+            ثبت‌نام رایگان است و در چند دقیقه انجام می‌شود. بدون حداقل مبلغ، بدون کارمزد خرید.
+          </p>
+          <p className="mt-4 flex items-center gap-1.5 text-xs text-gold-500/70">
+            <ShieldCheck className="size-3.5" aria-hidden />
+            طلای شما بیمه و در خزانهٔ بانکی نگهداری می‌شود.
+          </p>
+          <Link
+            href="/login"
+            className="mt-6 inline-block text-sm text-gold-500 underline-offset-4 hover:underline"
+          >
+            حساب دارم، وارد می‌شوم
+          </Link>
+        </div>
+      </div>
 
       <Link
         href={ctaHref}
-        className="relative flex w-full items-center justify-between bg-gold-500 px-5 py-6 text-lg font-semibold tracking-tight text-on-gold sm:px-8 sm:py-8 sm:text-2xl lg:px-10"
+        className="relative flex w-full items-center justify-between bg-gold-500 px-6 py-6 text-lg font-semibold tracking-tight text-on-gold sm:py-8 sm:text-2xl"
       >
         <span>{ctaLabel}</span>
         <ArrowUpLeft className="size-6 sm:size-8" aria-hidden />

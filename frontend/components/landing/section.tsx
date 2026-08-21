@@ -12,8 +12,8 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section id={id} className={`relative scroll-mt-24 py-20 sm:py-28 ${className}`}>
-      <div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 lg:px-10">{children}</div>
+    <section id={id} className={`relative scroll-mt-24 px-0 py-[80px] lg:py-[200px] ${className}`}>
+      <div className="mx-auto w-full max-w-[1600px] px-6">{children}</div>
     </section>
   );
 }

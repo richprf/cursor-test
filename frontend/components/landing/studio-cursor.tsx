@@ -1,30 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { gsap } from '@/lib/gsap';
+import { GSAP_EASE, TIMING } from '@/lib/motion';
 
-/**
- * Studio cursor: a gold plus that follows the pointer and grows over
- * interactive targets — hellohello's hover language, mapped to gold.
- */
+/** Gold plus that follows the pointer — duration .4 / power3.out (nav/hover curve). */
 export function StudioCursor() {
-  const reduceMotion = useReducedMotion();
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const [hovering, setHovering] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (reduceMotion) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (!window.matchMedia('(pointer: fine)').matches) return;
+    const el = ref.current;
+    if (!el) return;
+
+    const xTo = gsap.quickTo(el, 'x', { duration: TIMING.nav, ease: GSAP_EASE.power3Out });
+    const yTo = gsap.quickTo(el, 'y', { duration: TIMING.nav, ease: GSAP_EASE.power3Out });
 
     const onMove = (event: PointerEvent) => {
-      setPos({ x: event.clientX, y: event.clientY });
-      setVisible(true);
-      const target = event.target as HTMLElement | null;
-      const hit = Boolean(target?.closest('a, button, [data-cursor]'));
-      setHovering(hit);
+      el.style.opacity = '1';
+      xTo(event.clientX - 14);
+      yTo(event.clientY - 14);
+      const hit = Boolean((event.target as HTMLElement | null)?.closest('a, button, [data-cursor]'));
+      gsap.to(el, { scale: hit ? 2.15 : 1, duration: TIMING.hoverCopy, ease: GSAP_EASE.power3Out });
     };
-    const onLeave = () => setVisible(false);
+    const onLeave = () => {
+      el.style.opacity = '0';
+    };
 
     window.addEventListener('pointermove', onMove);
     document.addEventListener('mouseleave', onLeave);
@@ -32,24 +34,16 @@ export function StudioCursor() {
       window.removeEventListener('pointermove', onMove);
       document.removeEventListener('mouseleave', onLeave);
     };
-  }, [reduceMotion]);
-
-  if (reduceMotion || !visible) return null;
+  }, []);
 
   return (
-    <motion.div
+    <div
+      ref={ref}
       aria-hidden
-      className="pointer-events-none fixed z-[90] mix-blend-difference"
-      animate={{
-        x: pos.x - 14,
-        y: pos.y - 14,
-        scale: hovering ? 2.15 : 1,
-      }}
-      transition={{ type: 'spring', stiffness: 500, damping: 32, mass: 0.35 }}
+      className="pointer-events-none fixed top-0 left-0 z-[90] grid size-7 place-items-center text-[18px] font-light text-white mix-blend-difference"
+      style={{ opacity: 0 }}
     >
-      <span className="grid size-7 place-items-center text-[18px] font-light leading-none text-white">
-        +
-      </span>
-    </motion.div>
+      +
+    </div>
   );
 }

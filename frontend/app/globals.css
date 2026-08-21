@@ -201,8 +201,49 @@ body {
   }
 }
 
-.animate-marquee {
-  animation: marquee-shift 36s linear infinite;
+/* Hero/preloader looping gold field — 10.6s matches plus-bg.mp4 duration. */
+@keyframes gold-shift {
+  0%,
+  100% {
+    background-position: 12% 20%, 0% 50%;
+    filter: brightness(1);
+  }
+  50% {
+    background-position: 80% 70%, 100% 40%;
+    filter: brightness(1.12);
+  }
+}
+
+.gold-plate,
+.hero-loop {
+  background-color: #b8860b;
+  background-image:
+    radial-gradient(120% 80% at 18% 12%, #f5c542 0%, transparent 52%),
+    linear-gradient(135deg, #d4af37 0%, #b8860b 46%, #8a6a15 100%);
+  background-size: 140% 140%, 100% 100%;
+}
+
+.gold-plate-motion,
+.hero-loop {
+  animation: gold-shift 10.6s ease-in-out infinite;
+}
+
+.work-cover .gold-plate {
+  transition:
+    transform 0.6s ease-out,
+    filter 0.6s ease-out;
+}
+
+.work-cover.is-playing .gold-plate {
+  transform: scale(1.04);
+  filter: brightness(1.18) saturate(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gold-plate-motion,
+  .hero-loop {
+    animation: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

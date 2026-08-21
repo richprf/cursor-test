@@ -1,44 +1,36 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { gsap } from '@/lib/gsap';
+import { GSAP_EASE, TIMING } from '@/lib/motion';
 import { Section } from './section';
 import { Reveal } from './reveal';
-import { EASE_OUT } from './reveal';
+import { GoldPlate } from './gold-plate';
 
 const PROJECTS = [
   {
-    category: 'طراحی جواهر',
+    category: 'Fine Jewelry',
     title: 'مجموعهٔ شمش خزر',
     description:
       'کالکشن شمش ۱۸ عیار با بسته‌بندی پلمب و اصالت‌سنجی — سطح محصول همان چیزی است که در خزانه نگه می‌دارید.',
-    image: '/landing/gold-work-ingot.png',
-    video: '/landing/work-ingot.mp4',
   },
   {
-    category: 'عکاسی محصول',
-    title: 'حلقه‌های خورشید',
-    description:
-      'عکاسی استودیویی حلقه و گوشواره برای ویترین خرید؛ نور فلز، بدون اجرت پنهان در روایت محصول.',
-    image: '/landing/gold-work-jewelry.png',
-    video: '/landing/work-jewelry.mp4',
-  },
-  {
-    category: 'کمپین برند',
+    category: 'Editorial Campaign',
     title: 'کمپین خزانه',
     description:
       'روایت نگهداری بیمه‌شده: طلای شما در خزانهٔ بانکی است، نه در ویترین مغازه — و هر لحظه قابل نقد شدن.',
-    image: '/landing/gold-work-campaign.png',
-    video: '/landing/work-campaign.mp4',
   },
   {
-    category: 'تجارت الکترونیک',
-    title: 'ویترین زرین',
+    category: 'Product Photography',
+    title: 'حلقه‌های خورشید',
     description:
-      'خرید آنلاین از هر مبلغی، بدون حداقل. همان فید قیمت زنده که روی لندینگ می‌بینید، مسیر سفارش را می‌سازد.',
-    image: '/landing/gold-work-ecommerce.png',
-    video: '/landing/work-ecommerce.mp4',
+      'عکاسی استودیویی حلقه و گوشواره برای ویترین خرید؛ نور فلز، بدون اجرت پنهان در روایت محصول.',
+  },
+  {
+    category: 'Macro Detail',
+    title: 'جزئیات ماکرو',
+    description:
+      'نمای نزدیک از بافت طلای ۱۸ عیار — جای خالی عکس لایسنس‌شده شما با همین نسبت تصویر.',
   },
 ];
 
@@ -68,22 +60,24 @@ function WorkCard({
   project: (typeof PROJECTS)[number];
   offset: boolean;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const copyRef = useRef<HTMLParagraphElement>(null);
+  const plateRef = useRef<HTMLDivElement>(null);
   const [hovering, setHovering] = useState(false);
 
   function play() {
     setHovering(true);
-    const video = videoRef.current;
-    if (!video) return;
-    video.currentTime = 0;
-    void video.play().catch(() => {});
+    if (copyRef.current) {
+      gsap.to(copyRef.current, { opacity: 1, y: 0, duration: TIMING.hoverCopy, ease: GSAP_EASE.power3Out });
+    }
+    plateRef.current?.classList.add('is-playing');
   }
 
   function stop() {
     setHovering(false);
-    const video = videoRef.current;
-    if (!video) return;
-    video.pause();
+    if (copyRef.current) {
+      gsap.to(copyRef.current, { opacity: 0.55, y: 8, duration: TIMING.hoverCopy, ease: GSAP_EASE.power3Out });
+    }
+    plateRef.current?.classList.remove('is-playing');
   }
 
   return (
@@ -94,44 +88,19 @@ function WorkCard({
         onMouseEnter={play}
         onMouseLeave={stop}
       >
-        <div className={`space-y-4 ${offset ? 'lg:col-span-4 lg:col-start-1' : 'lg:col-span-4'}`}>
+        <div className="space-y-4 lg:col-span-4">
           <p className="text-[11px] uppercase tracking-[0.2em] text-gold-700">{project.category}</p>
           <h3 className="display-tight text-3xl font-semibold sm:text-5xl">{project.title}</h3>
-          <motion.p
-            initial={false}
-            animate={{ opacity: hovering ? 1 : 0.55, y: hovering ? 0 : 8 }}
-            transition={{ duration: 0.45, ease: EASE_OUT }}
-            className="max-w-sm text-sm leading-7 text-muted"
-          >
+          <p ref={copyRef} className="max-w-sm text-sm leading-7 text-muted" style={{ opacity: 0.55 }}>
             {project.description}
-          </motion.p>
+          </p>
           <p className="text-xs tracking-tight text-foreground/60">
             {hovering ? '>مشاهده نمونه<' : '>مشاهده پروژه<'}
           </p>
         </div>
 
-        <div
-          className={`relative aspect-video overflow-hidden rounded-md bg-black ${
-            offset ? 'lg:col-span-8' : 'lg:col-span-8'
-          }`}
-        >
-          <Image
-            src={project.image}
-            alt={project.title}
-            fill
-            sizes="(min-width: 1024px) 60vw, 100vw"
-            className={`object-cover transition-opacity duration-500 ${hovering ? 'opacity-0' : 'opacity-100'}`}
-          />
-          <video
-            ref={videoRef}
-            src={project.video}
-            muted
-            loop
-            playsInline
-            className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ${
-              hovering ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
+        <div ref={plateRef} className="work-cover lg:col-span-8">
+          <GoldPlate animated className="aspect-video w-full rounded-md" label={project.title} />
         </div>
       </article>
     </Reveal>

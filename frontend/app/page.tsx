@@ -2,15 +2,19 @@ import { auth } from '@/auth';
 import { getGoldPriceSnapshot } from '@/lib/backend';
 import { createFallbackSnapshot, type GoldPriceSnapshot } from '@/lib/gold-price';
 import { GoldPriceProvider } from '@/components/landing/gold-price-provider';
+import { LenisRoot } from '@/components/landing/lenis-root';
 import { Preloader } from '@/components/landing/preloader';
 import { StudioCursor } from '@/components/landing/studio-cursor';
 import { SiteHeader } from '@/components/landing/site-header';
 import { Hero } from '@/components/landing/hero';
-import { TrustBar } from '@/components/landing/trust-bar';
+import { HeroTicker } from '@/components/landing/hero-ticker';
 import { Features } from '@/components/landing/features';
+import { TrustBar } from '@/components/landing/trust-bar';
 import { HowItWorks } from '@/components/landing/how-it-works';
 import { FeaturedWork } from '@/components/landing/featured-work';
 import { PriceChart } from '@/components/landing/price-chart';
+import { Awards } from '@/components/landing/awards';
+import { Timezones } from '@/components/landing/timezones';
 import { Testimonials } from '@/components/landing/testimonials';
 import { Faq } from '@/components/landing/faq';
 import { FinalCta } from '@/components/landing/final-cta';
@@ -31,25 +35,30 @@ export default async function HomePage() {
 
   return (
     <GoldPriceProvider initialSnapshot={priceSnapshot}>
-      <div className="landing-root">
-        <Preloader />
-        <StudioCursor />
-        <SiteHeader ctaHref={ctaHref} ctaLabel={session ? 'داشبورد' : 'ورود'} />
+      <LenisRoot>
+        <div className="landing-root">
+          <Preloader />
+          <StudioCursor />
+          <SiteHeader ctaHref={ctaHref} ctaLabel={session ? 'داشبورد' : 'ورود'} />
 
-        <main>
-          <Hero ctaHref={ctaHref} ctaLabel={ctaLabel} />
-          <Features />
-          <TrustBar />
-          <HowItWorks />
-          <FeaturedWork />
-          <PriceChart />
-          <Testimonials />
-          <Faq />
-          <FinalCta ctaHref={ctaHref} ctaLabel={session ? 'رفتن به داشبورد' : 'ثبت‌نام رایگان'} />
-        </main>
+          <main>
+            <Hero ctaHref={ctaHref} ctaLabel={ctaLabel} />
+            <HeroTicker />
+            <Features />
+            <TrustBar />
+            <HowItWorks />
+            <FeaturedWork />
+            <PriceChart />
+            <Awards />
+            <Timezones />
+            <Testimonials />
+            <Faq />
+            <FinalCta ctaHref={ctaHref} ctaLabel={session ? 'رفتن به داشبورد' : 'ثبت‌نام رایگان'} />
+          </main>
 
-        <SiteFooter />
-      </div>
+          <SiteFooter />
+        </div>
+      </LenisRoot>
     </GoldPriceProvider>
   );
 }
