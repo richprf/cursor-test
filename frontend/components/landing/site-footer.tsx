@@ -79,12 +79,12 @@ export function SiteFooter() {
   );
 
   return (
-    <footer className="border-t border-border bg-background-elevated">
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
-          <div className="space-y-4">
+    <footer className="border-t border-foreground/10">
+      <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:px-12">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
+          <div className="space-y-5">
             <div className="flex justify-start">
-              <Brand />
+              <Brand compact />
             </div>
             <p className="max-w-xs text-sm leading-7 text-muted">
               خرید، نگهداری و فروش طلای ۱۸ عیار به‌صورت آنلاین؛ با امکان تحویل فیزیکی شمش.
@@ -97,7 +97,7 @@ export function SiteFooter() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={social.label}
-                  className="grid size-9 place-items-center rounded-xl border border-border text-muted transition hover:border-gold-500/40 hover:text-gold-700"
+                  className="grid size-9 place-items-center border border-foreground/15 text-muted transition hover:border-gold-500/40 hover:text-gold-700"
                 >
                   <social.icon className="size-4" aria-hidden />
                 </a>
@@ -107,16 +107,18 @@ export function SiteFooter() {
 
           {LINK_GROUPS.map((group) => (
             <nav key={group.title} aria-label={group.title}>
-              <h2 className="text-sm font-semibold">{group.title}</h2>
-              <ul className="mt-4 space-y-3 text-sm text-muted">
+              <h2 className="text-[11px] font-medium uppercase tracking-[0.18em] text-gold-700">
+                {group.title}
+              </h2>
+              <ul className="mt-4 space-y-2.5 text-sm text-muted">
                 {group.links.map((link) => (
                   <li key={link.href}>
                     {link.href.startsWith('/') ? (
-                      <Link href={link.href} className="transition hover:text-gold-700">
+                      <Link href={link.href} className="transition hover:text-foreground">
                         {link.label}
                       </Link>
                     ) : (
-                      <a href={link.href} className="transition hover:text-gold-700">
+                      <a href={link.href} className="transition hover:text-foreground">
                         {link.label}
                       </a>
                     )}
@@ -127,7 +129,7 @@ export function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted sm:flex-row">
+        <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-foreground/10 pt-6 text-xs text-muted sm:flex-row sm:items-center">
           <p>© {persianYear} زرین‌سرمایه — تمامی حقوق محفوظ است.</p>
           <p>ارقام و نمودارهای این صفحه نمایشی است.</p>
         </div>

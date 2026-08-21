@@ -73,16 +73,16 @@ export function HowItWorks() {
         description="از ثبت‌نام تا اولین خرید، کمتر از پنج دقیقه."
       />
 
-      <div ref={rootRef} className="relative mt-14">
+      <div ref={rootRef} className="relative">
         <div
           aria-hidden
-          className="absolute inset-x-0 top-6 hidden h-px bg-border md:block"
+          className="absolute inset-x-0 top-6 hidden h-px bg-foreground/15 md:block"
           role="presentation"
         >
           <div ref={horizontalLineRef} className="border-gold-hairline h-px w-full origin-right" />
         </div>
 
-        <div aria-hidden className="absolute inset-y-2 right-6 w-px bg-border md:hidden">
+        <div aria-hidden className="absolute inset-y-2 right-6 w-px bg-foreground/15 md:hidden">
           <div ref={verticalLineRef} className="border-gold-hairline h-full w-px origin-top" />
         </div>
 
@@ -91,17 +91,15 @@ export function HowItWorks() {
             <li key={step.title} className="group relative flex gap-4 md:block">
               <span
                 data-step-badge
-                className="relative z-10 grid size-12 shrink-0 place-items-center rounded-2xl border border-gold-500/30 bg-background-elevated text-gold-700 shadow-md shadow-black/[0.07] transition-shadow duration-300 group-hover:shadow-[0_8px_24px_-6px_rgba(191,149,63,0.35)]"
+                className="relative z-10 grid size-12 shrink-0 place-items-center border border-gold-500/30 bg-background text-gold-700"
               >
                 <step.icon className="size-5" />
               </span>
 
-              <div className="md:mt-6">
-                <span className="text-xs font-semibold text-gold-500">
-                  قدم {toPersianDigit(index + 1)}
-                </span>
-                <h3 className="mt-1 text-base font-bold">{step.title}</h3>
-                <p className="mt-2 max-w-sm text-sm leading-7 text-muted">{step.description}</p>
+              <div className="md:mt-8">
+                <span className="font-mono text-xs text-gold-700">({toPersianDigit(index + 1)})</span>
+                <h3 className="mt-2 text-2xl font-semibold tracking-tight">{step.title}</h3>
+                <p className="mt-3 max-w-sm text-sm leading-7 text-muted">{step.description}</p>
               </div>
             </li>
           ))}

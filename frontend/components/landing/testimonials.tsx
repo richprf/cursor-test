@@ -1,10 +1,8 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { Quote } from 'lucide-react';
 import { Section, SectionHeading } from './section';
-import { EASE_OUT } from './reveal';
+import { RevealGroup, RevealItem } from './reveal';
 
 const TESTIMONIALS = [
   {
@@ -33,25 +31,7 @@ const TESTIMONIALS = [
   },
 ];
 
-const AUTOPLAY_MS = 6500;
-
 export function Testimonials() {
-  const [index, setIndex] = useState(0);
-  const reduceMotion = useReducedMotion();
-
-  const go = useCallback((direction: 1 | -1) => {
-    setIndex((current) => (current + direction + TESTIMONIALS.length) % TESTIMONIALS.length);
-  }, []);
-
-  // Auto-advance, unless the visitor asked for less motion.
-  useEffect(() => {
-    if (reduceMotion) return;
-    const timer = setInterval(() => go(1), AUTOPLAY_MS);
-    return () => clearInterval(timer);
-  }, [go, reduceMotion]);
-
-  const active = TESTIMONIALS[index];
-
   return (
     <Section id="testimonials">
       <SectionHeading
@@ -59,87 +39,29 @@ export function Testimonials() {
         title="بیش از ۱۰۰ هزار نفر با ما طلا می‌خرند"
       />
 
-      <div className="mx-auto mt-12 max-w-3xl">
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-surface p-7 shadow-lg shadow-black/[0.05] theme-fade sm:p-9">
-          <Quote className="size-8 text-gold-500/40" aria-hidden />
-
-          {/* One slide at a time; AnimatePresence cross-fades the outgoing quote. */}
-          <div className="mt-4 min-h-40 sm:min-h-32">
-            <AnimatePresence mode="wait">
-              <motion.blockquote
-                key={active.name}
-                initial={{ opacity: 0, x: reduceMotion ? 0 : -24 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: reduceMotion ? 0 : 24 }}
-                transition={{ duration: 0.45, ease: EASE_OUT }}
-              >
-                <p className="text-sm leading-8 sm:text-base">«{active.quote}»</p>
-
-                <footer className="mt-5 flex items-center gap-3">
-                  <span
-                    aria-hidden
-                    className="grid size-10 place-items-center rounded-full border border-gold-500/30 bg-gold-500/10 text-sm font-bold text-gold-700"
-                  >
-                    {active.name.charAt(0)}
-                  </span>
-                  <span className="text-sm">
-                    <span className="block font-semibold">{active.name}</span>
-                    <span className="block text-xs text-muted">{active.role}</span>
-                  </span>
+      <RevealGroup className="grid gap-4 sm:grid-cols-2">
+        {TESTIMONIALS.map((item, index) => (
+          <RevealItem key={item.name} className={index % 2 === 1 ? 'sm:mt-8' : undefined}>
+            <article className="flex h-full flex-col justify-between border border-foreground/15 bg-surface p-7 sm:p-9">
+              <Quote className="size-7 text-gold-500/50" aria-hidden />
+              <blockquote className="mt-6">
+                <p className="text-lg font-medium leading-9 tracking-tight sm:text-xl">
+                  «{item.quote}»
+                </p>
+                <footer className="mt-8 text-sm">
+                  <span className="block font-semibold">{item.name}</span>
+                  <span className="block text-muted">{item.role}</span>
                 </footer>
-              </motion.blockquote>
-            </AnimatePresence>
-          </div>
-        </div>
-
-        <div className="mt-5 flex items-center justify-between">
-          <div className="flex gap-2">
-            {TESTIMONIALS.map((testimonial, dotIndex) => (
-              <button
-                key={testimonial.name}
-                type="button"
-                onClick={() => setIndex(dotIndex)}
-                aria-label={`نظر ${dotIndex + 1}`}
-                aria-current={dotIndex === index}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  dotIndex === index ? 'w-7 bg-gold-500' : 'w-3 bg-border hover:bg-gold-500/50'
-                }`}
-              />
-            ))}
-          </div>
-
-          <div className="flex gap-2">
-            {/* In RTL the previous slide sits to the right. */}
-            <CarouselButton label="نظر قبلی" onClick={() => go(-1)}>
-              <ChevronRight className="size-4" aria-hidden />
-            </CarouselButton>
-            <CarouselButton label="نظر بعدی" onClick={() => go(1)}>
-              <ChevronLeft className="size-4" aria-hidden />
-            </CarouselButton>
-          </div>
-        </div>
-      </div>
+              </blockquote>
+              <p className="mt-8 text-xs tracking-tight text-gold-700">
+                {'>'}
+                {item.name}
+                {'<'}
+              </p>
+            </article>
+          </RevealItem>
+        ))}
+      </RevealGroup>
     </Section>
-  );
-}
-
-function CarouselButton({
-  label,
-  onClick,
-  children,
-}: {
-  label: string;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      className="grid size-9 place-items-center rounded-xl border border-border bg-surface text-muted transition hover:border-gold-500/50 hover:text-gold-700 focus:outline-none focus:ring-4 focus:ring-gold-500/20"
-    >
-      {children}
-    </button>
   );
 }

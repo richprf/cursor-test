@@ -1,7 +1,6 @@
 'use client';
 
 import type { ComponentType } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import {
   CoinStackIcon,
   InstantTradeIcon,
@@ -15,22 +14,26 @@ import { RevealGroup, RevealItem } from './reveal';
 const FEATURES = [
   {
     icon: InstantTradeIcon,
+    n: '۱',
     title: 'خرید و فروش آنی',
     description:
       'در هر ساعت از شبانه‌روز و با هر مبلغی طلا بخرید یا بفروشید؛ سفارش شما در چند ثانیه ثبت می‌شود.',
   },
   {
     icon: VaultIcon,
+    n: '۲',
     title: 'نگهداری امن و بیمه‌شده',
     description: 'طلای شما در خزانهٔ بانکی نگهداری و تا سقف کامل ارزش آن بیمه می‌شود.',
   },
   {
     icon: CoinStackIcon,
+    n: '۳',
     title: 'نقدشوندگی فوری',
     description: 'هر زمان خواستید بفروشید و پول را بدون معطلی به حساب بانکی خود منتقل کنید.',
   },
   {
     icon: LiveChartIcon,
+    n: '۴',
     title: 'پیگیری لحظه‌ای قیمت',
     description: 'قیمت انس جهانی و طلای داخلی را لحظه‌ای ببینید و برای قیمت دلخواه هشدار بگذارید.',
   },
@@ -45,10 +48,10 @@ export function Features() {
         description="از خرید چند صد هزار تومانی تا تحویل فیزیکی شمش؛ همه در یک اپلیکیشن."
       />
 
-      <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <RevealGroup className="divide-y divide-foreground/15 border-y border-foreground/15">
         {FEATURES.map((feature) => (
           <RevealItem key={feature.title}>
-            <FeatureCard {...feature} />
+            <FeatureRow {...feature} />
           </RevealItem>
         ))}
       </RevealGroup>
@@ -56,32 +59,27 @@ export function Features() {
   );
 }
 
-function FeatureCard({
+function FeatureRow({
   icon: Icon,
+  n,
   title,
   description,
 }: {
   icon: ComponentType<GoldIconProps>;
+  n: string;
   title: string;
   description: string;
 }) {
-  const reduceMotion = useReducedMotion();
-
   return (
-    <motion.article
-      whileHover={reduceMotion ? undefined : { y: -6 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className="group relative h-full overflow-hidden rounded-2xl border border-border bg-surface p-6 shadow-lg shadow-black/[0.05] theme-fade"
-    >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-2xl border border-gold-500/60 opacity-0 shadow-[0_10px_30px_-8px_rgba(191,149,63,0.45)] transition-opacity duration-300 group-hover:opacity-100"
-      />
-      <span className="grid size-11 place-items-center rounded-xl border border-gold-500/25 bg-gold-500/[0.12] text-gold-700 transition-colors duration-300 group-hover:bg-gold-500/[0.18]">
-        <Icon className="size-5" />
-      </span>
-      <h3 className="mt-5 text-base font-bold">{title}</h3>
-      <p className="mt-2 text-sm leading-7 text-muted">{description}</p>
-    </motion.article>
+    <article className="grid gap-4 py-8 sm:grid-cols-[4.5rem_minmax(0,0.85fr)_minmax(0,1.5fr)] sm:items-baseline sm:gap-8 sm:py-10">
+      <span className="font-mono text-sm text-gold-700">({n})</span>
+      <div className="flex items-center gap-3">
+        <span className="grid size-9 place-items-center text-gold-700">
+          <Icon className="size-5" />
+        </span>
+        <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">{title}</h3>
+      </div>
+      <p className="max-w-xl text-sm leading-8 text-muted sm:text-base">{description}</p>
+    </article>
   );
 }

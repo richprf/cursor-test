@@ -27,28 +27,32 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
     <header
       className={`fixed inset-x-0 top-0 z-50 theme-fade transition-colors duration-300 ${
         isScrolled || isMenuOpen
-          ? 'border-b border-border/80 bg-surface-translucent backdrop-blur-xl'
+          ? 'border-b border-foreground/15 bg-background/95 backdrop-blur-md'
           : 'border-b border-transparent'
       }`}
     >
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3.5 sm:px-8">
+      <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
         <Link href="/" aria-label="زرین‌سرمایه">
-          <Brand />
+          <Brand compact />
         </Link>
 
-        <nav className="hidden items-center gap-7 text-sm text-muted lg:flex">
+        <nav className="hidden items-center gap-8 text-[13px] font-medium tracking-tight text-muted lg:flex">
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className="transition hover:text-gold-700">
+            <a
+              key={link.href}
+              href={link.href}
+              className="relative ps-3 transition hover:text-foreground before:absolute before:start-0 before:top-1/2 before:size-1.5 before:-translate-y-1/2 before:rounded-full before:bg-gold-500 before:opacity-0 before:transition-opacity hover:before:opacity-100"
+            >
               {link.label}
             </a>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
+          <ThemeToggle className="rounded-none" />
           <Link
             href={ctaHref}
-            className="rounded-xl border border-gold-500/30 bg-gold-500/[0.12] px-4 py-2 text-sm font-semibold text-gold-700 transition hover:border-gold-500/60 hover:bg-gold-500/[0.18]"
+            className="border border-foreground/20 px-3.5 py-1.5 text-xs font-semibold tracking-tight transition hover:border-gold-500 hover:text-gold-700"
           >
             {ctaLabel}
           </Link>
@@ -58,7 +62,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
             onClick={() => setIsMenuOpen((open) => !open)}
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? 'بستن منو' : 'باز کردن منو'}
-            className="grid size-9 place-items-center rounded-xl border border-border text-muted transition hover:text-gold-700 lg:hidden"
+            className="grid size-9 place-items-center border border-foreground/15 text-muted transition hover:text-gold-700 lg:hidden"
           >
             {isMenuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
           </button>
@@ -72,15 +76,15 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: EASE_OUT }}
-            className="overflow-hidden lg:hidden"
+            className="overflow-hidden border-t border-foreground/10 lg:hidden"
           >
-            <ul className="mx-auto flex w-full max-w-6xl flex-col gap-1 px-5 pb-4 sm:px-8">
+            <ul className="mx-auto flex w-full max-w-7xl flex-col gap-1 px-5 py-4 sm:px-8">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className="block rounded-xl px-3 py-2.5 text-sm text-muted transition hover:bg-background-elevated hover:text-gold-700"
+                    className="block px-1 py-2.5 text-sm text-muted transition hover:text-foreground"
                   >
                     {link.label}
                   </a>

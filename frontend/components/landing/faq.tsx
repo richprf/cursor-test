@@ -42,29 +42,29 @@ export function Faq() {
     <Section id="faq">
       <SectionHeading eyebrow="سوالات متداول" title="پاسخ سوال‌های پرتکرار" />
 
-      <div className="mx-auto mt-12 max-w-3xl divide-y divide-border overflow-hidden rounded-3xl border border-border bg-surface shadow-lg shadow-black/[0.05] theme-fade">
+      <div className="border-t border-foreground/15">
         {FAQS.map((faq, index) => {
           const isOpen = openIndex === index;
 
           return (
-            <div key={faq.question}>
+            <div key={faq.question} className="border-b border-foreground/15">
               <h3>
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   aria-expanded={isOpen}
                   aria-controls={`faq-panel-${index}`}
-                  className="flex w-full items-center justify-between gap-4 px-5 py-5 text-right text-sm font-semibold transition hover:text-gold-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-gold-500/20 sm:px-6"
+                  className="flex w-full items-center justify-between gap-4 py-6 text-right text-base font-semibold tracking-tight transition hover:text-gold-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-gold-500/20 sm:text-xl"
                 >
                   {faq.question}
                   <motion.span
                     aria-hidden
                     animate={{ rotate: isOpen ? 45 : 0 }}
                     transition={{ duration: 0.3, ease: EASE_OUT }}
-                    className={`grid size-7 shrink-0 place-items-center rounded-lg border transition-colors ${
+                    className={`grid size-8 shrink-0 place-items-center border transition-colors ${
                       isOpen
                         ? 'border-gold-500/50 bg-gold-500/10 text-gold-700'
-                        : 'border-border text-muted'
+                        : 'border-foreground/15 text-muted'
                     }`}
                   >
                     <Plus className="size-4" />
@@ -88,7 +88,9 @@ export function Faq() {
                     }}
                     className="overflow-hidden"
                   >
-                    <p className="px-5 pb-5 text-sm leading-8 text-muted sm:px-6">{faq.answer}</p>
+                    <p className="max-w-2xl pb-6 text-sm leading-8 text-muted sm:text-base">
+                      {faq.answer}
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>

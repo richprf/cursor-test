@@ -20,13 +20,21 @@ export function BrandMark({ className = 'size-7' }: { className?: string }) {
   );
 }
 
-export function Brand() {
+export function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <div className="flex items-center justify-center gap-2.5">
-      <span className="grid size-11 place-items-center rounded-2xl border border-gold-500/30 bg-gold-500/[0.12] shadow-sm shadow-gold-700/10">
-        <BrandMark />
+      <span
+        className={
+          compact
+            ? 'grid size-8 place-items-center text-gold-700'
+            : 'grid size-11 place-items-center rounded-2xl border border-gold-500/30 bg-gold-500/[0.12] shadow-sm shadow-gold-700/10'
+        }
+      >
+        <BrandMark className={compact ? 'size-6' : 'size-7'} />
       </span>
-      <span className="text-gold-gradient text-lg font-bold tracking-tight">زرین‌سرمایه</span>
+      <span className={`font-bold tracking-tight ${compact ? 'text-sm' : 'text-gold-gradient text-lg'}`}>
+        زرین‌سرمایه
+      </span>
     </div>
   );
 }

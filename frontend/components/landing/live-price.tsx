@@ -91,7 +91,7 @@ export function LivePriceHeadline() {
           <span
             // The flash lives on a rounded box so the colour change reads clearly
             // without moving anything; it fades out with a colour transition.
-            className={`rounded-lg px-1.5 py-0.5 text-2xl font-bold tabular-nums transition-colors duration-700 sm:text-3xl ${
+            className={`px-1.5 py-0.5 text-2xl font-bold tabular-nums transition-colors duration-700 sm:text-3xl ${
               flash ? FLASH_CLASS[flash] : 'bg-transparent text-foreground'
             }`}
           >
@@ -102,7 +102,7 @@ export function LivePriceHeadline() {
       </div>
 
       <span
-        className={`inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-sm font-semibold ${
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-semibold ${
           isUp ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-700 dark:text-rose-400'
         }`}
       >
@@ -125,9 +125,9 @@ export function LivePriceBadge({ className = '' }: { className?: string }) {
 
   return (
     <div
-      className={`absolute flex items-center gap-3 rounded-2xl border border-gold-500/25 bg-surface-translucent px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
+      className={`absolute flex items-center gap-3 border border-gold-500/25 bg-surface-translucent px-3.5 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md ${className}`}
     >
-      <span className="grid size-8 place-items-center rounded-xl bg-gold-500/12 text-gold-700">
+      <span className="grid size-8 place-items-center bg-gold-500/12 text-gold-700">
         <LiveSparklineIcon className="size-4" />
       </span>
       <span className="leading-tight">
