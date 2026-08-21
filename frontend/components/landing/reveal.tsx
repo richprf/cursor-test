@@ -4,7 +4,8 @@ import type { ReactNode } from 'react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 
 /** Soft ease-out used by every entrance animation on the page. */
-export const EASE_OUT: [number, number, number, number] = [0.22, 0.61, 0.36, 1];
+/** Matches the studio site's GSAP-like expo-out (hellohello timing). */
+export const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 /**
  * Fade + slide-up that runs once, when the element scrolls into view.
@@ -15,7 +16,7 @@ export function Reveal({
   className,
   delay = 0,
   y = 24,
-  duration = 0.55,
+  duration = 0.9,
 }: {
   children: ReactNode;
   className?: string;
@@ -30,7 +31,7 @@ export function Reveal({
       className={className}
       initial={{ opacity: 0, y: reduceMotion ? 0 : y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.22 }}
       transition={{ duration, delay, ease: EASE_OUT }}
     >
       {children}
@@ -84,7 +85,7 @@ export function RevealItem({
 
   const variants: Variants = {
     hidden: { opacity: 0, y: reduceMotion ? 0 : y },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_OUT } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.85, ease: EASE_OUT } },
   };
 
   return (

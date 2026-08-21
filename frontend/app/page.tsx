@@ -2,11 +2,14 @@ import { auth } from '@/auth';
 import { getGoldPriceSnapshot } from '@/lib/backend';
 import { createFallbackSnapshot, type GoldPriceSnapshot } from '@/lib/gold-price';
 import { GoldPriceProvider } from '@/components/landing/gold-price-provider';
+import { Preloader } from '@/components/landing/preloader';
+import { StudioCursor } from '@/components/landing/studio-cursor';
 import { SiteHeader } from '@/components/landing/site-header';
 import { Hero } from '@/components/landing/hero';
 import { TrustBar } from '@/components/landing/trust-bar';
 import { Features } from '@/components/landing/features';
 import { HowItWorks } from '@/components/landing/how-it-works';
+import { FeaturedWork } from '@/components/landing/featured-work';
 import { PriceChart } from '@/components/landing/price-chart';
 import { Testimonials } from '@/components/landing/testimonials';
 import { Faq } from '@/components/landing/faq';
@@ -28,20 +31,25 @@ export default async function HomePage() {
 
   return (
     <GoldPriceProvider initialSnapshot={priceSnapshot}>
-      <SiteHeader ctaHref={ctaHref} ctaLabel={session ? 'داشبورد' : 'ورود'} />
+      <div className="landing-root">
+        <Preloader />
+        <StudioCursor />
+        <SiteHeader ctaHref={ctaHref} ctaLabel={session ? 'داشبورد' : 'ورود'} />
 
-      <main>
-        <Hero ctaHref={ctaHref} ctaLabel={ctaLabel} />
-        <TrustBar />
-        <Features />
-        <HowItWorks />
-        <PriceChart />
-        <Testimonials />
-        <Faq />
-        <FinalCta ctaHref={ctaHref} ctaLabel={session ? 'رفتن به داشبورد' : 'ثبت‌نام رایگان'} />
-      </main>
+        <main>
+          <Hero ctaHref={ctaHref} ctaLabel={ctaLabel} />
+          <Features />
+          <TrustBar />
+          <HowItWorks />
+          <FeaturedWork />
+          <PriceChart />
+          <Testimonials />
+          <Faq />
+          <FinalCta ctaHref={ctaHref} ctaLabel={session ? 'رفتن به داشبورد' : 'ثبت‌نام رایگان'} />
+        </main>
 
-      <SiteFooter />
+        <SiteFooter />
+      </div>
     </GoldPriceProvider>
   );
 }

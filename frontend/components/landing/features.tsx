@@ -1,85 +1,66 @@
 'use client';
 
-import type { ComponentType } from 'react';
-import {
-  CoinStackIcon,
-  InstantTradeIcon,
-  LiveChartIcon,
-  VaultIcon,
-  type GoldIconProps,
-} from './gold-icons';
-import { Section, SectionHeading } from './section';
-import { RevealGroup, RevealItem } from './reveal';
+import Image from 'next/image';
+import { Section } from './section';
+import { Reveal, RevealGroup, RevealItem } from './reveal';
 
-const FEATURES = [
+const SHOTS = [
   {
-    icon: InstantTradeIcon,
-    n: '۱',
-    title: 'خرید و فروش آنی',
-    description:
-      'در هر ساعت از شبانه‌روز و با هر مبلغی طلا بخرید یا بفروشید؛ سفارش شما در چند ثانیه ثبت می‌شود.',
+    src: '/landing/gold-what-1.png',
+    alt: 'ریختن طلای مذاب در قالب',
+    caption: 'خرید و فروش آنی',
+    frame: 'lg:col-span-3',
+    aspect: 'aspect-[3/4]',
   },
   {
-    icon: VaultIcon,
-    n: '۲',
-    title: 'نگهداری امن و بیمه‌شده',
-    description: 'طلای شما در خزانهٔ بانکی نگهداری و تا سقف کامل ارزش آن بیمه می‌شود.',
+    src: '/landing/gold-what-2.png',
+    alt: 'خزانهٔ شمش طلا',
+    caption: 'نگهداری امن و بیمه‌شده',
+    frame: 'lg:col-span-6 lg:mt-16',
+    aspect: 'aspect-[4/3]',
   },
   {
-    icon: CoinStackIcon,
-    n: '۳',
-    title: 'نقدشوندگی فوری',
-    description: 'هر زمان خواستید بفروشید و پول را بدون معطلی به حساب بانکی خود منتقل کنید.',
-  },
-  {
-    icon: LiveChartIcon,
-    n: '۴',
-    title: 'پیگیری لحظه‌ای قیمت',
-    description: 'قیمت انس جهانی و طلای داخلی را لحظه‌ای ببینید و برای قیمت دلخواه هشدار بگذارید.',
+    src: '/landing/gold-what-3.png',
+    alt: 'سکهٔ طلا',
+    caption: 'نقدشوندگی فوری',
+    frame: 'lg:col-span-3',
+    aspect: 'aspect-[3/4]',
   },
 ];
 
 export function Features() {
   return (
     <Section id="features">
-      <SectionHeading
-        eyebrow="چرا زرین‌سرمایه"
-        title="همهٔ چیزی که برای سرمایه‌گذاری روی طلا لازم دارید"
-        description="از خرید چند صد هزار تومانی تا تحویل فیزیکی شمش؛ همه در یک اپلیکیشن."
-      />
+      <Reveal y={48} className="max-w-4xl">
+        <h2 className="display-tight text-[clamp(1.9rem,4.8vw,4rem)] font-semibold">
+          <span className="text-muted">چه می‌کنیم. </span>
+          طلای شما، همیشه در دستان شما — از هر مبلغی تا تحویل فیزیکی شمش.
+        </h2>
+        <p className="mt-8 max-w-2xl text-base leading-8 text-muted sm:text-lg">
+          با زرین‌سرمایه از هر مبلغی که دارید طلای ۱۸ عیار بخرید، در خزانهٔ بیمه‌شده نگه دارید و هر
+          لحظه که خواستید بفروشید یا به‌صورت فیزیکی تحویل بگیرید. از خرید چند صد هزار تومانی تا
+          تحویل شمش؛ همه در یک اپلیکیشن.
+        </p>
+      </Reveal>
 
-      <RevealGroup className="divide-y divide-foreground/15 border-y border-foreground/15">
-        {FEATURES.map((feature) => (
-          <RevealItem key={feature.title}>
-            <FeatureRow {...feature} />
+      <RevealGroup className="mt-16 grid gap-4 lg:grid-cols-12" stagger={0.12}>
+        {SHOTS.map((shot) => (
+          <RevealItem key={shot.src} y={56} className={shot.frame}>
+            <figure className="group">
+              <div className={`relative overflow-hidden ${shot.aspect}`}>
+                <Image
+                  src={shot.src}
+                  alt={shot.alt}
+                  fill
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  className="object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+                />
+              </div>
+              <figcaption className="mt-3 text-sm text-muted">{shot.caption}</figcaption>
+            </figure>
           </RevealItem>
         ))}
       </RevealGroup>
     </Section>
-  );
-}
-
-function FeatureRow({
-  icon: Icon,
-  n,
-  title,
-  description,
-}: {
-  icon: ComponentType<GoldIconProps>;
-  n: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <article className="grid gap-4 py-8 sm:grid-cols-[4.5rem_minmax(0,0.85fr)_minmax(0,1.5fr)] sm:items-baseline sm:gap-8 sm:py-10">
-      <span className="font-mono text-sm text-gold-700">({n})</span>
-      <div className="flex items-center gap-3">
-        <span className="grid size-9 place-items-center text-gold-700">
-          <Icon className="size-5" />
-        </span>
-        <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">{title}</h3>
-      </div>
-      <p className="max-w-xl text-sm leading-8 text-muted sm:text-base">{description}</p>
-    </article>
   );
 }
