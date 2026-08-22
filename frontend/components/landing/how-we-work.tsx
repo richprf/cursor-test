@@ -9,35 +9,30 @@ const STEPS = [
     title: 'Initial Diagnosis',
     description: 'We assess your product, market, and key KPIs to understand your baseline.',
     image: '/landing/work-smile.jpg',
-    icon: '/landing/how-we-work/icon-01.svg',
     alt: 'پرتره با جواهرات نقره و لبخند',
   },
   {
     title: 'Strategic Audit',
     description: 'We identify opportunities, risks, and gaps across product, growth, and GTM.',
     image: '/landing/work-diamonds.jpg',
-    icon: '/landing/how-we-work/icon-02.svg',
     alt: 'حلقه‌های برلیان',
   },
   {
     title: 'Action Roadmap',
     description: 'We build a clear plan with priorities, objectives, and measurable deliverables.',
     image: '/landing/work-moon.jpg',
-    icon: '/landing/how-we-work/icon-03.svg',
     alt: 'گوشوارهٔ نقره و تویید',
   },
   {
     title: 'Guided Execution',
     description: 'We work alongside you to implement growth and optimization tactics.',
     image: '/landing/work-jewelry.jpg',
-    icon: '/landing/how-we-work/icon-04.svg',
     alt: 'نمای نزدیک جواهرات',
   },
   {
     title: 'Iteration & Metrics',
     description: 'We measure results and refine the plan through continuous cycles.',
     image: '/landing/work-campaign.jpg',
-    icon: '/landing/how-we-work/icon-05.svg',
     alt: 'کمپین ادیتوریال جواهرات',
   },
 ] as const;
@@ -100,7 +95,6 @@ export function HowWeWork() {
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="how-work-v1-photo"
               />
-              <Image src={step.icon} alt="" width={272} height={272} className="how-work-v1-icon" />
               <p className="how-work-v1-number" dir="ltr">
                 <span>{index + 1}</span>
                 <span>/</span>
