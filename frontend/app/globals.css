@@ -1085,8 +1085,7 @@ body {
 }
 
 .how-work-v1-sticky {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 2;
   display: grid;
   height: 100vh;
@@ -1125,7 +1124,7 @@ body {
   flex-direction: column;
   gap: 1rem;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.12s linear;
 }
 
 .how-work-v1-title.is-active {
@@ -1160,7 +1159,7 @@ body {
   justify-content: center;
   padding: 4%;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity 0.12s linear;
 }
 
 .how-work-v1-visual.is-active {
@@ -1171,6 +1170,8 @@ body {
 .how-work-v1-photo {
   object-fit: cover;
   transform: scale(1.2);
+  transform-origin: center center;
+  will-change: transform;
 }
 
 .how-work-v1-number {
@@ -1195,15 +1196,7 @@ body {
   display: none;
 }
 
-.how-work-v1-spacer {
-  height: 400vh;
-}
-
 @media (max-width: 1023px) {
-  .how-work-v1-spacer {
-    display: none;
-  }
-
   .how-work-v1-sticky {
     position: static;
     display: flex;
