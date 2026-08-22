@@ -13,7 +13,6 @@ import { Services } from '@/components/landing/services';
 import { Features } from '@/components/landing/features';
 import { TrustBar } from '@/components/landing/trust-bar';
 import { HowWeWork } from '@/components/landing/how-we-work';
-import { Awards } from '@/components/landing/awards';
 import { Blogs } from '@/components/landing/blogs';
 import { FinalCta } from '@/components/landing/final-cta';
 import { SiteFooter } from '@/components/landing/site-footer';
@@ -47,7 +46,6 @@ export default async function HomePage() {
             <Features />
             <TrustBar />
             <HowWeWork />
-            <Awards />
             <Blogs />
             <FinalCta ctaHref={ctaHref} ctaLabel={session ? 'رفتن به داشبورد' : 'ثبت‌نام رایگان'} />
           </main>
