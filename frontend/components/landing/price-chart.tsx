@@ -32,7 +32,7 @@ export function PriceChart() {
           <article className="border border-foreground/15 bg-surface p-5 sm:p-7">
             <div className="mb-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.18em] text-muted">
               <span>طلای ۱۸ عیار · زنده</span>
-              <a href="#how-it-works" className="tracking-tight text-foreground hover:text-gold-700">
+              <a href="#services" className="tracking-tight text-foreground hover:text-gold-700">
                 {'>'}مشاهده مسیر خرید{'<'}
               </a>
             </div>

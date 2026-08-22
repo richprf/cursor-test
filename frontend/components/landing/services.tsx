@@ -40,7 +40,7 @@ export function Services() {
               راه‌حل‌هایی شفاف برای خرید، نگهداری و تحویل طلا؛ از قیمت زنده تا تحویل فیزیکی.
             </p>
           </div>
-          <a href="#how-it-works" className="about-v1-btn">
+          <a href="#features" className="about-v1-btn">
             مشاهدهٔ خدمات
           </a>
         </Reveal>

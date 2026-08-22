@@ -12,7 +12,6 @@ import { AboutUs } from '@/components/landing/about-us';
 import { Services } from '@/components/landing/services';
 import { Features } from '@/components/landing/features';
 import { TrustBar } from '@/components/landing/trust-bar';
-import { HowItWorks } from '@/components/landing/how-it-works';
 import { FeaturedWork } from '@/components/landing/featured-work';
 import { PriceChart } from '@/components/landing/price-chart';
 import { Awards } from '@/components/landing/awards';
@@ -50,7 +49,6 @@ export default async function HomePage() {
             <Services />
             <Features />
             <TrustBar />
-            <HowItWorks />
             <FeaturedWork />
             <PriceChart />
             <Awards />
