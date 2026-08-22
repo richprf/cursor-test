@@ -258,6 +258,102 @@ body {
   animation: hero-ken 18s ease-in-out infinite alternate;
 }
 
+.hero-upmind-gradient {
+  background:
+    linear-gradient(to top, #101604 0%, #101604cc 28%, #10160466 55%, #10160433 100%),
+    linear-gradient(to bottom, #10160499 0%, transparent 18%);
+}
+
+@media (min-width: 1024px) {
+  .hero-upmind-gradient {
+    background: linear-gradient(to right, #101604 0%, #10160400 52%, #1016040a 100%);
+  }
+}
+
+.hero-upmind-pulse {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: #f5c542;
+  box-shadow: 0 0 0 0 rgba(245, 197, 66, 0.55);
+  animation: hero-upmind-pulse 1.8s ease-out infinite;
+}
+
+.hero-upmind-badge {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: #ffffff1a;
+  border: 1px solid #ffffff1f;
+  border-radius: 3rem;
+  padding: 0.28rem 0.28rem 0.28rem 0.2rem;
+}
+
+.hero-upmind-badge-icon {
+  display: grid;
+  width: 2.1rem;
+  height: 2.1rem;
+  place-items: center;
+  border-radius: 999px;
+  flex: none;
+}
+
+.hero-upmind-btn {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.35rem;
+  border-radius: 0.2rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.45s cubic-bezier(0.165, 0.84, 0.44, 1),
+    border-color 0.45s cubic-bezier(0.165, 0.84, 0.44, 1),
+    color 0.45s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.hero-upmind-btn-fill {
+  background: #f5c542;
+  color: #101604;
+}
+
+.hero-upmind-btn-fill:hover {
+  background: #fcf6ba;
+}
+
+.hero-upmind-btn-ghost {
+  background: #ffffff1f;
+  border: 1px solid #ffffff33;
+  color: #fff;
+  backdrop-filter: blur(20px);
+}
+
+.hero-upmind-btn-ghost:hover {
+  background: #ffffff33;
+}
+
+@keyframes hero-upmind-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 197, 66, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 0.55rem rgba(245, 197, 66, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 197, 66, 0);
+  }
+}
+
+@media (max-width: 639px) {
+  .hero-upmind-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+}
+
 @keyframes hero-ken {
   from {
     transform: scale(1.06);
@@ -285,7 +381,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .gold-plate-motion,
   .hero-loop,
-  .hero-photo {
+  .hero-photo,
+  .hero-upmind-pulse {
     animation: none;
   }
 }
