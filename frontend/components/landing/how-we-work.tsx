@@ -101,7 +101,7 @@ export function HowWeWork() {
                 className="how-work-v1-photo"
               />
               <Image src={step.icon} alt="" width={272} height={272} className="how-work-v1-icon" />
-              <p className="how-work-v1-number">
+              <p className="how-work-v1-number" dir="ltr">
                 <span>{index + 1}</span>
                 <span>/</span>
                 <span>5</span>
