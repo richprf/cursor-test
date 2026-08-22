@@ -773,6 +773,150 @@ body {
   }
 }
 
+/* Upmind Home v1 Services — cream band, heading + three mint cards. */
+.services-v1 {
+  background: #f7f9f2;
+  color: #101604;
+  padding-block: 3rem;
+}
+
+.services-v1-shell {
+  width: 100%;
+  max-width: 73.5rem;
+  margin-inline: auto;
+  padding-inline: 3.24rem;
+}
+
+.services-v1-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.services-v1-title {
+  display: flex;
+  max-width: 57.4375rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.services-v1-headline {
+  font-size: 3.5rem;
+  font-weight: 400;
+  line-height: 1.125;
+  letter-spacing: -0.06em;
+}
+
+.services-v1-desc {
+  max-width: 36rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #595959;
+}
+
+.services-v1-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 4rem;
+}
+
+.services-v1-card {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: #e6ecd6;
+}
+
+.services-v1-card-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3.1875rem;
+}
+
+.services-v1-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: #101604;
+}
+
+.services-v1-icon img {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.services-v1-card-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.33;
+}
+
+.services-v1-card-desc {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #595959;
+}
+
+@media (max-width: 991px) {
+  .services-v1-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .services-v1-headline {
+    font-size: 2.5rem;
+  }
+
+  .services-v1-grid {
+    display: flex;
+    gap: 0.875rem;
+    overflow: auto;
+    margin-top: 3rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .services-v1-grid > * {
+    flex: none;
+    width: 70%;
+  }
+
+  .services-v1-card-heading {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .services-v1-shell {
+    padding-inline: 1rem;
+  }
+
+  .services-v1-headline {
+    font-size: 2rem;
+  }
+
+  .services-v1-grid {
+    margin-top: 2rem;
+  }
+
+  .services-v1-grid > * {
+    width: 85%;
+  }
+
+  .services-v1-heading .about-v1-btn {
+    width: 100%;
+  }
+}
+
 .work-cover img,
 .work-cover video,
 .work-cover .gold-plate {
