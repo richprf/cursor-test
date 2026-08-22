@@ -148,7 +148,7 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
 
 function HeroBadge({ label, tone }: { label: string; tone: string }) {
   return (
-    <div data-hero-badge className="hero-upmind-badge inline-flex items-center gap-2 pe-4">
+    <div data-hero-badge className="hero-upmind-badge inline-flex items-center gap-2">
       <span className="hero-upmind-badge-icon" style={{ backgroundColor: tone }} aria-hidden>
         <svg viewBox="0 0 16 16" className="size-3.5" fill="none">
           <path

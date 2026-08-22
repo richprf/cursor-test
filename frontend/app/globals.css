@@ -266,7 +266,8 @@ body {
 
 @media (min-width: 1024px) {
   .hero-upmind-gradient {
-    background: linear-gradient(to right, #101604 0%, #10160400 52%, #1016040a 100%);
+    /* Copy sits on the inline-start side in RTL, so fade from the photo's end edge. */
+    background: linear-gradient(to left, #101604 0%, #10160400 52%, #1016040a 100%);
   }
 }
 
@@ -285,7 +286,9 @@ body {
   background: #ffffff1a;
   border: 1px solid #ffffff1f;
   border-radius: 3rem;
-  padding: 0.28rem 0.28rem 0.28rem 0.2rem;
+  padding-block: 0.28rem;
+  padding-inline-start: 0.22rem;
+  padding-inline-end: 0.95rem;
 }
 
 .hero-upmind-badge-icon {
