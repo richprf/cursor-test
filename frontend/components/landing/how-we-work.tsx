@@ -37,70 +37,36 @@ const STEPS = [
   },
 ] as const;
 
-const STEP_VIEWPORTS = 0.28;
-
 export function HowWeWork() {
   const sectionRef = useRef<HTMLElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
     const section = sectionRef.current;
-    const sticky = stickyRef.current;
-    if (!section || !sticky) return;
+    if (!section) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(max-width: 1023px)').matches) return;
 
     registerScrollTrigger();
-    const media = gsap.matchMedia();
-
-    media.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
-      const last = STEPS.length - 1;
-      const photos = sticky.querySelectorAll<HTMLElement>('.how-work-v1-photo');
-
-      const applyStep = (index: number, local = 0) => {
-        setActive((current) => (current === index ? current : index));
-        photos.forEach((photo, photoIndex) => {
-          const progress = photoIndex === index ? local : photoIndex < index ? 1 : 0;
-          gsap.set(photo, { scale: 1.2 - progress * 0.2 });
-        });
-      };
-
-      applyStep(0, 0);
-
-      const trigger = ScrollTrigger.create({
-        trigger: section,
-        pin: sticky,
-        start: 'top top',
-        end: () => `+=${last * window.innerHeight * STEP_VIEWPORTS}`,
-        pinSpacing: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const raw = self.progress * STEPS.length;
-          const index = Math.min(last, Math.floor(raw));
-          const local = Math.min(1, raw - index);
-          applyStep(index, local);
-        },
-      });
-
-      const refresh = () => ScrollTrigger.refresh();
-      window.addEventListener('load', refresh);
-
-      return () => {
-        window.removeEventListener('load', refresh);
-        trigger.kill();
-        gsap.set(photos, { clearProps: 'transform' });
-        setActive(0);
-      };
+    const trigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        const next = Math.min(STEPS.length - 1, Math.floor(self.progress * STEPS.length));
+        setActive((current) => (current === next ? current : next));
+      },
     });
 
     return () => {
-      media.revert();
+      trigger.kill();
+      gsap.set(section, { clearProps: 'all' });
     };
   }, []);
 
   return (
     <section ref={sectionRef} id="work" className="how-work-v1">
-      <div ref={stickyRef} className="how-work-v1-sticky">
+      <div className="how-work-v1-sticky">
         <div className="how-work-v1-left">
           <p className="how-work-v1-kicker">how we work</p>
           <div className="how-work-v1-titles">
@@ -142,6 +108,7 @@ export function HowWeWork() {
           ))}
         </div>
       </div>
+      <div className="how-work-v1-spacer" aria-hidden />
     </section>
   );
 }
