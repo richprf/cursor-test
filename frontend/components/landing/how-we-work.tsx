@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsap';
 
@@ -37,9 +37,16 @@ const STEPS = [
   },
 ] as const;
 
+const WORK_BEATS = [
+  { scaleAt: 0, fadeOutAt: 0.2 },
+  { fadeInAt: 0.4, scaleAt: 0.4, fadeOutAt: 1 },
+  { fadeInAt: 1.2, scaleAt: 1.2, fadeOutAt: 2 },
+  { fadeInAt: 2.2, scaleAt: 2.2, fadeOutAt: 3 },
+  { fadeInAt: 3.2, scaleAt: 3.2, holdAt: 3.4 },
+] as const;
+
 export function HowWeWork() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -48,19 +55,56 @@ export function HowWeWork() {
     if (window.matchMedia('(max-width: 1023px)').matches) return;
 
     registerScrollTrigger();
-    const trigger = ScrollTrigger.create({
-      trigger: section,
-      start: 'top top',
-      end: 'bottom bottom',
-      onUpdate: (self) => {
-        const next = Math.min(STEPS.length - 1, Math.floor(self.progress * STEPS.length));
-        setActive((current) => (current === next ? current : next));
-      },
-    });
+
+    const titles = section.querySelectorAll<HTMLElement>('.how-work-v1-title');
+    const visuals = section.querySelectorAll<HTMLElement>('.how-work-v1-visual');
+    const photos = section.querySelectorAll<HTMLElement>('.how-work-v1-photo');
+
+    const ctx = gsap.context(() => {
+      gsap.set(titles, { opacity: (index) => (index === 0 ? 1 : 0) });
+      gsap.set(visuals, { opacity: (index) => (index === 0 ? 1 : 0) });
+      gsap.set(photos, { scale: 1.2, transformOrigin: 'center center' });
+
+      const timeline = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      WORK_BEATS.forEach((beat, index) => {
+        const title = titles[index];
+        const visual = visuals[index];
+        const photo = photos[index];
+        if (!title || !visual || !photo) return;
+
+        timeline.to(photo, { scale: 1, duration: 0.2 }, beat.scaleAt);
+
+        if ('fadeInAt' in beat) {
+          timeline.to([title, visual], { opacity: 1, duration: 0.2 }, beat.fadeInAt);
+        }
+
+        if ('fadeOutAt' in beat) {
+          timeline.to([title, visual], { opacity: 0, duration: 0.2 }, beat.fadeOutAt);
+        }
+
+        if ('holdAt' in beat) {
+          timeline.to([title, visual], { opacity: 1, duration: 1.1 }, beat.holdAt);
+          timeline.to(photo, { scale: 1, duration: 1.1 }, beat.holdAt);
+        }
+      });
+    }, section);
+
+    const refresh = () => ScrollTrigger.refresh();
+    window.addEventListener('load', refresh);
 
     return () => {
-      trigger.kill();
-      gsap.set(section, { clearProps: 'all' });
+      window.removeEventListener('load', refresh);
+      ctx.revert();
     };
   }, []);
 
@@ -70,11 +114,8 @@ export function HowWeWork() {
         <div className="how-work-v1-left">
           <p className="how-work-v1-kicker">how we work</p>
           <div className="how-work-v1-titles">
-            {STEPS.map((step, index) => (
-              <div
-                key={step.title}
-                className={`how-work-v1-title${index === active ? ' is-active' : ''}`}
-              >
+            {STEPS.map((step) => (
+              <div key={step.title} className="how-work-v1-title">
                 <h2>{step.title}</h2>
                 <p>{step.description}</p>
               </div>
@@ -84,10 +125,7 @@ export function HowWeWork() {
 
         <div className="how-work-v1-right">
           {STEPS.map((step, index) => (
-            <div
-              key={step.title}
-              className={`how-work-v1-visual${index === active ? ' is-active' : ''}`}
-            >
+            <div key={step.title} className="how-work-v1-visual">
               <Image
                 src={step.image}
                 alt={step.alt}

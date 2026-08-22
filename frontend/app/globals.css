@@ -1125,10 +1125,9 @@ body {
   flex-direction: column;
   gap: 1rem;
   opacity: 0;
-  transition: opacity 0.2s;
 }
 
-.how-work-v1-title.is-active {
+.how-work-v1-title:first-child {
   opacity: 1;
   z-index: 1;
 }
@@ -1160,10 +1159,9 @@ body {
   justify-content: center;
   padding: 4%;
   opacity: 0;
-  transition: opacity 0.2s;
 }
 
-.how-work-v1-visual.is-active {
+.how-work-v1-visual:first-child {
   opacity: 1;
   z-index: 1;
 }
@@ -1171,6 +1169,7 @@ body {
 .how-work-v1-photo {
   object-fit: cover;
   transform: scale(1.2);
+  transform-origin: center center;
 }
 
 .how-work-v1-number {
