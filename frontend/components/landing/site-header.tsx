@@ -9,6 +9,7 @@ import { gsap } from '@/lib/gsap';
 import { GSAP_EASE, TIMING } from '@/lib/motion';
 
 export const NAV_LINKS = [
+  { href: '#partners', label: 'همکاری‌ها' },
   { href: '#about', label: 'درباره ما' },
   { href: '#services', label: 'خدمات' },
   { href: '#features', label: 'ویژگی‌ها' },
