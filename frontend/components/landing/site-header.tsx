@@ -14,7 +14,6 @@ export const NAV_LINKS = [
   { href: '#services', label: 'خدمات' },
   { href: '#features', label: 'ویژگی‌ها' },
   { href: '#work', label: 'نحوهٔ کار' },
-  { href: '#prices', label: 'قیمت طلا' },
   { href: '#blog', label: 'مقالات' },
 ];
 
