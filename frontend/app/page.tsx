@@ -8,6 +8,7 @@ import { StudioCursor } from '@/components/landing/studio-cursor';
 import { SiteHeader } from '@/components/landing/site-header';
 import { Hero } from '@/components/landing/hero';
 import { HeroTicker } from '@/components/landing/hero-ticker';
+import { AboutUs } from '@/components/landing/about-us';
 import { Features } from '@/components/landing/features';
 import { TrustBar } from '@/components/landing/trust-bar';
 import { HowItWorks } from '@/components/landing/how-it-works';
@@ -44,6 +45,7 @@ export default async function HomePage() {
           <main>
             <Hero ctaHref={ctaHref} ctaLabel={ctaLabel} />
             <HeroTicker />
+            <AboutUs />
             <Features />
             <TrustBar />
             <HowItWorks />
