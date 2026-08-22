@@ -1077,6 +1077,162 @@ body {
   }
 }
 
+/* Upmind Home v1 Blog and articles — cream band, sticky heading, mint cards. */
+.blogs-v1 {
+  background: #f7f9f2;
+  color: #101604;
+  padding-block: 6.25rem;
+}
+
+.blogs-v1-shell {
+  width: 100%;
+  max-width: 73.5rem;
+  margin-inline: auto;
+  padding-inline: 3.24rem;
+}
+
+.blogs-v1-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.42fr;
+  gap: 1.5rem 1.5rem;
+  position: relative;
+}
+
+.blogs-v1-heading {
+  display: flex;
+  position: sticky;
+  top: 4rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.blogs-v1-title {
+  font-size: 4rem;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.blogs-v1-desc {
+  max-width: 25rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #595959;
+}
+
+.blogs-v1-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.blogs-v1-card {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: #e6ecd6;
+  color: inherit;
+  text-decoration: none;
+}
+
+.blogs-v1-img {
+  position: relative;
+  flex: none;
+  width: 40%;
+  padding-top: 29%;
+  overflow: clip;
+  border-radius: 0.5rem;
+}
+
+.blogs-v1-photo {
+  object-fit: cover;
+  transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.blogs-v1-card:hover .blogs-v1-photo {
+  transform: scale(1.1);
+}
+
+.blogs-v1-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+}
+
+.blogs-v1-date {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.14rem;
+  line-height: 1.43;
+  text-transform: uppercase;
+}
+
+.blogs-v1-card-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.045rem;
+}
+
+@media (max-width: 991px) {
+  .blogs-v1-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .blogs-v1-heading {
+    position: relative;
+    top: auto;
+  }
+
+  .blogs-v1-title {
+    font-size: 2.5rem;
+  }
+
+  .blogs-v1-list {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .blogs-v1-card {
+    height: 100%;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .blogs-v1-img {
+    width: 100%;
+    padding-top: 72%;
+  }
+
+  .blogs-v1-info {
+    padding: 0;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .blogs-v1 {
+    padding-block: 4rem;
+  }
+
+  .blogs-v1-shell {
+    padding-inline: 1rem;
+  }
+
+  .blogs-v1-title {
+    font-size: 2rem;
+  }
+
+  .blogs-v1-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Upmind Home v1 How we work — sticky 50/50, 5 scroll-switched steps. */
 .how-work-v1 {
   position: relative;

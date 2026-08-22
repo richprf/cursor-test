@@ -15,6 +15,7 @@ export const NAV_LINKS = [
   { href: '#features', label: 'ویژگی‌ها' },
   { href: '#work', label: 'نحوهٔ کار' },
   { href: '#prices', label: 'قیمت طلا' },
+  { href: '#blog', label: 'مقالات' },
 ];
 
 export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string }) {

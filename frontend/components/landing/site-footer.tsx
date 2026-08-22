@@ -9,6 +9,7 @@ const LINK_GROUPS = [
       { href: '#features', label: 'ویژگی‌ها' },
       { href: '#work', label: 'نحوهٔ کار' },
       { href: '#prices', label: 'قیمت طلا' },
+      { href: '#blog', label: 'مقالات' },
     ],
   },
   {
