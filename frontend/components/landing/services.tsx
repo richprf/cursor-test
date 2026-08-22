@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Reveal, RevealGroup, RevealItem } from './reveal';
 
 const SERVICES = [
@@ -50,7 +51,7 @@ export function Services() {
               <article className="services-v1-card">
                 <div className="services-v1-card-heading">
                   <span className="services-v1-icon" aria-hidden>
-                    <img src={service.icon} alt="" width={24} height={24} />
+                    <Image src={service.icon} alt="" width={24} height={24} />
                   </span>
                   <h3 className="services-v1-card-title">{service.title}</h3>
                 </div>
