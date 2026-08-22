@@ -7,7 +7,6 @@ import { Preloader } from '@/components/landing/preloader';
 import { StudioCursor } from '@/components/landing/studio-cursor';
 import { SiteHeader } from '@/components/landing/site-header';
 import { Hero } from '@/components/landing/hero';
-import { HeroTicker } from '@/components/landing/hero-ticker';
 import { Partnerships } from '@/components/landing/partnerships';
 import { AboutUs } from '@/components/landing/about-us';
 import { Services } from '@/components/landing/services';
@@ -46,7 +45,6 @@ export default async function HomePage() {
 
           <main>
             <Hero ctaHref={ctaHref} ctaLabel={ctaLabel} />
-            <HeroTicker />
             <Partnerships />
             <AboutUs />
             <Services />
