@@ -12,7 +12,7 @@ import { AboutUs } from '@/components/landing/about-us';
 import { Services } from '@/components/landing/services';
 import { Features } from '@/components/landing/features';
 import { TrustBar } from '@/components/landing/trust-bar';
-import { FeaturedWork } from '@/components/landing/featured-work';
+import { HowWeWork } from '@/components/landing/how-we-work';
 import { PriceChart } from '@/components/landing/price-chart';
 import { Awards } from '@/components/landing/awards';
 import { Timezones } from '@/components/landing/timezones';
@@ -48,7 +48,7 @@ export default async function HomePage() {
             <Services />
             <Features />
             <TrustBar />
-            <FeaturedWork />
+            <HowWeWork />
             <PriceChart />
             <Awards />
             <Timezones />

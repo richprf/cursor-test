@@ -1077,6 +1077,211 @@ body {
   }
 }
 
+/* Upmind Home v1 How we work — sticky 50/50, 5 scroll-switched steps. */
+.how-work-v1 {
+  position: relative;
+  background: #101604;
+  color: #b7fe02;
+}
+
+.how-work-v1-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  height: 100vh;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+.how-work-v1-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem 3.25rem 3.25rem;
+}
+
+.how-work-v1-kicker {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.16rem;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: #b7fe02;
+}
+
+.how-work-v1-titles {
+  position: relative;
+  min-height: 14rem;
+}
+
+.how-work-v1-title {
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: 0;
+  display: flex;
+  width: 100%;
+  max-width: 27rem;
+  flex-direction: column;
+  gap: 1rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.how-work-v1-title.is-active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.how-work-v1-title h2 {
+  font-size: 3.5rem;
+  font-weight: 400;
+  line-height: 1.03;
+  letter-spacing: -0.04em;
+  color: #b7fe02;
+}
+
+.how-work-v1-title p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #a0c347;
+}
+
+.how-work-v1-right {
+  position: relative;
+  overflow: hidden;
+}
+
+.how-work-v1-visual {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4%;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.how-work-v1-visual.is-active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.how-work-v1-photo {
+  object-fit: cover;
+  transform: scale(1.2);
+}
+
+.how-work-v1-icon {
+  position: relative;
+  z-index: 2;
+  width: 17rem;
+  height: 17rem;
+}
+
+.how-work-v1-number {
+  position: absolute;
+  top: 3rem;
+  inset-inline-end: 3.25rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 3rem;
+  line-height: 1.16;
+  letter-spacing: -0.09rem;
+  color: #b7fe0266;
+}
+
+.how-work-v1-number span:first-child {
+  color: #b7fe02;
+}
+
+.how-work-v1-mobile-copy {
+  display: none;
+}
+
+.how-work-v1-spacer {
+  height: 400vh;
+}
+
+@media (max-width: 1023px) {
+  .how-work-v1-spacer {
+    display: none;
+  }
+
+  .how-work-v1-sticky {
+    position: static;
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .how-work-v1-left {
+    padding: 4rem 1rem 1.5rem;
+  }
+
+  .how-work-v1-titles {
+    display: none;
+  }
+
+  .how-work-v1-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0 1rem 3rem;
+  }
+
+  .how-work-v1-visual {
+    position: relative;
+    min-height: 28rem;
+    opacity: 1;
+    overflow: hidden;
+  }
+
+  .how-work-v1-icon {
+    width: 11rem;
+    height: 11rem;
+  }
+
+  .how-work-v1-number {
+    top: 1rem;
+    inset-inline-end: 1rem;
+    font-size: 2rem;
+  }
+
+  .how-work-v1-mobile-copy {
+    display: block;
+    position: absolute;
+    inset-inline: 1rem;
+    bottom: 1rem;
+    z-index: 2;
+    max-width: 22rem;
+  }
+
+  .how-work-v1-mobile-copy h3 {
+    font-size: 1.75rem;
+    font-weight: 400;
+    line-height: 1.1;
+    color: #b7fe02;
+  }
+
+  .how-work-v1-mobile-copy p {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #a0c347;
+  }
+}
+
+@media (min-width: 1024px) {
+  .how-work-v1-title h2 {
+    font-size: 4.5rem;
+  }
+}
+
 .work-cover img,
 .work-cover video,
 .work-cover .gold-plate {

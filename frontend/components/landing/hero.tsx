@@ -82,7 +82,7 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
 
           <div data-hero-copy className="hero-v1-actions">
             <Link href="#work" className="hero-v1-btn hero-v1-btn-ghost">
-              نمونه‌کارها
+              نحوهٔ کار
             </Link>
             <Link href={ctaHref} className="hero-v1-btn hero-v1-btn-fill">
               {ctaLabel}
