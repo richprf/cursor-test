@@ -63,8 +63,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-vazirmatn), 'Vazirmatn', 'IRANSans', 'Segoe UI', Tahoma, system-ui,
-    sans-serif;
+  --font-sans: var(--font-poppins), var(--font-vazirmatn), 'Poppins', 'Vazirmatn', sans-serif;
 
   --color-background: var(--background);
   --color-background-elevated: var(--background-elevated);

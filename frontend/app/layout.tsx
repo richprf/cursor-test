@@ -1,11 +1,19 @@
 import type { Metadata } from 'next';
-import { Vazirmatn } from 'next/font/google';
+import { Poppins, Vazirmatn } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
 const vazirmatn = Vazirmatn({
   subsets: ['arabic', 'latin'],
+  weight: '700',
   variable: '--font-vazirmatn',
+  display: 'swap',
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
   display: 'swap',
 });
 
@@ -19,7 +27,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fa" dir="rtl" className={`${vazirmatn.variable} scroll-smooth`} suppressHydrationWarning>
+    <html
+      lang="fa"
+      dir="rtl"
+      className={`${vazirmatn.variable} ${poppins.variable} scroll-smooth`}
+      suppressHydrationWarning
+    >
       <body className="min-h-dvh antialiased">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
