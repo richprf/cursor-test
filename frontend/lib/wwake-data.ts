@@ -161,6 +161,38 @@ export const JOURNAL = [
   { title: 'لایه‌لایه کردن انگشتر: یک شیوهٔ فکر کردن', date: '۶ خرداد ۱۴۰۵', image: '/landing/wwake/j6.jpg' },
 ] as const;
 
+export type GoldSize = 'hero' | 'wide' | 'tall' | 'square' | 'slim' | 'feature';
+
+const GOLD_SIZES: GoldSize[] = [
+  'hero',
+  'slim',
+  'tall',
+  'square',
+  'wide',
+  'feature',
+  'slim',
+  'tall',
+  'square',
+  'wide',
+  'feature',
+  'slim',
+];
+
+export const CATALOG = SHOP_TABS.flatMap((tab, tabIndex) =>
+  tab.products.map((product, index) => ({
+    ...product,
+    id: `${tab.id}-${index}`,
+    category: tab.title,
+    categoryId: tab.id,
+    size: GOLD_SIZES[(tabIndex * 5 + index * 3) % GOLD_SIZES.length],
+  })),
+);
+
+export const CATALOG_FILTERS = [
+  { id: 'all', label: 'همه' },
+  ...SHOP_TABS.map((tab) => ({ id: tab.id, label: tab.title })),
+] as const;
+
 export const TILES = [
   { title: 'مشاهدهٔ همه', count: '۳۳۴', image: '/landing/wwake/tile-view.jpg', href: '#shop' },
   { title: 'آیینی', count: '۱۲۳', image: '/landing/wwake/tile-ceremonial.jpg', href: '#values' },

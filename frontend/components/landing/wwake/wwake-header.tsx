@@ -4,18 +4,18 @@ export function WwakeHeader({ accountHref, accountLabel }: { accountHref: string
   return (
     <header className="ww-header">
       <nav className="ww-header-left">
-        <a href="#shop" className="ww-underline is-desktop">
+        <Link href="/shop" className="ww-underline is-desktop">
           فروشگاه
-        </a>
-        <a href="#values" className="ww-underline is-desktop">
+        </Link>
+        <Link href="/#values" className="ww-underline is-desktop">
           سفارشی
-        </a>
-        <a href="#visit" className="ww-underline is-desktop">
+        </Link>
+        <Link href="/#visit" className="ww-underline is-desktop">
           بازدید
-        </a>
-        <a href="#shop" className="ww-underline md:hidden">
+        </Link>
+        <Link href="/shop" className="ww-underline md:hidden">
           منو
-        </a>
+        </Link>
       </nav>
 
       <Link href="/" className="ww-header-logo" aria-label="زرین‌سرمایه">
@@ -23,9 +23,9 @@ export function WwakeHeader({ accountHref, accountLabel }: { accountHref: string
       </Link>
 
       <div className="ww-header-right">
-        <a href="#journal" className="ww-underline is-desktop">
+        <Link href="/#journal" className="ww-underline is-desktop">
           جستجو
-        </a>
+        </Link>
         <span className="ww-underline is-desktop">$ US</span>
         <Link href={accountHref} className="ww-underline">
           {accountLabel}

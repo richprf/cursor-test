@@ -63,7 +63,7 @@ export function WwakeShop() {
     <section id="shop" className="ww-shop">
       <div className="ww-shop-head">
         <h2>ساخته شده تا جمع شود</h2>
-        <a href="#shop" className="ww-link">
+        <a href="/shop" className="ww-link">
           همه را ببینید <span>[۳۳۴]</span>
         </a>
       </div>

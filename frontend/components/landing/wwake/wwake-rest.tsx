@@ -92,7 +92,7 @@ export function WwakeJournal() {
 }
 
 const FOOTER_TILES = [
-  { title: 'View All', count: '334', image: '/landing/wwake/tile-view.jpg', href: '#shop' },
+  { title: 'View All', count: '334', image: '/landing/wwake/tile-view.jpg', href: '/shop' },
   { title: 'Ceremonial', count: '123', image: '/landing/wwake/tile-ceremonial.jpg', href: '#values' },
   { title: 'One Of A Kinds', count: '46', image: '/landing/wwake/tile-ooak.jpg', href: '#values' },
   { title: 'Personalized & Bespoke Rings', count: '47', image: '/landing/wwake/tile-personal.jpg', href: '#values' },
