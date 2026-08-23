@@ -1,137 +1,130 @@
 import Link from 'next/link';
-import { Mail } from 'lucide-react';
-import { Brand } from '@/components/brand';
+import Image from 'next/image';
+import { Reveal } from './reveal';
 
-const LINK_GROUPS = [
+const PAGE_COLUMNS = [
   {
-    title: 'محصول',
+    title: 'PAGES',
     links: [
-      { href: '#features', label: 'ویژگی‌ها' },
-      { href: '#work', label: 'نحوهٔ کار' },
-      { href: '#blog', label: 'مقالات' },
+      { href: '/', label: 'HOME V.1' },
+      { href: '/', label: 'HOME V.2' },
+      { href: '/', label: 'HOME V.3' },
+      { href: '#services', label: 'SERVICES' },
     ],
   },
   {
-    title: 'حساب کاربری',
+    title: 'PAGES',
     links: [
-      { href: '/login', label: 'ورود' },
-      { href: '/register', label: 'ثبت‌نام' },
-      { href: '/dashboard', label: 'داشبورد' },
+      { href: '#about', label: 'About V.1' },
+      { href: '#about', label: 'About V.2' },
+      { href: '#about', label: 'About V.3' },
+      { href: '#work', label: 'LICENSING' },
     ],
   },
   {
-    title: 'پشتیبانی',
+    title: 'PAGES',
     links: [
-      { href: 'mailto:support@example.com', label: 'ایمیل پشتیبانی' },
-      { href: 'tel:+982100000000', label: 'تلفن ۲۴ ساعته' },
+      { href: '/login', label: 'Contact V.1' },
+      { href: '/register', label: 'Contact V.2' },
+      { href: '/dashboard', label: 'Contact V.3' },
+      { href: '#blog', label: 'BLOGS' },
     ],
   },
-];
+] as const;
 
-// Replace with the brand's real profiles before launch. lucide-react no longer ships
-// brand marks, so Instagram and Telegram are drawn below in the same stroke style.
 const SOCIALS = [
-  { href: 'https://instagram.com', label: 'اینستاگرام', icon: InstagramIcon },
-  { href: 'https://telegram.org', label: 'تلگرام', icon: TelegramIcon },
-  { href: 'mailto:support@example.com', label: 'ایمیل', icon: Mail },
-];
+  { href: 'https://instagram.com', label: 'Instagram', icon: '/landing/footer/instagram.svg' },
+  { href: 'https://facebook.com', label: 'Facebook', icon: '/landing/footer/facebook.svg' },
+  { href: 'https://linkedin.com', label: 'LinkedIn', icon: '/landing/footer/linkedin.svg' },
+  { href: 'https://x.com', label: 'X', icon: '/landing/footer/twitter.svg' },
+] as const;
 
-function InstagramIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      aria-hidden
-    >
-      <rect x="3" y="3" width="18" height="18" rx="5.5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
+function FooterLink({ href, label }: { href: string; label: string }) {
+  if (href.startsWith('/')) {
+    return (
+      <Link href={href} className="footer-v1-link">
+        {label}
+      </Link>
+    );
+  }
 
-function TelegramIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M21.5 3.2 2.9 10.4a.6.6 0 0 0 .05 1.13l4.5 1.5 1.7 5a.6.6 0 0 0 1.03.2l2.3-2.5 4.3 3.2a.6.6 0 0 0 .94-.33l3.6-14.7a.6.6 0 0 0-.82-.7z" />
-      <path d="m7.45 13.03 12.3-8.6-7.3 9.83" />
-    </svg>
+    <a href={href} className="footer-v1-link">
+      {label}
+    </a>
   );
 }
 
 export function SiteFooter() {
-  const persianYear = new Intl.DateTimeFormat('fa-IR-u-ca-persian', { year: 'numeric' }).format(
-    new Date(),
-  );
-
   return (
-    <footer className="border-t border-foreground/10">
-      <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:px-12">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
-          <div className="space-y-5">
-            <div className="flex justify-start">
-              <Brand compact />
-            </div>
-            <p className="max-w-xs text-sm leading-7 text-muted">
-              خرید، نگهداری و فروش طلای ۱۸ عیار به‌صورت آنلاین؛ با امکان تحویل فیزیکی شمش.
-            </p>
-            <div className="flex gap-2">
-              {SOCIALS.map((social) => (
-                <a
-                  key={social.href}
-                  href={social.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  aria-label={social.label}
-                  className="grid size-9 place-items-center border border-foreground/15 text-muted transition hover:border-gold-500/40 hover:text-gold-700"
-                >
-                  <social.icon className="size-4" aria-hidden />
-                </a>
-              ))}
-            </div>
-          </div>
+    <footer dir="ltr" className="footer-v1">
+      <div className="footer-v1-shell">
+        <div className="footer-v1-layout">
+          <Reveal y={28}>
+            <Link href="/" aria-label="زرین‌سرمایه" className="footer-v1-logo-link">
+              <Image
+                src="/landing/footer/footer-logo.svg"
+                alt=""
+                width={106}
+                height={28}
+                className="footer-v1-logo"
+                unoptimized
+              />
+            </Link>
+          </Reveal>
 
-          {LINK_GROUPS.map((group) => (
-            <nav key={group.title} aria-label={group.title}>
-              <h2 className="text-[11px] font-medium uppercase tracking-[0.18em] text-gold-700">
-                {group.title}
-              </h2>
-              <ul className="mt-4 space-y-2.5 text-sm text-muted">
-                {group.links.map((link) => (
-                  <li key={link.href}>
-                    {link.href.startsWith('/') ? (
-                      <Link href={link.href} className="transition hover:text-foreground">
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <a href={link.href} className="transition hover:text-foreground">
-                        {link.label}
-                      </a>
-                    )}
-                  </li>
+          <Reveal className="footer-v1-list" y={36} delay={0.06}>
+            {PAGE_COLUMNS.map((column, index) => (
+              <div key={`${column.title}-${index}`} className="footer-v1-column">
+                <p>{column.title}</p>
+                {column.links.map((link) => (
+                  <FooterLink key={link.label} href={link.href} label={link.label} />
                 ))}
-              </ul>
-            </nav>
-          ))}
+              </div>
+            ))}
+
+            <div className="footer-v1-contact">
+              <p>COMPANY</p>
+              <div className="footer-v1-contact-data">
+                <p className="footer-v1-address">
+                  752 New South Headr Rd
+                  <br />
+                  Triple Bay SWFW 3148, New York
+                </p>
+                <div className="footer-v1-socials">
+                  {SOCIALS.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={social.label}
+                      className="footer-v1-icon"
+                    >
+                      <Image
+                        src={social.icon}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="footer-v1-social"
+                        unoptimized
+                      />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </div>
 
-        <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-foreground/10 pt-6 text-xs text-muted sm:flex-row sm:items-center">
-          <p>© {persianYear} زرین‌سرمایه — تمامی حقوق محفوظ است.</p>
-          <p>ارقام و نمودارهای این صفحه نمایشی است.</p>
-        </div>
+        <Image
+          src="/landing/footer/footer-wordmark.svg"
+          alt="Upmind"
+          width={1189}
+          height={235}
+          className="footer-v1-wordmark"
+          unoptimized
+        />
       </div>
     </footer>
   );

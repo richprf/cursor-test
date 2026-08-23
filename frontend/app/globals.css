@@ -1440,6 +1440,155 @@ body {
   filter: brightness(1.18) saturate(1.12);
 }
 
+/* Upmind Home v1 footer — dark green, PAGES columns, company, giant wordmark. */
+.footer-v1 {
+  background: #101604;
+  color: #b7fe02;
+  padding-top: 3.25rem;
+}
+
+.footer-v1-shell {
+  width: 100%;
+  max-width: 73.5rem;
+  margin-inline: auto;
+  padding: 0 3.24rem 2rem;
+}
+
+.footer-v1-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+.footer-v1-logo-link {
+  display: inline-block;
+}
+
+.footer-v1-logo {
+  display: block;
+  width: 6.625rem;
+  height: 1.75rem;
+}
+
+.footer-v1-list {
+  display: grid;
+  max-width: 44.875rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.footer-v1-column,
+.footer-v1-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.625rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.16rem;
+  text-transform: uppercase;
+  color: #b7fe02;
+}
+
+.footer-v1-contact {
+  max-width: 13.9375rem;
+}
+
+.footer-v1-link {
+  color: #d8ff85;
+  font-size: 0.875rem;
+  letter-spacing: 0.14rem;
+  line-height: 1.43;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    transform 0.2s,
+    color 0.2s;
+}
+
+.footer-v1-link:hover {
+  color: #b7fe02;
+  transform: scale(0.95);
+}
+
+.footer-v1-contact-data {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.footer-v1-address {
+  font-family: inherit;
+  font-size: 0.875rem;
+  letter-spacing: -0.02625rem;
+  line-height: 1.5;
+  text-transform: none;
+  color: #d8ff85;
+}
+
+.footer-v1-socials {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-v1-icon {
+  display: flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2.25rem;
+  background: #b7fe021f;
+}
+
+.footer-v1-social {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.footer-v1-wordmark {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 4.5rem;
+}
+
+@media (max-width: 991px) {
+  .footer-v1-layout {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .footer-v1-list {
+    width: 100%;
+    max-width: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .footer-v1-shell {
+    padding-inline: 1rem;
+  }
+
+  .footer-v1-list {
+    gap: 1.5rem;
+  }
+
+  .footer-v1-column,
+  .footer-v1-contact {
+    gap: 0.75rem;
+  }
+
+  .footer-v1-wordmark {
+    margin-top: 3rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gold-plate-motion,
   .hero-loop,
