@@ -1,42 +1,43 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Brand } from '@/components/brand';
 import { Reveal } from './reveal';
 
 const PAGE_COLUMNS = [
   {
-    title: 'PAGES',
+    title: 'صفحات',
     links: [
-      { href: '/', label: 'HOME V.1' },
-      { href: '/', label: 'HOME V.2' },
-      { href: '/', label: 'HOME V.3' },
-      { href: '#services', label: 'SERVICES' },
+      { href: '/', label: 'خانه' },
+      { href: '#partners', label: 'همکاری‌ها' },
+      { href: '#services', label: 'خدمات' },
+      { href: '#features', label: 'ویژگی‌ها' },
     ],
   },
   {
-    title: 'PAGES',
+    title: 'صفحات',
     links: [
-      { href: '#about', label: 'About V.1' },
-      { href: '#about', label: 'About V.2' },
-      { href: '#about', label: 'About V.3' },
-      { href: '#work', label: 'LICENSING' },
+      { href: '#about', label: 'درباره ما' },
+      { href: '#work', label: 'نحوهٔ کار' },
+      { href: '#blog', label: 'مقالات' },
+      { href: '#features', label: 'مجوزها' },
     ],
   },
   {
-    title: 'PAGES',
+    title: 'حساب',
     links: [
-      { href: '/login', label: 'Contact V.1' },
-      { href: '/register', label: 'Contact V.2' },
-      { href: '/dashboard', label: 'Contact V.3' },
-      { href: '#blog', label: 'BLOGS' },
+      { href: '/login', label: 'ورود' },
+      { href: '/register', label: 'ثبت‌نام' },
+      { href: '/dashboard', label: 'داشبورد' },
+      { href: '#blog', label: 'وبلاگ' },
     ],
   },
 ] as const;
 
 const SOCIALS = [
-  { href: 'https://instagram.com', label: 'Instagram', icon: '/landing/footer/instagram.svg' },
-  { href: 'https://facebook.com', label: 'Facebook', icon: '/landing/footer/facebook.svg' },
-  { href: 'https://linkedin.com', label: 'LinkedIn', icon: '/landing/footer/linkedin.svg' },
-  { href: 'https://x.com', label: 'X', icon: '/landing/footer/twitter.svg' },
+  { href: 'https://instagram.com', label: 'اینستاگرام', icon: '/landing/footer/instagram.svg' },
+  { href: 'https://facebook.com', label: 'فیسبوک', icon: '/landing/footer/facebook.svg' },
+  { href: 'https://linkedin.com', label: 'لینکدین', icon: '/landing/footer/linkedin.svg' },
+  { href: 'https://x.com', label: 'ایکس', icon: '/landing/footer/twitter.svg' },
 ] as const;
 
 function FooterLink({ href, label }: { href: string; label: string }) {
@@ -57,19 +58,12 @@ function FooterLink({ href, label }: { href: string; label: string }) {
 
 export function SiteFooter() {
   return (
-    <footer dir="ltr" className="footer-v1">
+    <footer className="footer-v1">
       <div className="footer-v1-shell">
         <div className="footer-v1-layout">
           <Reveal y={28}>
             <Link href="/" aria-label="زرین‌سرمایه" className="footer-v1-logo-link">
-              <Image
-                src="/landing/footer/footer-logo.svg"
-                alt=""
-                width={106}
-                height={28}
-                className="footer-v1-logo"
-                unoptimized
-              />
+              <Brand compact />
             </Link>
           </Reveal>
 
@@ -84,12 +78,12 @@ export function SiteFooter() {
             ))}
 
             <div className="footer-v1-contact">
-              <p>COMPANY</p>
+              <p>شرکت</p>
               <div className="footer-v1-contact-data">
                 <p className="footer-v1-address">
-                  752 New South Headr Rd
+                  ۷۵۲ جادهٔ نیو ساوت هدر
                   <br />
-                  Triple Bay SWFW 3148, New York
+                  تریپل‌بی، نیویورک
                 </p>
                 <div className="footer-v1-socials">
                   {SOCIALS.map((social) => (
@@ -117,14 +111,7 @@ export function SiteFooter() {
           </Reveal>
         </div>
 
-        <Image
-          src="/landing/footer/footer-wordmark.svg"
-          alt="Upmind"
-          width={1189}
-          height={235}
-          className="footer-v1-wordmark"
-          unoptimized
-        />
+        <p className="footer-v1-wordmark">زرین‌سرمایه</p>
       </div>
     </footer>
   );

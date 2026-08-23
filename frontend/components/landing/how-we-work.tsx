@@ -6,32 +6,32 @@ import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsap';
 
 const STEPS = [
   {
-    title: 'Initial Diagnosis',
-    description: 'We assess your product, market, and key KPIs to understand your baseline.',
+    title: 'تشخیص اولیه',
+    description: 'محصول، بازار و شاخص‌های کلیدی را می‌سنجیم تا نقطهٔ شروع را دقیق بفهمیم.',
     image: '/landing/work-smile.jpg',
     alt: 'پرتره با جواهرات نقره و لبخند',
   },
   {
-    title: 'Strategic Audit',
-    description: 'We identify opportunities, risks, and gaps across product, growth, and GTM.',
+    title: 'ممیزی راهبردی',
+    description: 'فرصت‌ها، ریسک‌ها و شکاف‌ها را در محصول، رشد و ورود به بازار پیدا می‌کنیم.',
     image: '/landing/work-diamonds.jpg',
     alt: 'حلقه‌های برلیان',
   },
   {
-    title: 'Action Roadmap',
-    description: 'We build a clear plan with priorities, objectives, and measurable deliverables.',
+    title: 'نقشهٔ اقدام',
+    description: 'برنامهٔ شفاف با اولویت‌ها، اهداف و خروجی‌های قابل‌اندازه‌گیری می‌چینیم.',
     image: '/landing/work-moon.jpg',
     alt: 'گوشوارهٔ نقره و تویید',
   },
   {
-    title: 'Guided Execution',
-    description: 'We work alongside you to implement growth and optimization tactics.',
+    title: 'اجرای هدایت‌شده',
+    description: 'کنار شما تاکتیک‌های رشد و بهینه‌سازی را پیاده می‌کنیم.',
     image: '/landing/work-jewelry.jpg',
     alt: 'نمای نزدیک جواهرات',
   },
   {
-    title: 'Iteration & Metrics',
-    description: 'We measure results and refine the plan through continuous cycles.',
+    title: 'تکرار و سنجش',
+    description: 'نتایج را اندازه می‌گیریم و برنامه را در چرخه‌های پیوسته اصلاح می‌کنیم.',
     image: '/landing/work-campaign.jpg',
     alt: 'کمپین ادیتوریال جواهرات',
   },
@@ -112,7 +112,7 @@ export function HowWeWork() {
     <section ref={sectionRef} id="work" className="how-work-v1">
       <div className="how-work-v1-sticky">
         <div className="how-work-v1-left">
-          <p className="how-work-v1-kicker">how we work</p>
+          <p className="how-work-v1-kicker">نحوهٔ کار</p>
           <div className="how-work-v1-titles">
             {STEPS.map((step) => (
               <div key={step.title} className="how-work-v1-title">

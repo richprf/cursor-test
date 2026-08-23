@@ -16,9 +16,9 @@ const LOGOS = [
 ];
 
 const STATS = [
-  { value: `${toPersianNumber(95)}٪`, label: 'Complete customer satisfaction' },
-  { value: `${toPersianNumber(20)}+`, label: 'Innovation and valuable insight' },
-  { value: `$${toPersianNumber(5)}M+`, label: 'Highly efficient strategies' },
+  { value: `${toPersianNumber(95)}٪`, label: 'رضایت کامل مشتریان' },
+  { value: `${toPersianNumber(20)}+`, label: 'نوآوری و بینش کاربردی' },
+  { value: `${toPersianNumber(5)}M+ دلار`, label: 'استراتژی‌های کارآمد' },
 ];
 
 export function Partnerships() {
@@ -29,15 +29,15 @@ export function Partnerships() {
           <Reveal y={28}>
             <p className="partners-v1-kicker">
               <span className="partners-v1-dot" aria-hidden />
-              Partnerships
+              همکاری‌ها
             </p>
           </Reveal>
 
           <Reveal className="partners-v1-content" y={36} delay={0.06}>
-            <h2 className="partners-v1-title">Over a decade helping early-stage businesses grow.</h2>
+            <h2 className="partners-v1-title">بیش از یک دهه همراهی با کسب‌وکارهای نوپا برای رشد.</h2>
             <p className="partners-v1-desc">
-              From idea validation to advanced growth, we combine strategic insight and modern tools to help your
-              startup make smarter decisions and scale faster in a rapidly changing market.
+              از اعتبارسنجی ایده تا رشد پیشرفته، بینش راهبردی و ابزارهای مدرن را کنار هم می‌گذاریم تا
+              تصمیم‌های هوشمندانه‌تر بگیرید و در بازاری که مدام عوض می‌شود سریع‌تر رشد کنید.
             </p>
             <div className="partners-v1-stats">
               {STATS.map((stat) => (

@@ -5,26 +5,26 @@ import { Reveal, RevealGroup, RevealItem } from './reveal';
 
 const POSTS = [
   {
-    title: 'Turning Data into Strategy: The Power of Predictive Analytics',
-    date: 'January 8, 2026',
+    title: 'تبدیل داده به استراتژی: قدرت تحلیل پیش‌بین',
+    date: '۸ ژانویه ۲۰۲۶',
     image: '/landing/work-product.jpg',
     alt: 'نمای محصول جواهرات',
   },
   {
-    title: '5 Ways AI Can Streamline Business Operations',
-    date: 'January 8, 2026',
+    title: 'پنج راه برای ساده‌کردن عملیات کسب‌وکار با هوش مصنوعی',
+    date: '۸ ژانویه ۲۰۲۶',
     image: '/landing/work-macro.jpg',
     alt: 'نمای نزدیک طلا و جواهر',
   },
   {
-    title: 'Human + Machine: Finding the Perfect Balance',
-    date: 'January 8, 2026',
+    title: 'انسان و ماشین: پیدا کردن تعادل درست',
+    date: '۸ ژانویه ۲۰۲۶',
     image: '/landing/whatwedo-1.jpg',
     alt: 'ترکیب طلا و جزئیات ظریف',
   },
   {
-    title: 'Turning Data into Strategy: The Power of Predictive Analytics',
-    date: 'January 8, 2026',
+    title: 'تبدیل داده به استراتژی: قدرت تحلیل پیش‌بین',
+    date: '۸ ژانویه ۲۰۲۶',
     image: '/landing/whatwedo-2.jpg',
     alt: 'عکس ادیتوریال جواهرات',
   },
@@ -32,19 +32,18 @@ const POSTS = [
 
 export function Blogs() {
   return (
-    <section id="blog" dir="ltr" className="blogs-v1 scroll-mt-24">
+    <section id="blog" className="blogs-v1 scroll-mt-24">
       <div className="blogs-v1-shell">
         <div className="blogs-v1-grid">
           <Reveal className="blogs-v1-left" y={36}>
             <div className="blogs-v1-heading">
               <p className="about-v1-kicker">
                 <span className="about-v1-dot" aria-hidden />
-                Blog and articles
+                وبلاگ و مقالات
               </p>
-              <h2 className="blogs-v1-title">Latest insights and trends</h2>
+              <h2 className="blogs-v1-title">تازه‌ترین دیدگاه‌ها و روندها</h2>
               <p className="blogs-v1-desc">
-                Whether you’re optimizing today or building for tomorrow we help you move faster with
-                confidence.
+                چه امروز را بهینه کنید چه برای فردا بسازید، کمکتان می‌کنیم سریع‌تر و با اطمینان جلو بروید.
               </p>
             </div>
           </Reveal>
