@@ -78,8 +78,8 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
             ))}
           </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
-            <ThemeToggle className="rounded-none border-current/20 bg-transparent" />
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="hidden rounded-none border-current/20 bg-transparent lg:grid" />
             <Link
               href={ctaHref}
               className={`border px-3.5 py-1.5 text-xs font-semibold tracking-tight ${
@@ -92,7 +92,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
         </div>
       </header>
 
-      <nav className="nav-glass lg:hidden" aria-label="منوی موبایل">
+      <nav className="nav-glass" aria-label="منوی موبایل">
         <div className="nav-glass-links">
           {NAV_LINKS.map((link) => (
             <a key={link.href} href={link.href} className="nav-glass-link">
@@ -100,12 +100,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
             </a>
           ))}
         </div>
-        <div className="nav-glass-actions">
-          <ThemeToggle className="nav-glass-theme" />
-          <Link href={ctaHref} className="nav-glass-cta">
-            {ctaLabel}
-          </Link>
-        </div>
+        <ThemeToggle className="nav-glass-theme" />
       </nav>
     </>
   );
