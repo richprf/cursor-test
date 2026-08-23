@@ -11,11 +11,11 @@ import { PriceStatusPill } from './live-price';
 
 /** Positions and colors match Upmind Home v1 `.hero_badge-wrap.is-*`. */
 const BADGES = [
-  { id: 'three', label: 'حس لوکس', tone: '#f79bf7', float: 'down' },
-  { id: 'two', label: 'حرفه‌ای', tone: '#fe86a6', float: 'up' },
-  { id: 'one', label: 'استراتژیک', tone: '#b7fe02', float: 'down' },
-  { id: 'five', label: 'خرید هوشمند', tone: '#7ddafc', float: 'up' },
-  { id: 'four', label: 'رشد سریع', tone: '#edff75', float: 'down' },
+  { id: 'three', label: 'آگهی طلافروش', tone: '#f79bf7', float: 'down' },
+  { id: 'two', label: 'خرید حضوری', tone: '#fe86a6', float: 'up' },
+  { id: 'one', label: 'تحویل با پیک', tone: '#b7fe02', float: 'down' },
+  { id: 'five', label: 'بدون فروش واسطه', tone: '#7ddafc', float: 'up' },
+  { id: 'four', label: 'انتخاب هوشمند', tone: '#edff75', float: 'down' },
 ] as const;
 
 export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string }) {
@@ -49,7 +49,7 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
 
   return (
     <section ref={rootRef} id="top" className="hero-v1">
-      <h1 className="sr-only">طلای شما، همیشه در دستان شما</h1>
+      <h1 className="sr-only">آگهی طلای طلافروشان؛ حضوری بخرید یا پیک بگیرید</h1>
 
       <div className="hero-v1-media" aria-hidden>
         <Image
@@ -66,11 +66,11 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
         <div className="hero-v1-content">
           <div className="hero-v1-heading">
             <p data-hero-copy className="hero-v1-title">
-              طلا بخرید. امن نگه دارید. هر لحظه نقد کنید.
+              طلای طلافروشان را ببینید. حضوری بخرید یا پیک بگیرید.
             </p>
             <p data-hero-copy className="hero-v1-desc">
-              با زرین‌سرمایه از هر مبلغی که دارید طلای ۱۸ عیار بخرید، در خزانهٔ بیمه‌شده نگه دارید و
-              هر لحظه که خواستید بفروشید یا به‌صورت فیزیکی تحویل بگیرید.
+              زرین‌سرمایه خودش طلا نمی‌فروشد. مغازه‌دارها لیست طلایشان را می‌گذارند، شما می‌بینید و از
+              همان فروشنده می‌خرید یا ما برایتان پیک می‌فرستیم.
             </p>
             <p data-hero-copy className="hero-v1-price">
               <span className="tabular-nums">{toPersianNumber(current.price)} تومان</span>

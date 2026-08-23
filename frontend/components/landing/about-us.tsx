@@ -3,7 +3,7 @@
 import { toPersianNumber } from '@/lib/format';
 import { Reveal } from './reveal';
 
-const LOOP_ITEMS = ['حرفه‌ای', 'حس لوکس', 'استراتژیک', 'هوشمند'];
+const LOOP_ITEMS = ['آگهی طلافروش', 'خرید حضوری', 'پیک طلا', 'بدون واسطه'];
 
 export function AboutUs() {
   return (
@@ -16,11 +16,11 @@ export function AboutUs() {
               درباره ما
             </p>
             <h2 className="about-v1-title">
-              به سرمایه‌گذارها کمک می‌کنیم هوشمند بخرند و با اطمینان رشد کنند.
+              طلاها را از مغازه‌ها جمع می‌کنیم تا راحت‌تر انتخاب کنید.
             </h2>
             <p className="about-v1-desc">
-              قیمت زنده، خزانهٔ بیمه‌شده و مسیر شفاف از خرید تا تحویل فیزیکی؛ تا هر لحظه که خواستید بفروشید یا طلا را
-              در دست بگیرید.
+              طلافروش آگهی می‌گذارد، مشتری مقایسه می‌کند، بعد می‌رود همان مغازه یا پیک می‌گیرد. ما واسطهٔ فروش
+              نیستیم.
             </p>
             <a href="#features" className="about-v1-btn">
               بیشتر بدانید
@@ -39,7 +39,7 @@ export function AboutUs() {
                     <p className="about-v1-stat-value">{toPersianNumber(49)}٪</p>
                     <span className="about-v1-stat-badge">+{toPersianNumber(2.5)}٪</span>
                   </div>
-                  <p className="about-v1-stat-caption">رشد سرمایه</p>
+                  <p className="about-v1-stat-caption">آگهی‌های تازه</p>
                 </div>
 
                 <div className="about-v1-loops">

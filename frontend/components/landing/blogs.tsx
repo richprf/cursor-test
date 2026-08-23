@@ -5,25 +5,25 @@ import { Reveal, RevealGroup, RevealItem } from './reveal';
 
 const POSTS = [
   {
-    title: 'تبدیل داده به استراتژی: قدرت تحلیل پیش‌بین',
+    title: 'چطور طلای آگهی‌شده را از خود طلافروش بخرید',
     date: '۸ ژانویه ۲۰۲۶',
     image: '/landing/work-product.jpg',
     alt: 'نمای محصول جواهرات',
   },
   {
-    title: 'پنج راه برای ساده‌کردن عملیات کسب‌وکار با هوش مصنوعی',
+    title: 'پیک طلا: از مغازه تا در خانه',
     date: '۸ ژانویه ۲۰۲۶',
     image: '/landing/work-macro.jpg',
     alt: 'نمای نزدیک طلا و جواهر',
   },
   {
-    title: 'انسان و ماشین: پیدا کردن تعادل درست',
+    title: 'طلافروش‌ها چطور روی زرین‌سرمایه آگهی می‌گذارند',
     date: '۸ ژانویه ۲۰۲۶',
     image: '/landing/whatwedo-1.jpg',
     alt: 'ترکیب طلا و جزئیات ظریف',
   },
   {
-    title: 'تبدیل داده به استراتژی: قدرت تحلیل پیش‌بین',
+    title: 'خرید حضوری یا پیک؛ کدام برای شما بهتر است',
     date: '۸ ژانویه ۲۰۲۶',
     image: '/landing/whatwedo-2.jpg',
     alt: 'عکس ادیتوریال جواهرات',
@@ -41,9 +41,9 @@ export function Blogs() {
                 <span className="about-v1-dot" aria-hidden />
                 وبلاگ و مقالات
               </p>
-              <h2 className="blogs-v1-title">تازه‌ترین دیدگاه‌ها و روندها</h2>
+              <h2 className="blogs-v1-title">راهنمای آگهی و خرید از طلافروش</h2>
               <p className="blogs-v1-desc">
-                چه امروز را بهینه کنید چه برای فردا بسازید، کمکتان می‌کنیم سریع‌تر و با اطمینان جلو بروید.
+                از ثبت آگهی مغازه تا خرید حضوری یا پیک؛ همین‌جا بخوانید.
               </p>
             </div>
           </Reveal>

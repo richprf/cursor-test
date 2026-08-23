@@ -24,7 +24,7 @@ export default async function LoginPage({
         <div className="mb-7 space-y-2 text-center">
           <h1 className="text-xl font-bold">ورود به حساب</h1>
           <p className="text-sm leading-6 text-muted">
-            برای خرید و مدیریت طلای خود، با ایمیل یا حساب گوگل وارد شوید.
+            برای دیدن آگهی‌ها یا ثبت طلای مغازه‌تان، با ایمیل یا گوگل وارد شوید.
           </p>
         </div>
 

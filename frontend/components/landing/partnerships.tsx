@@ -16,9 +16,9 @@ const LOGOS = [
 ];
 
 const STATS = [
-  { value: `${toPersianNumber(95)}٪`, label: 'رضایت کامل مشتریان' },
-  { value: `${toPersianNumber(20)}+`, label: 'نوآوری و بینش کاربردی' },
-  { value: `${toPersianNumber(5)}M+ دلار`, label: 'استراتژی‌های کارآمد' },
+  { value: `${toPersianNumber(95)}٪`, label: 'خرید مستقیم از طلافروش' },
+  { value: `${toPersianNumber(20)}+`, label: 'مغازهٔ آگهی‌شده' },
+  { value: `${toPersianNumber(5)}+`, label: 'شهر با پیک طلا' },
 ];
 
 export function Partnerships() {
@@ -34,10 +34,10 @@ export function Partnerships() {
           </Reveal>
 
           <Reveal className="partners-v1-content" y={36} delay={0.06}>
-            <h2 className="partners-v1-title">بیش از یک دهه همراهی با کسب‌وکارهای نوپا برای رشد.</h2>
+            <h2 className="partners-v1-title">طلافروشان، طلایشان را همین‌جا آگهی می‌کنند.</h2>
             <p className="partners-v1-desc">
-              از اعتبارسنجی ایده تا رشد پیشرفته، بینش راهبردی و ابزارهای مدرن را کنار هم می‌گذاریم تا
-              تصمیم‌های هوشمندانه‌تر بگیرید و در بازاری که مدام عوض می‌شود سریع‌تر رشد کنید.
+              مغازه‌دار لیست می‌گذارد، مشتری می‌بیند و معامله با همان فروشنده انجام می‌شود؛ حضوری در مغازه
+              یا با پیک.
             </p>
             <div className="partners-v1-stats">
               {STATS.map((stat) => (

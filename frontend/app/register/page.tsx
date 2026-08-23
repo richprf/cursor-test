@@ -16,7 +16,7 @@ export default function RegisterPage() {
         <div className="mb-7 space-y-2 text-center">
           <h1 className="text-xl font-bold">ساخت حساب کاربری</h1>
           <p className="text-sm leading-6 text-muted">
-            در چند ثانیه حساب بسازید و سرمایه‌گذاری روی طلا را شروع کنید.
+            حساب بسازید؛ مشتری باشید یا طلافروش. زرین‌سرمایه خودش طلا نمی‌فروشد.
           </p>
         </div>
 

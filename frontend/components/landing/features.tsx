@@ -15,28 +15,28 @@ import { CinematicMedia } from './cinematic-media';
 const MOBILE_MQ = '(max-width: 639.98px)';
 
 const HEADLINE_GRAY = 'چه می‌کنیم.';
-const HEADLINE_REST = 'طلای شما، همیشه در دستان شما.';
+const HEADLINE_REST = 'آگهی طلافروشان را یکجا نشان می‌دهیم.';
 
 const COPY_LEFT =
-  'با زرین‌سرمایه از هر مبلغی طلای ۱۸ عیار بخرید، در خزانهٔ بیمه‌شده نگه دارید و هر لحظه بفروشید یا به‌صورت فیزیکی تحویل بگیرید.';
+  'طلافروش طلایش را آگهی می‌کند. مشتری می‌بیند و از همان مغازه می‌خرد؛ ما فروشنده نیستیم.';
 const COPY_RIGHT =
-  'از خرید چند صد هزار تومانی تا تحویل شمش؛ همه در یک اپلیکیشن. بدون حداقل، بدون کارمزد خرید. با شما.';
+  'اگر نخواستید حضوری بروید، پیک طلا را از همان فروشنده برایتان می‌آورد.';
 
 const SHOTS = [
   {
     src: '/landing/whatwedo-1.jpg',
     video: '/landing/whatwedo-1.mp4',
-    label: 'خرید و فروش آنی',
+    label: 'آگهی طلافروش',
   },
   {
     src: '/landing/whatwedo-2.jpg',
     video: '/landing/whatwedo-2.mp4',
-    label: 'نگهداری در خزانه',
+    label: 'خرید از مغازه',
   },
   {
     src: '/landing/whatwedo-3.jpg',
     video: '/landing/whatwedo-3.mp4',
-    label: 'تحویل فیزیکی',
+    label: 'تحویل با پیک',
   },
 ] as const;
 

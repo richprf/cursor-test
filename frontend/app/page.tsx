@@ -11,15 +11,14 @@ import { Partnerships } from '@/components/landing/partnerships';
 import { AboutUs } from '@/components/landing/about-us';
 import { Services } from '@/components/landing/services';
 import { Features } from '@/components/landing/features';
-import { TrustBar } from '@/components/landing/trust-bar';
 import { HowWeWork } from '@/components/landing/how-we-work';
 import { Blogs } from '@/components/landing/blogs';
 import { SiteFooter } from '@/components/landing/site-footer';
 
 export const metadata = {
-  title: 'خرید و سرمایه‌گذاری طلا',
+  title: 'آگهی طلای طلافروشان',
   description:
-    'با زرین‌سرمایه از هر مبلغی طلای ۱۸ عیار بخرید، در خزانهٔ بیمه‌شده نگه دارید و هر لحظه بفروشید یا فیزیکی تحویل بگیرید.',
+    'زرین‌سرمایه خودش طلا نمی‌فروشد. مغازه‌دارها لیست می‌کنند، مشتری می‌بیند و حضوری می‌خرد یا پیک می‌گیرد.',
 };
 
 export default async function HomePage() {
@@ -43,7 +42,6 @@ export default async function HomePage() {
             <AboutUs />
             <Services />
             <Features />
-            <TrustBar />
             <HowWeWork />
             <Blogs />
           </main>
