@@ -187,58 +187,58 @@ export function WwakeFooter() {
           <div>
             <p>Follow</p>
             <a href="https://www.instagram.com/wwake/" className="ww-link">
-              Instagram
+              <span>Instagram</span>
             </a>
             <a href="https://www.facebook.com/WWAKEstudio" className="ww-link">
-              Facebook
+              <span>Facebook</span>
             </a>
             <a href="https://www.tiktok.com/@wwakeworld" className="ww-link">
-              Tiktok
+              <span>Tiktok</span>
             </a>
             <a href="#journal" className="ww-link">
-              Press
+              <span>Press</span>
             </a>
           </div>
           <div>
             <p>Information</p>
             <a href="#visit" className="ww-link">
-              FAQ&apos;s
+              <span>FAQ&apos;s</span>
             </a>
             <a href="/login" className="ww-link">
-              Contact
+              <span>Contact</span>
             </a>
             <a href="#visit" className="ww-link">
-              Visit Us
+              <span>Visit Us</span>
             </a>
             <a href="#shop" className="ww-link">
-              Try At Home
+              <span>Try At Home</span>
             </a>
             <a href="#visit" className="ww-link">
-              Stockists
+              <span>Stockists</span>
             </a>
             <a href="#journal" className="ww-link">
-              Careers
+              <span>Careers</span>
             </a>
           </div>
           <div>
             <p>Ethos</p>
             <a href="#journal" className="ww-link">
-              Ethos
+              <span>Ethos</span>
             </a>
             <a href="#visit" className="ww-link">
-              Materials
+              <span>Materials</span>
             </a>
             <a href="#values" className="ww-link">
-              Diamond Guide
+              <span>Diamond Guide</span>
             </a>
             <a href="#values" className="ww-link">
-              Custom
+              <span>Custom</span>
             </a>
             <a href="#journal" className="ww-link">
-              Heirloom
+              <span>Heirloom</span>
             </a>
             <a href="#journal" className="ww-link">
-              Continuum Journal
+              <span>Continuum Journal</span>
             </a>
           </div>
         </div>

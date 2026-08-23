@@ -572,7 +572,6 @@
   justify-content: space-between;
   gap: 16px;
   padding: 32px;
-  border-bottom: 1px solid #777576;
 }
 
 .ww-value-list {
@@ -673,7 +672,6 @@
   gap: 32px;
   padding: 32px;
   overflow: hidden;
-  border-bottom: 1px solid #777576;
 }
 
 .ww-tiles::-webkit-scrollbar {
@@ -782,6 +780,7 @@
 .ww-footer-menus > div {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 4px;
 }
 
@@ -794,13 +793,30 @@
 
 .ww-footer-menus a {
   display: inline-block;
-  width: auto;
+  width: fit-content;
+  max-width: 100%;
+  align-self: flex-start;
   margin: 0;
   padding: 0;
   color: #777576;
   font-size: 14px;
   font-weight: 300;
   line-height: 1;
+  background-image: none;
+}
+
+.ww-footer-menus a > span {
+  display: inline;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  transition: color 0.35s ease-out, background-size 0.35s ease-out;
+}
+
+.ww-footer-menus a:hover > span {
+  background-size: 0 1px;
+  background-position: right bottom;
 }
 
 .ww-footer-brand {
