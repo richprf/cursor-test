@@ -162,9 +162,12 @@ export const JOURNAL = [
 ] as const;
 
 export const TILES = [
-  { title: 'مشاهدهٔ همه', count: '۳۳۴', image: '/landing/wwake/tile-all.jpg', href: '#shop' },
+  { title: 'مشاهدهٔ همه', count: '۳۳۴', image: '/landing/wwake/tile-view.jpg', href: '#shop' },
   { title: 'آیینی', count: '۱۲۳', image: '/landing/wwake/tile-ceremonial.jpg', href: '#values' },
   { title: 'تک‌نسخه‌ها', count: '۴۶', image: '/landing/wwake/tile-ooak.jpg', href: '#values' },
+  { title: 'انگشتر سفارشی', count: '۴۷', image: '/landing/wwake/tile-personal.jpg', href: '#values' },
   { title: 'بازدید', image: '/landing/wwake/tile-visit.jpg', href: '#visit' },
+  { title: 'سفارشی', image: '/landing/wwake/tile-custom.jpg', href: '#values' },
   { title: 'منشور', image: '/landing/wwake/tile-ethos.jpg', href: '#journal' },
+  { title: 'مواد', image: '/landing/wwake/tile-materials.jpg', href: '#visit' },
 ] as const;

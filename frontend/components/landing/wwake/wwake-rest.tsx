@@ -91,58 +91,66 @@ export function WwakeJournal() {
   );
 }
 
-export function WwakeValues() {
-  return (
-    <section id="visit" className="ww-values">
-      <ul className="ww-value-list">
-        <li>
-          <h3>
-            <span>۱</span> ساخته‌شده در نیویورک
-          </h3>
-          <p>طلای خالص و سنگ طبیعی با منبع اخلاقی، با دقت انتخاب شده</p>
-        </li>
-        <li>
-          <h3>
-            <span>۲</span> ساخته‌شده تا بماند
-          </h3>
-          <p>طراحی‌شده برای دوام، زیر پوشش گارانتی</p>
-        </li>
-        <li>
-          <h3>
-            <span>۳</span> ارسال و مرجوعی
-          </h3>
-          <p>ارسال و مرجوعی به سراسر جهان، با محاسبهٔ عوارض از ابتدا</p>
-        </li>
-      </ul>
-      <aside className="ww-value-post">
-        <Image src="/landing/wwake/j5.jpg" alt="" width={144} height={180} />
-        <p>۶ خرداد ۱۴۰۵</p>
-        <p>الماس طبیعی و عتیقه: هر سنگ چه چیزی با خود دارد</p>
-      </aside>
-    </section>
-  );
-}
-
-export function WwakeTiles() {
-  return (
-    <section className="ww-tiles">
-      {TILES.map((tile) => (
-        <a key={tile.title} href={tile.href} className="ww-tile">
-          <Image src={tile.image} alt="" width={400} height={500} />
-          <span className="ww-link">
-            {tile.title}
-            {'count' in tile && tile.count ? ` [${tile.count}]` : ''}
-          </span>
-        </a>
-      ))}
-    </section>
-  );
-}
-
 export function WwakeFooter() {
   return (
     <footer className="ww-footer">
-      <div className="ww-footer-grid">
+      <section id="visit" className="ww-values">
+        <ul className="ww-value-list">
+          <li>
+            <h3>
+              <span>۱</span>
+              <span>ساخته‌شده در نیویورک</span>
+            </h3>
+            <p>طلای خالص و سنگ طبیعی با منبع اخلاقی، با دقت انتخاب شده</p>
+          </li>
+          <li>
+            <h3>
+              <span>۲</span>
+              <span>ساخته‌شده تا بماند</span>
+            </h3>
+            <p>طراحی‌شده برای دوام، زیر پوشش گارانتی</p>
+          </li>
+          <li>
+            <h3>
+              <span>۳</span>
+              <span>ارسال و مرجوعی</span>
+            </h3>
+            <p>ارسال و مرجوعی به سراسر جهان، با محاسبهٔ عوارض از ابتدا</p>
+          </li>
+        </ul>
+        <aside className="ww-value-post">
+          <div>
+            <p>۶ خرداد ۱۴۰۵</p>
+            <a href="#journal" className="ww-underline">
+              الماس طبیعی و عتیقه: هر سنگ چه چیزی با خود دارد
+            </a>
+            <p className="ww-value-type">
+              <span>گونه</span>
+              <span>از زمین</span>
+            </p>
+            <p className="ww-value-excerpt">
+              راهنمای الماس طبیعی، تراش عتیقه، و تاریخچه‌هایی که در سنگ‌های شکل‌گرفته در زمان زمین‌شناسی مانده‌اند.
+            </p>
+          </div>
+          <Image src="/landing/wwake/j5.jpg" alt="" width={144} height={180} />
+        </aside>
+      </section>
+
+      <section className="ww-tiles" aria-label="کلکسیون‌ها">
+        {TILES.map((tile) => (
+          <a key={tile.title} href={tile.href} className="ww-tile">
+            <span className="ww-tile-media">
+              <Image src={tile.image} alt="" fill sizes="22vw" />
+            </span>
+            <span className="ww-link">
+              {tile.title}
+              {'count' in tile && tile.count ? ` [${tile.count}]` : ''}
+            </span>
+          </a>
+        ))}
+      </section>
+
+      <div className="ww-footer-bottom">
         <form className="ww-news" action="#visit">
           <label htmlFor="ww-email">خبرنامه</label>
           <div className="ww-news-row">
@@ -152,6 +160,7 @@ export function WwakeFooter() {
             </button>
           </div>
         </form>
+
         <div className="ww-footer-menus">
           <div>
             <p>دنبال کنید</p>
@@ -211,12 +220,25 @@ export function WwakeFooter() {
             </a>
           </div>
         </div>
-      </div>
-      <p className="ww-wordmark">زرین‌سرمایه</p>
-      <div className="ww-legal">
-        <span>حریم خصوصی</span>
-        <span>شرایط استفاده</span>
-        <span>© همهٔ حقوق محفوظ است</span>
+
+        <div className="ww-footer-brand">
+          <p className="ww-wordmark">زرین‌سرمایه</p>
+          <div className="ww-legal">
+            <a href="#visit" className="ww-underline">
+              حریم خصوصی
+            </a>
+            <a href="#visit" className="ww-underline">
+              شرایط استفاده
+            </a>
+            <span>© همهٔ حقوق محفوظ است</span>
+            <span className="ww-credits">
+              اعتبارها
+              <span className="ww-credits-info">
+                <span>طراحی · الگو از WWAKE</span>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
     </footer>
   );
