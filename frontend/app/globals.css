@@ -63,7 +63,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-poppins), var(--font-vazirmatn), 'Poppins', 'Vazirmatn', sans-serif;
+  --font-sans: var(--font-arabic), var(--font-poppins), 'Noto Sans Arabic', 'Poppins', sans-serif;
 
   --color-background: var(--background);
   --color-background-elevated: var(--background-elevated);

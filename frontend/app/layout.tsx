@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Poppins, Vazirmatn } from 'next/font/google';
+import { Noto_Sans_Arabic, Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
-const vazirmatn = Vazirmatn({
-  subsets: ['arabic', 'latin'],
-  weight: '700',
-  variable: '--font-vazirmatn',
+const notoArabic = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-arabic',
   display: 'swap',
 });
 
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html
       lang="fa"
       dir="rtl"
-      className={`${vazirmatn.variable} ${poppins.variable} scroll-smooth`}
+      className={`${notoArabic.variable} ${poppins.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <body className="min-h-dvh antialiased">
