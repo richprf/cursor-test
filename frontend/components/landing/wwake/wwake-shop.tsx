@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { toPersianNumber } from '@/lib/format';
 import { SHOP_TABS } from '@/lib/wwake-data';
 
@@ -63,9 +64,9 @@ export function WwakeShop() {
     <section id="shop" className="ww-shop">
       <div className="ww-shop-head">
         <h2>ساخته شده تا جمع شود</h2>
-        <a href="/shop" className="ww-link">
+        <Link href="/shop" className="ww-link">
           همه را ببینید <span>[۳۳۴]</span>
-        </a>
+        </Link>
       </div>
       <p className="ww-shop-desc">
         هر قطعه می‌تواند تنها بایستد یا بخشی از چیزی بزرگ‌تر شود. مجموعه‌هایی را ببینید که با شما در زمان پیش می‌روند.
