@@ -355,11 +355,37 @@
   line-height: 1.75;
 }
 
+.ww-shop-controls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
 .ww-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem 1.6rem;
-  margin-bottom: 1.4rem;
+}
+
+.ww-slider {
+  display: flex;
+  gap: 0.9rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  cursor: grab;
+}
+
+.ww-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.ww-slide {
+  flex: 0 0 calc(25% - 0.68rem);
+  scroll-snap-align: start;
 }
 
 .ww-tab {
@@ -377,12 +403,6 @@
 
 .ww-tab-count {
   color: var(--ww-grey);
-}
-
-.ww-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.4rem 0.9rem;
 }
 
 .ww-card {
@@ -659,7 +679,15 @@
     grid-template-columns: 1fr;
   }
 
-  .ww-grid,
+  .ww-slide {
+    flex-basis: calc(50% - 0.45rem);
+  }
+
+  .ww-shop-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .ww-tiles,
   .ww-value-list,
   .ww-footer-menus {
@@ -676,8 +704,8 @@
 }
 
 @media (max-width: 639px) {
-  .ww-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .ww-slide {
+    flex-basis: 72%;
   }
 
   .ww-tiles {
