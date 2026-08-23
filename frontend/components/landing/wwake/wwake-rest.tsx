@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { JOURNAL, TILES } from '@/lib/wwake-data';
+import { JOURNAL } from '@/lib/wwake-data';
 
 export function WwakeIntro() {
   return (
@@ -91,60 +91,82 @@ export function WwakeJournal() {
   );
 }
 
+const FOOTER_TILES = [
+  { title: 'View All', count: '334', image: '/landing/wwake/tile-view.jpg', href: '#shop' },
+  { title: 'Ceremonial', count: '123', image: '/landing/wwake/tile-ceremonial.jpg', href: '#values' },
+  { title: 'One Of A Kinds', count: '46', image: '/landing/wwake/tile-ooak.jpg', href: '#values' },
+  { title: 'Personalized & Bespoke Rings', count: '47', image: '/landing/wwake/tile-personal.jpg', href: '#values' },
+  { title: 'Visit Us', image: '/landing/wwake/tile-visit.jpg', href: '#visit' },
+  { title: 'Custom', image: '/landing/wwake/tile-custom.jpg', href: '#values' },
+  { title: 'Ethos', image: '/landing/wwake/tile-ethos.jpg', href: '#journal' },
+  { title: 'Materials', image: '/landing/wwake/tile-materials.jpg', href: '#visit' },
+] as const;
+
+function WwakeMark() {
+  return (
+    <svg className="ww-wordmark" width="320" height="73" viewBox="0 0 320 73" fill="none" aria-label="WWAKE">
+      <path d="M171.221 11.3768L184.256 45.0036H158.829L175.41 0H173.652L147.133 72.6855H148.63L151.721 64.296L151.755 64.2046L158.288 46.4717H184.826L194.989 72.6855H202.798L175.411 0L171.221 11.3768Z" fill="#ECF0EB" />
+      <path d="M151.558 0H149.801L127.121 62.1622L103.705 0H101.947L79.3733 61.873L56.2847 0H54.527L31.8472 62.1622L8.19376 0.440506H0L28.0082 72.6855H29.5056L32.5965 64.2966L32.6368 64.2225L32.63 64.2046L51.9875 11.6635L75.4286 72.6855H76.9261L99.5133 11.3768L123.282 72.6855H124.779L127.87 64.296L127.911 64.2225L127.903 64.2046L151.558 0Z" fill="#ECF0EB" />
+      <path d="M264.072 2.21682e-06L262.208 0.0207912L229.327 33.4757L227.922 34.9269V0.105411H220.11V72.7416H227.922V40.5039L259.609 72.7416H270.346L231.353 33.468L264.072 2.21682e-06Z" fill="#ECF0EB" />
+      <path d="M320 1.57393V0.105411H285.113V72.7416H320V71.1595H292.924V34.7205H320V33.2523H292.924V1.57393H320Z" fill="#ECF0EB" />
+    </svg>
+  );
+}
+
 export function WwakeFooter() {
   return (
-    <footer className="ww-footer">
+    <footer className="ww-footer" dir="ltr" lang="en">
       <section id="visit" className="ww-values">
         <ul className="ww-value-list">
           <li>
             <h3>
-              <span>۱</span>
-              <span>ساخته‌شده در نیویورک</span>
+              <span>1</span>
+              <span>Made In New York</span>
             </h3>
-            <p>طلای خالص و سنگ طبیعی با منبع اخلاقی، با دقت انتخاب شده</p>
+            <p>Ethically sourced solid gold and natural stones, selected with care</p>
           </li>
           <li>
             <h3>
-              <span>۲</span>
-              <span>ساخته‌شده تا بماند</span>
+              <span>2</span>
+              <span>Crafted To Last</span>
             </h3>
-            <p>طراحی‌شده برای دوام، زیر پوشش گارانتی</p>
+            <p>Designed for longevity, covered under warranty</p>
           </li>
           <li>
             <h3>
-              <span>۳</span>
-              <span>ارسال و مرجوعی</span>
+              <span>3</span>
+              <span>Shipping & Returns</span>
             </h3>
-            <p>ارسال و مرجوعی به سراسر جهان، با محاسبهٔ عوارض از ابتدا</p>
+            <p>Worldwide shipping and returns, with duties calculated upfront</p>
           </li>
         </ul>
         <aside className="ww-value-post">
           <div>
-            <p>۶ خرداد ۱۴۰۵</p>
+            <p>27 05 2026</p>
             <a href="#journal" className="ww-underline">
-              الماس طبیعی و عتیقه: هر سنگ چه چیزی با خود دارد
+              Natural and Antique Diamonds: What Each Stone Carries
             </a>
             <p className="ww-value-type">
-              <span>گونه</span>
-              <span>از زمین</span>
+              <span>Type</span>
+              <span>From The Earth</span>
             </p>
             <p className="ww-value-excerpt">
-              راهنمای الماس طبیعی، تراش عتیقه، و تاریخچه‌هایی که در سنگ‌های شکل‌گرفته در زمان زمین‌شناسی مانده‌اند.
+              A guide to natural diamonds, antique cuts, and the histories held in stones shaped by both geological time...
             </p>
           </div>
           <Image src="/landing/wwake/j5.jpg" alt="" width={144} height={180} />
         </aside>
       </section>
 
-      <section className="ww-tiles" aria-label="کلکسیون‌ها">
-        {TILES.map((tile) => (
+      <section className="ww-tiles" aria-label="Collections">
+        {FOOTER_TILES.map((tile) => (
           <a key={tile.title} href={tile.href} className="ww-tile">
             <span className="ww-tile-media">
-              <Image src={tile.image} alt="" fill sizes="22vw" />
+              <Image src={tile.image} alt="" fill sizes="(min-width: 990px) 12vw, 22vw" />
             </span>
-            <span className="ww-link">
-              {tile.title}
-              {'count' in tile && tile.count ? ` [${tile.count}]` : ''}
+            <span className="ww-tile-copy">
+              <span className="ww-link">{tile.title}</span>
+              {'count' in tile && tile.count ? <span>[{tile.count}]</span> : null}
             </span>
           </a>
         ))}
@@ -152,89 +174,97 @@ export function WwakeFooter() {
 
       <div className="ww-footer-bottom">
         <form className="ww-news" action="#visit">
-          <label htmlFor="ww-email">خبرنامه</label>
+          <label htmlFor="ww-email">Newsletter</label>
           <div className="ww-news-row">
-            <input id="ww-email" type="email" name="email" placeholder="ایمیل شما" />
+            <input id="ww-email" type="email" name="email" placeholder="Your email here" />
             <button type="submit" className="ww-link">
-              خبرم کنید
+              Get notified
             </button>
           </div>
         </form>
 
         <div className="ww-footer-menus">
           <div>
-            <p>دنبال کنید</p>
+            <p>Follow</p>
             <a href="https://www.instagram.com/wwake/" className="ww-link">
-              اینستاگرام
+              Instagram
             </a>
             <a href="https://www.facebook.com/WWAKEstudio" className="ww-link">
-              فیسبوک
+              Facebook
             </a>
             <a href="https://www.tiktok.com/@wwakeworld" className="ww-link">
-              تیک‌تاک
+              Tiktok
             </a>
             <a href="#journal" className="ww-link">
-              مطبوعات
+              Press
             </a>
           </div>
           <div>
-            <p>اطلاعات</p>
+            <p>Information</p>
             <a href="#visit" className="ww-link">
-              پرسش‌ها
+              FAQ&apos;s
             </a>
             <a href="/login" className="ww-link">
-              تماس
+              Contact
             </a>
             <a href="#visit" className="ww-link">
-              بازدید
+              Visit Us
             </a>
             <a href="#shop" className="ww-link">
-              پرو در خانه
+              Try At Home
             </a>
             <a href="#visit" className="ww-link">
-              فروشگاه‌ها
+              Stockists
             </a>
             <a href="#journal" className="ww-link">
-              همکاری
+              Careers
             </a>
           </div>
           <div>
-            <p>منشور</p>
+            <p>Ethos</p>
             <a href="#journal" className="ww-link">
-              منشور
+              Ethos
             </a>
             <a href="#visit" className="ww-link">
-              مواد
+              Materials
             </a>
             <a href="#values" className="ww-link">
-              راهنمای الماس
+              Diamond Guide
             </a>
             <a href="#values" className="ww-link">
-              سفارشی
+              Custom
             </a>
             <a href="#journal" className="ww-link">
-              میراث
+              Heirloom
             </a>
             <a href="#journal" className="ww-link">
-              دفتر پیوستگی
+              Continuum Journal
             </a>
           </div>
         </div>
 
         <div className="ww-footer-brand">
-          <p className="ww-wordmark">زرین‌سرمایه</p>
+          <WwakeMark />
           <div className="ww-legal">
             <a href="#visit" className="ww-underline">
-              حریم خصوصی
+              Privacy policy
             </a>
             <a href="#visit" className="ww-underline">
-              شرایط استفاده
+              Terms of services
             </a>
-            <span>© همهٔ حقوق محفوظ است</span>
+            <span>© All rights reserved Wwake</span>
             <span className="ww-credits">
-              اعتبارها
+              Credits
               <span className="ww-credits-info">
-                <span>طراحی · الگو از WWAKE</span>
+                <span>
+                  <em>Design</em> Thomas Hervé Studio
+                </span>
+                <span>
+                  <em>Development</em> Symediane
+                </span>
+                <span>
+                  <em>Strategy</em> Margueritte Kruger
+                </span>
               </span>
             </span>
           </div>
