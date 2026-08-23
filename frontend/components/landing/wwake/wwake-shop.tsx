@@ -11,14 +11,13 @@ export function WwakeShop() {
   return (
     <section id="shop" className="ww-shop">
       <div className="ww-shop-head">
-        <h2>Designed to Be Collected</h2>
+        <h2>ساخته شده تا جمع شود</h2>
         <a href="#shop" className="ww-link">
-          Shop All <span>[334]</span>
+          همه را ببینید <span>[۳۳۴]</span>
         </a>
       </div>
       <p className="ww-shop-desc">
-        Each piece is created to stand alone or become part of something larger. Explore collections that evolve with
-        you over time.
+        هر قطعه می‌تواند تنها بایستد یا بخشی از چیزی بزرگ‌تر شود. مجموعه‌هایی را ببینید که با شما در زمان پیش می‌روند.
       </p>
 
       <div className="ww-tabs" role="tablist">
@@ -34,7 +33,7 @@ export function WwakeShop() {
             <span>{item.index}</span>
             <span>{item.title}</span>
             <span className="ww-tab-count">
-              <span className="ww-link">Shop</span> [{item.count}]
+              <span className="ww-link">خرید</span> [{item.count}]
             </span>
           </button>
         ))}
@@ -55,7 +54,7 @@ export function WwakeShop() {
               />
             </div>
             <h3>{product.title}</h3>
-            <p>{product.price}</p>
+            <p dir="ltr">{product.price}</p>
           </article>
         ))}
       </div>

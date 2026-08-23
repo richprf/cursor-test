@@ -22,9 +22,9 @@ export function WwakeHero() {
         />
       </div>
       <div className="ww-hero-copy">
-        <h1 className="ww-hero-title">Echoes Collection</h1>
+        <h1 className="ww-hero-title">مجموعهٔ پژواک</h1>
         <a href="#echoes" className="ww-link">
-          Shop
+          خرید
         </a>
       </div>
     </section>

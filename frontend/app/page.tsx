@@ -1,4 +1,3 @@
-import { Instrument_Sans } from 'next/font/google';
 import { auth } from '@/auth';
 import { LenisRoot } from '@/components/landing/lenis-root';
 import { WwakeHeader } from '@/components/landing/wwake/wwake-header';
@@ -10,32 +9,26 @@ import { WwakeShop } from '@/components/landing/wwake/wwake-shop';
 import { ECHO_CATEGORIES, VALUE_CATEGORIES } from '@/lib/wwake-data';
 import './wwake.css';
 
-const instrument = Instrument_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-instrument',
-  display: 'swap',
-});
-
 export const metadata = {
-  title: 'Fine Jewelry Mindfully Made',
-  description: 'Beauty from the earth, fine jewelry shaped by material and time.',
+  title: 'جواهر دست‌ساز',
+  description: 'زیبایی از زمین؛ جواهری که ماده و زمان شکلش داده‌اند.',
 };
 
 export default async function HomePage() {
   const session = await auth();
   const accountHref = session ? '/dashboard' : '/login';
+  const accountLabel = session ? 'داشبورد' : 'ورود';
 
   return (
     <LenisRoot>
-      <div className={`wwake ${instrument.variable} ${instrument.className}`} dir="ltr" lang="en">
-        <WwakeHeader accountHref={accountHref} accountLabel="Account" />
+      <div className="wwake" dir="rtl" lang="fa">
+        <WwakeHeader accountHref={accountHref} accountLabel={accountLabel} />
         <main>
           <WwakeHero />
           <WwakeIntro />
           <WwakeList
             id="echoes-list"
-            heading="Introducing a new collection, Echoes."
+            heading="معرفی مجموعهٔ تازه، پژواک."
             items={ECHO_CATEGORIES}
           />
           <WwakeStacking />
@@ -43,7 +36,7 @@ export default async function HomePage() {
           <WwakeMega />
           <WwakeList
             id="values"
-            heading="Jewelry to be worn, kept and carried forward."
+            heading="جواهری برای پوشیدن، نگه داشتن و جلو بردن."
             items={VALUE_CATEGORIES}
           />
           <WwakeJournal />

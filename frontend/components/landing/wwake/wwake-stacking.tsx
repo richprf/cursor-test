@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { toPersianNumber } from '@/lib/format';
 import { STACK_PINS } from '@/lib/wwake-data';
 
 export function WwakeStacking() {
   const [active, setActive] = useState(0);
-  const item = STACK_PINS[active] ?? STACK_PINS[0];
 
   return (
     <section className="ww-stack">
@@ -40,11 +40,11 @@ export function WwakeStacking() {
       </div>
 
       <div className="ww-stack-head">
-        <h2>Necklaces</h2>
+        <h2>گردنبند</h2>
         <a href="#shop" className="ww-link">
-          Shop
+          خرید
         </a>
-        <span>[{item ? '69' : '69'}]</span>
+        <span>[۶۹]</span>
       </div>
 
       <div className="ww-stack-rail">
@@ -61,7 +61,7 @@ export function WwakeStacking() {
               <strong>
                 {pin.index} {pin.title}
               </strong>
-              <span className="ww-link">Shop</span>
+              <span className="ww-link">خرید</span>
             </span>
           </button>
         ))}
@@ -70,7 +70,7 @@ export function WwakeStacking() {
             [ &lt; ]
           </button>
           <span>
-            [{active + 1}/{STACK_PINS.length}]
+            [{toPersianNumber(active + 1)}/{toPersianNumber(STACK_PINS.length)}]
           </span>
           <button type="button" onClick={() => setActive((i) => (i + 1) % STACK_PINS.length)}>
             [ &gt; ]

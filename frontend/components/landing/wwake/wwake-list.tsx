@@ -35,7 +35,7 @@ export function WwakeList({
         <div className="ww-list-title-row">
           <h2 className="ww-list-title">{heading}</h2>
           <a href="#shop" className="ww-link">
-            Discover
+            کشف کنید
           </a>
         </div>
 
@@ -53,7 +53,7 @@ export function WwakeList({
                   <span>{item.index}</span>
                   <span className="ww-acc-title">{item.title}</span>
                   <span className="ww-acc-count">
-                    <span className="ww-link">Shop</span> [{item.count}]
+                    <span className="ww-link">خرید</span> [{item.count}]
                   </span>
                 </button>
                 {open ? (

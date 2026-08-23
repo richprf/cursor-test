@@ -4,14 +4,14 @@ import { JOURNAL, TILES } from '@/lib/wwake-data';
 export function WwakeIntro() {
   return (
     <section id="echoes" className="ww-intro">
-      <h2>Echoes Collection</h2>
+      <h2>مجموعهٔ پژواک</h2>
       <p>
-        A new collection born from synchronicities hidden just under the surface: a swatch of lace, a seed pearl, a
-        piece of gold, connections that have always been there, waiting to be noticed. Each piece is a world unto
-        itself, and part of a larger conversation together— gestures we keep returning and responding to.
+        مجموعه‌ای تازه از هم‌زمانی‌هایی که درست زیر سطح پنهان‌اند: تکه‌ای توری، مرواریدی دانه، قطعه‌ای طلا؛ پیوندهایی که
+        همیشه بوده‌اند و منتظر دیده شدن. هر قطعه جهانی است برای خودش، و بخشی از گفت‌وگویی بزرگ‌تر با بقیه — اشاره‌هایی که
+        به آن‌ها برمی‌گردیم و پاسخ می‌دهیم.
       </p>
       <a href="#shop" className="ww-link">
-        Discover the Collection
+        کشف مجموعه
       </a>
     </section>
   );
@@ -23,33 +23,33 @@ export function WwakeMega() {
       <article className="ww-mega-item">
         <Image src="/landing/wwake/aqua.jpg" alt="" width={1200} height={1500} />
         <div className="ww-mega-copy">
-          <h2>Aquamarine</h2>
+          <h2>آکوامارین</h2>
           <a href="#shop" className="ww-link">
-            Shop [10]
+            خرید [۱۰]
           </a>
           <p>
-            Aquamarine is named for what it resembles: not dark ocean depth, but crystalline shallows where sunlight
-            cuts through. Ranging from pale sky to green-turquoise, aquamarine is a variety of beryl, the mineral from
-            which the first spectacle lenses were cut in medieval Europe.
+            آکوامارین نامش را از چیزی گرفته که شبیه آن است: نه عمق تاریک دریا، که آب‌های شفاف کم‌عمق جایی که نور از آن
+            می‌گذرد. از آبی آسمان تا فیروزه‌ای‌سبز، آکوامارین گونه‌ای از بریل است؛ همان کانی که نخستین عدسی عینک را در
+            اروپا از آن تراشیدند.
           </p>
           <a href="#shop" className="ww-link">
-            Shop Aquamarine
+            خرید آکوامارین
           </a>
         </div>
       </article>
       <article className="ww-mega-item">
         <Image src="/landing/wwake/moon.jpg" alt="" width={1200} height={1500} />
         <div className="ww-mega-copy">
-          <h2>Moonstones</h2>
+          <h2>مون‌استون</h2>
           <a href="#shop" className="ww-link">
-            Shop [14]
+            خرید [۱۴]
           </a>
           <p>
-            A moonstone catches its own incandescence, set in asymmetry. Every piece is its own world, formed once in
-            the making, and again with every wearing.
+            مون‌استون درخشش خودش را می‌گیرد، در چیدمانی نامتقارن. هر قطعه جهانی است برای خودش؛ یک‌بار در ساختن شکل
+            می‌گیرد و بار دیگر در هر بار پوشیدن.
           </p>
           <a href="#shop" className="ww-link">
-            Shop Moonstone
+            خرید مون‌استون
           </a>
         </div>
       </article>
@@ -61,22 +61,21 @@ export function WwakeJournal() {
   return (
     <section id="journal" className="ww-journal">
       <div className="ww-journal-intro">
-        <h2>Continuum Journal Series</h2>
+        <h2>دفتر پیوستگی</h2>
         <a href="#journal" className="ww-link">
-          Shop [334]
+          خرید [۳۳۴]
         </a>
         <p>
-          Jewelry exists within a continuum that begins with the earth and continues through every hand in between. We
-          believe jewelry is a connection to the earth and the people who shape it along the way. Each piece begins
-          with materials drawn from the earth, shaped through the knowledge and care of many hands. From sourcing and
-          making to wearing and collecting, jewelry moves through lives and communities over time.
+          جواهر در پیوستگی‌ای زندگی می‌کند که از زمین آغاز می‌شود و از دست هر کسی که میان راه است می‌گذرد. باور ما این
+          است که جواهر پیوند با زمین است و با کسانی که در مسیر شکلش می‌دهند. هر قطعه از ماده‌ای آغاز می‌شود که از زمین
+          آمده، با دانش و مراقبت دست‌های بسیار شکل گرفته، و از استخراج و ساخت تا پوشیدن و گردآوری، در زندگی‌ها و
+          جامعه‌ها حرکت می‌کند.
         </p>
         <p>
-          Continuum is a journal series by WWAKE that traces this living process through five perspectives: From The
-          Earth. Through The Studio. Onto The Body. Across A Lifetime. With Others.
+          دفتر پیوستگی این مسیر زنده را از پنج نگاه دنبال می‌کند: از زمین. از کارگاه. روی بدن. در طول یک عمر. با دیگران.
         </p>
         <a href="#journal" className="ww-link">
-          Read More
+          بیشتر بخوانید
         </a>
       </div>
       <div className="ww-journal-track">
@@ -98,27 +97,27 @@ export function WwakeValues() {
       <ul className="ww-value-list">
         <li>
           <h3>
-            <span>1</span> Made In New York
+            <span>۱</span> ساخته‌شده در نیویورک
           </h3>
-          <p>Ethically sourced solid gold and natural stones, selected with care</p>
+          <p>طلای خالص و سنگ طبیعی با منبع اخلاقی، با دقت انتخاب شده</p>
         </li>
         <li>
           <h3>
-            <span>2</span> Crafted To Last
+            <span>۲</span> ساخته‌شده تا بماند
           </h3>
-          <p>Designed for longevity, covered under warranty</p>
+          <p>طراحی‌شده برای دوام، زیر پوشش گارانتی</p>
         </li>
         <li>
           <h3>
-            <span>3</span> Shipping & Returns
+            <span>۳</span> ارسال و مرجوعی
           </h3>
-          <p>Worldwide shipping and returns, with duties calculated upfront</p>
+          <p>ارسال و مرجوعی به سراسر جهان، با محاسبهٔ عوارض از ابتدا</p>
         </li>
       </ul>
       <aside className="ww-value-post">
         <Image src="/landing/wwake/j5.jpg" alt="" width={144} height={180} />
-        <p>27 05 2026</p>
-        <p>Natural and Antique Diamonds: What Each Stone Carries</p>
+        <p>۶ خرداد ۱۴۰۵</p>
+        <p>الماس طبیعی و عتیقه: هر سنگ چه چیزی با خود دارد</p>
       </aside>
     </section>
   );
@@ -145,79 +144,79 @@ export function WwakeFooter() {
     <footer className="ww-footer">
       <div className="ww-footer-grid">
         <form className="ww-news" action="#visit">
-          <label htmlFor="ww-email">Newsletter</label>
+          <label htmlFor="ww-email">خبرنامه</label>
           <div className="ww-news-row">
-            <input id="ww-email" type="email" name="email" placeholder="Your email here" />
+            <input id="ww-email" type="email" name="email" placeholder="ایمیل شما" />
             <button type="submit" className="ww-link">
-              Get notified
+              خبرم کنید
             </button>
           </div>
         </form>
         <div className="ww-footer-menus">
           <div>
-            <p>Follow</p>
+            <p>دنبال کنید</p>
             <a href="https://www.instagram.com/wwake/" className="ww-link">
-              Instagram
+              اینستاگرام
             </a>
             <a href="https://www.facebook.com/WWAKEstudio" className="ww-link">
-              Facebook
+              فیسبوک
             </a>
             <a href="https://www.tiktok.com/@wwakeworld" className="ww-link">
-              Tiktok
+              تیک‌تاک
             </a>
             <a href="#journal" className="ww-link">
-              Press
+              مطبوعات
             </a>
           </div>
           <div>
-            <p>Information</p>
+            <p>اطلاعات</p>
             <a href="#visit" className="ww-link">
-              FAQ&apos;s
+              پرسش‌ها
             </a>
             <a href="/login" className="ww-link">
-              Contact
+              تماس
             </a>
             <a href="#visit" className="ww-link">
-              Visit Us
+              بازدید
             </a>
             <a href="#shop" className="ww-link">
-              Try At Home
+              پرو در خانه
             </a>
             <a href="#visit" className="ww-link">
-              Stockists
+              فروشگاه‌ها
             </a>
             <a href="#journal" className="ww-link">
-              Careers
+              همکاری
             </a>
           </div>
           <div>
-            <p>Ethos</p>
+            <p>منشور</p>
             <a href="#journal" className="ww-link">
-              Ethos
+              منشور
             </a>
             <a href="#visit" className="ww-link">
-              Materials
+              مواد
             </a>
             <a href="#values" className="ww-link">
-              Diamond Guide
+              راهنمای الماس
             </a>
             <a href="#values" className="ww-link">
-              Custom
+              سفارشی
             </a>
             <a href="#journal" className="ww-link">
-              Heirloom
+              میراث
             </a>
             <a href="#journal" className="ww-link">
-              Continuum Journal
+              دفتر پیوستگی
             </a>
           </div>
         </div>
       </div>
-      <p className="ww-wordmark">WW</p>
+      <p className="ww-wordmark">زرین‌سرمایه</p>
       <div className="ww-legal">
-        <span>Privacy policy</span>
-        <span>Terms of services</span>
-        <span>© All rights reserved</span>
+        <span>حریم خصوصی</span>
+        <span>شرایط استفاده</span>
+        <span>© همهٔ حقوق محفوظ است</span>
       </div>
     </footer>
   );
