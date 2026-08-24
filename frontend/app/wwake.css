@@ -1086,7 +1086,8 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-auto-flow: dense;
-  gap: 12px;
+  gap: 8px;
+  scroll-margin-top: 5.5rem;
 }
 
 .gold-cell {
@@ -1115,7 +1116,7 @@
 }
 
 .gold-cell.is-hero {
-  grid-column: span 7;
+  grid-column: span 5;
 }
 
 .gold-cell.is-hero .gold-cell-media {
@@ -1123,15 +1124,15 @@
 }
 
 .gold-cell.is-wide {
-  grid-column: span 6;
+  grid-column: span 4;
 }
 
 .gold-cell.is-wide .gold-cell-media {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 5 / 4;
 }
 
 .gold-cell.is-feature {
-  grid-column: span 5;
+  grid-column: span 4;
 }
 
 .gold-cell.is-feature .gold-cell-media {
@@ -1139,7 +1140,7 @@
 }
 
 .gold-cell.is-tall {
-  grid-column: span 4;
+  grid-column: span 3;
 }
 
 .gold-cell.is-tall .gold-cell-media {
@@ -1147,7 +1148,7 @@
 }
 
 .gold-cell.is-square {
-  grid-column: span 4;
+  grid-column: span 3;
 }
 
 .gold-cell.is-square .gold-cell-media {
@@ -1155,7 +1156,7 @@
 }
 
 .gold-cell.is-slim {
-  grid-column: span 3;
+  grid-column: span 2;
 }
 
 .gold-cell.is-slim .gold-cell-media {
@@ -1165,24 +1166,50 @@
 .gold-cell-copy {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.7rem 0 0.2rem;
+  gap: 0.15rem;
+  padding: 0.45rem 0 0.1rem;
 }
 
 .gold-cell-copy h2 {
   margin: 0;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
 .gold-cell-copy p {
   display: flex;
   justify-content: space-between;
-  gap: 0.8rem;
+  gap: 0.5rem;
   margin: 0;
   color: var(--ww-grey);
+  font-size: 11px;
+}
+
+.gold-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.8rem;
   font-size: 13px;
+  color: var(--ww-grey);
+}
+
+.gold-pager button {
+  min-width: 1.6rem;
+  padding: 0.2rem 0.15rem;
+}
+
+.gold-pager button.is-on {
+  color: var(--ww-ink);
+  border-bottom: 1px solid var(--ww-ink);
+}
+
+.gold-pager button:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 @media (max-width: 989px) {
@@ -1190,12 +1217,15 @@
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
-  .gold-cell.is-hero,
-  .gold-cell.is-wide {
-    grid-column: span 6;
+  .gold-cell.is-hero {
+    grid-column: span 4;
   }
 
-  .gold-cell.is-feature,
+  .gold-cell.is-wide,
+  .gold-cell.is-feature {
+    grid-column: span 3;
+  }
+
   .gold-cell.is-tall,
   .gold-cell.is-square {
     grid-column: span 3;
