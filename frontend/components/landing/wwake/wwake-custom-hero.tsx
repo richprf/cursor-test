@@ -1,32 +1,27 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
-import { toPersianNumber } from '@/lib/format';
 import { CUSTOM_HERO_SLIDES } from '@/lib/wwake-custom';
+import { toPersianNumber } from '@/lib/format';
+import { AutoPlayVideo } from './auto-play-video';
 
 export function WwakeCustomHero() {
   const [active, setActive] = useState(0);
   const current = CUSTOM_HERO_SLIDES[active] ?? CUSTOM_HERO_SLIDES[0];
+  const total = CUSTOM_HERO_SLIDES.length;
 
   return (
     <section className="ww-custom-hero">
       <div className="ww-custom-hero-media">
-        <Image
-          src="/landing/wwake/custom/hero-desktop.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="hidden md:block"
+        <AutoPlayVideo
+          className="ww-custom-hero-video is-desktop"
+          src="/landing/wwake/custom/hero-desktop.mp4"
+          poster="/landing/wwake/custom/hero-desktop.jpg"
         />
-        <Image
-          src="/landing/wwake/custom/hero-mobile.jpg"
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="md:hidden"
+        <AutoPlayVideo
+          className="ww-custom-hero-video is-mobile"
+          src="/landing/wwake/custom/hero-mobile.mp4"
+          poster="/landing/wwake/custom/hero-mobile.jpg"
         />
       </div>
 
@@ -48,18 +43,17 @@ export function WwakeCustomHero() {
             <p>{slide.copy}</p>
           </button>
         ))}
-      </div>
-
-      <div className="ww-custom-hero-pager">
-        <button type="button" onClick={() => setActive((i) => (i === 0 ? CUSTOM_HERO_SLIDES.length - 1 : i - 1))}>
-          [ &lt; ]
-        </button>
-        <span>
-          [{toPersianNumber(active + 1)} /{toPersianNumber(CUSTOM_HERO_SLIDES.length)}]
-        </span>
-        <button type="button" onClick={() => setActive((i) => (i + 1) % CUSTOM_HERO_SLIDES.length)}>
-          [ &gt; ]
-        </button>
+        <nav className="ww-custom-hero-pager">
+          <button type="button" aria-label="قبلی" onClick={() => setActive((active + total - 1) % total)}>
+            [ &lt; ]
+          </button>
+          <span>
+            [{toPersianNumber(active + 1)}/{toPersianNumber(total)}]
+          </span>
+          <button type="button" aria-label="بعدی" onClick={() => setActive((active + 1) % total)}>
+            [ &gt; ]
+          </button>
+        </nav>
       </div>
     </section>
   );

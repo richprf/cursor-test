@@ -52,6 +52,7 @@ export const CUSTOM_PROCESS = [
   {
     title: 'شروع با الهام',
     image: '/landing/wwake/custom/process-inspire.jpg',
+    video: '/landing/wwake/custom/process-inspire.mp4',
     copy: 'مجموعه را بگردید و آنچه جذب‌تان می‌کند را یادداشت کنید: یک شبح، شکل سنگ، یک نشاندن خاص. هرچه بیشتر بگویید، نقطهٔ آغاز روشن‌تر می‌شود.',
     links: [
       { href: '/shop', label: 'کشف مجموعه' },
@@ -156,19 +157,29 @@ export const CUSTOM_COLLECTIONS = [
   { index: '۳', title: 'آویز و پلاک', count: '۳۸' },
 ] as const;
 
-export const CUSTOM_GALLERY_DIAMOND = [
-  '/landing/wwake/custom/gal-d1.jpg',
-  '/landing/wwake/custom/gal-d2.jpg',
-  '/landing/wwake/custom/gal-d3.jpg',
-  '/landing/wwake/custom/gal-d4.jpg',
-] as const;
+export type CustomMedia = { image: string; video?: string };
 
-export const CUSTOM_GALLERY_COLOR = [
-  '/landing/wwake/custom/gal-c1.jpg',
-  '/landing/wwake/custom/gal-c2.jpg',
-  '/landing/wwake/custom/gal-c3.jpg',
-  '/landing/wwake/custom/gal-c4.jpg',
-] as const;
+export const CUSTOM_GALLERY_DIAMOND: CustomMedia[] = [
+  { image: '/landing/wwake/custom/gal-d-v1.jpg', video: '/landing/wwake/custom/gal-d-v1.mp4' },
+  { image: '/landing/wwake/custom/gal-d1.jpg' },
+  { image: '/landing/wwake/custom/gal-d2.jpg' },
+  { image: '/landing/wwake/custom/gal-d-v2.jpg', video: '/landing/wwake/custom/gal-d-v2.mp4' },
+  { image: '/landing/wwake/custom/gal-d3.jpg' },
+  { image: '/landing/wwake/custom/gal-d4.jpg' },
+  { image: '/landing/wwake/custom/gal-c1.jpg' },
+  { image: '/landing/wwake/custom/gal-c-v1.jpg', video: '/landing/wwake/custom/gal-c-v1.mp4' },
+  { image: '/landing/wwake/custom/gal-c2.jpg' },
+  { image: '/landing/wwake/custom/gal-c3.jpg' },
+];
+
+export const CUSTOM_GALLERY_COLOR: CustomMedia[] = [
+  { image: '/landing/wwake/custom/gal-c1.jpg' },
+  { image: '/landing/wwake/custom/gal-c-v1.jpg', video: '/landing/wwake/custom/gal-c-v1.mp4' },
+  { image: '/landing/wwake/custom/gal-c2.jpg' },
+  { image: '/landing/wwake/custom/gal-c3.jpg' },
+  { image: '/landing/wwake/custom/gal-c-v2.jpg', video: '/landing/wwake/custom/gal-c-v2.mp4' },
+  { image: '/landing/wwake/custom/gal-c4.jpg' },
+];
 
 export const CUSTOM_FAQ = [
   {
