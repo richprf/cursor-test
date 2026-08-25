@@ -1,4 +1,4 @@
-import { AuthShell } from '@/components/auth/auth-shell';
+import Link from 'next/link';
 import { authErrorMessage } from '@/lib/auth-errors';
 import { LoginForm } from './login-form';
 
@@ -13,19 +13,20 @@ export default async function LoginPage({
   const { callbackUrl, error, code } = await searchParams;
 
   return (
-    <AuthShell>
-      <section className="auth-page">
-        <div className="auth-panel">
-          <h1>ورود به حساب</h1>
-          <p className="auth-lead">با ایمیل یا گوگل وارد شوید.</p>
-          <LoginForm
-            // Only allow relative paths, so `?callbackUrl=` can't bounce users off-site.
-            callbackUrl={isSafeRelativePath(callbackUrl) ? callbackUrl : '/dashboard'}
-            initialError={authErrorMessage(error, code)}
-          />
-        </div>
-      </section>
-    </AuthShell>
+    <section className="auth-page">
+      <div className="auth-panel">
+        <Link href="/" className="auth-brand">
+          پژواک
+        </Link>
+        <h1>ورود به حساب</h1>
+        <p className="auth-lead">با ایمیل یا گوگل وارد شوید.</p>
+        <LoginForm
+          // Only allow relative paths, so `?callbackUrl=` can't bounce users off-site.
+          callbackUrl={isSafeRelativePath(callbackUrl) ? callbackUrl : '/dashboard'}
+          initialError={authErrorMessage(error, code)}
+        />
+      </div>
+    </section>
   );
 }
 
