@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { loginSchema, type LoginInput } from '@/lib/validation';
 import { authErrorMessage } from '@/lib/auth-errors';
-import { Spinner } from '@/components/ui';
+import { GoogleIcon, Spinner } from '@/components/ui';
 
 export function LoginForm({
   callbackUrl,
@@ -52,78 +52,69 @@ export function LoginForm({
   const disabled = pending || googlePending;
 
   return (
-    <div className="auth-stack">
-      {formError ? <p className="auth-alert">{formError}</p> : null}
+    <>
+      {formError ? <p className="shop-auth-alert">{formError}</p> : null}
 
-      <form onSubmit={onSubmit} className="auth-form" noValidate>
-        <div className="auth-field">
-          <label htmlFor="email">ایمیل</label>
+      <form onSubmit={onSubmit} className="shop-auth-form" noValidate>
+        <div className="shop-auth-field">
+          <label htmlFor="email">Email</label>
           <input
             id="email"
             type="email"
             autoComplete="email"
             dir="ltr"
-            placeholder="ایمیل شما"
+            placeholder="Email"
             disabled={disabled}
             aria-invalid={Boolean(errors.email)}
             {...register('email')}
           />
-          {errors.email?.message ? <p className="auth-field-error">{errors.email.message}</p> : null}
+          {errors.email?.message ? <p className="shop-auth-field-error">{errors.email.message}</p> : null}
         </div>
 
-        <div className="auth-field">
-          <label htmlFor="password">رمز عبور</label>
+        <div className="shop-auth-field">
+          <label htmlFor="password">Password</label>
           <input
             id="password"
             type="password"
             autoComplete="current-password"
-            placeholder="رمز عبور"
+            placeholder="Password"
             disabled={disabled}
             aria-invalid={Boolean(errors.password)}
             {...register('password')}
           />
-          {errors.password?.message ? <p className="auth-field-error">{errors.password.message}</p> : null}
+          {errors.password?.message ? <p className="shop-auth-field-error">{errors.password.message}</p> : null}
         </div>
 
-        <div className="auth-actions">
-          <button type="submit" className="ww-link" disabled={disabled}>
-            {pending && <Spinner />}
-            {pending ? 'در حال ورود…' : 'ورود'}
-          </button>
-        </div>
+        <button type="submit" className="shop-auth-submit" disabled={disabled}>
+          {pending && <Spinner />}
+          {pending ? 'Signing in…' : 'Continue'}
+        </button>
       </form>
 
-      <p className="auth-split">
-        <span />
-        یا
-        <span />
-      </p>
+      <p className="shop-auth-or">or</p>
 
-      <div className="auth-actions">
-        <button
-          type="button"
-          className="auth-google ww-link"
-          disabled={disabled}
-          onClick={() => {
-            setGooglePending(true);
-            // Full redirect to Google; NextAuth returns to `callbackUrl` afterwards.
-            void signIn('google', { redirectTo: callbackUrl });
-          }}
-        >
-          {googlePending ? <Spinner /> : null}
-          ورود با گوگل
-        </button>
-      </div>
+      <button
+        type="button"
+        className="shop-auth-google"
+        disabled={disabled}
+        onClick={() => {
+          setGooglePending(true);
+          // Full redirect to Google; NextAuth returns to `callbackUrl` afterwards.
+          void signIn('google', { redirectTo: callbackUrl });
+        }}
+      >
+        {googlePending ? <Spinner /> : <GoogleIcon />}
+        Continue with Google
+      </button>
 
-      <p className="auth-switch">
-        حساب ندارید؟{' '}
-        <Link href="/register" className="ww-link">
-          ثبت‌نام
-        </Link>
+      <p className="shop-auth-switch">
+        Don&apos;t have an account? <Link href="/register">Create account</Link>
       </p>
-      <Link href="/" className="auth-back ww-link">
-        بازگشت به فروشگاه
-      </Link>
-    </div>
+      <p className="shop-auth-legal">
+        <Link href="/">Privacy</Link>
+        {' · '}
+        <Link href="/">Terms of service</Link>
+      </p>
+    </>
   );
 }

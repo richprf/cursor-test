@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { authErrorMessage } from '@/lib/auth-errors';
+import { AuthFrame } from '@/components/auth/auth-frame';
 import { LoginForm } from './login-form';
 
-export const metadata = { title: 'ورود' };
+export const metadata = { title: 'Log in' };
 
 /** NextAuth redirects failed sign-ins back here with `?error=` and sometimes `?code=`. */
 export default async function LoginPage({
@@ -13,20 +13,13 @@ export default async function LoginPage({
   const { callbackUrl, error, code } = await searchParams;
 
   return (
-    <section className="auth-page">
-      <div className="auth-panel">
-        <Link href="/" className="auth-brand">
-          پژواک
-        </Link>
-        <h1>ورود به حساب</h1>
-        <p className="auth-lead">با ایمیل یا گوگل وارد شوید.</p>
-        <LoginForm
-          // Only allow relative paths, so `?callbackUrl=` can't bounce users off-site.
-          callbackUrl={isSafeRelativePath(callbackUrl) ? callbackUrl : '/dashboard'}
-          initialError={authErrorMessage(error, code)}
-        />
-      </div>
-    </section>
+    <AuthFrame title="Log in">
+      <LoginForm
+        // Only allow relative paths, so `?callbackUrl=` can't bounce users off-site.
+        callbackUrl={isSafeRelativePath(callbackUrl) ? callbackUrl : '/dashboard'}
+        initialError={authErrorMessage(error, code)}
+      />
+    </AuthFrame>
   );
 }
 
