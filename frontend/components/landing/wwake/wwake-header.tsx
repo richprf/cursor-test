@@ -7,7 +7,7 @@ export function WwakeHeader({ accountHref, accountLabel }: { accountHref: string
         <Link href="/shop" className="ww-underline is-desktop">
           فروشگاه
         </Link>
-        <Link href="/#values" className="ww-underline is-desktop">
+        <Link href="/custom" className="ww-underline is-desktop">
           سفارشی
         </Link>
         <Link href="/#visit" className="ww-underline is-desktop">

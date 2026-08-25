@@ -199,7 +199,7 @@ export const TILES = [
   { title: 'تک‌نسخه‌ها', count: '۴۶', image: '/landing/wwake/tile-ooak.jpg', href: '#values' },
   { title: 'انگشتر سفارشی', count: '۴۷', image: '/landing/wwake/tile-personal.jpg', href: '#values' },
   { title: 'بازدید', image: '/landing/wwake/tile-visit.jpg', href: '#visit' },
-  { title: 'سفارشی', image: '/landing/wwake/tile-custom.jpg', href: '#values' },
+  { title: 'سفارشی', image: '/landing/wwake/tile-custom.jpg', href: '/custom' },
   { title: 'منشور', image: '/landing/wwake/tile-ethos.jpg', href: '#journal' },
   { title: 'مواد', image: '/landing/wwake/tile-materials.jpg', href: '#visit' },
 ] as const;

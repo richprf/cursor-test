@@ -97,7 +97,7 @@ const FOOTER_TILES = [
   { title: 'One Of A Kinds', count: '46', image: '/landing/wwake/tile-ooak.jpg', href: '#values' },
   { title: 'Personalized & Bespoke Rings', count: '47', image: '/landing/wwake/tile-personal.jpg', href: '#values' },
   { title: 'Visit Us', image: '/landing/wwake/tile-visit.jpg', href: '#visit' },
-  { title: 'Custom', image: '/landing/wwake/tile-custom.jpg', href: '#values' },
+  { title: 'Custom', image: '/landing/wwake/tile-custom.jpg', href: '/custom' },
   { title: 'Ethos', image: '/landing/wwake/tile-ethos.jpg', href: '#journal' },
   { title: 'Materials', image: '/landing/wwake/tile-materials.jpg', href: '#visit' },
 ] as const;
@@ -231,7 +231,7 @@ export function WwakeFooter() {
             <a href="#values" className="ww-link">
               <span>Diamond Guide</span>
             </a>
-            <a href="#values" className="ww-link">
+            <a href="/custom" className="ww-link">
               <span>Custom</span>
             </a>
             <a href="#journal" className="ww-link">
