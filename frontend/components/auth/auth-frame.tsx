@@ -15,7 +15,7 @@ export function AuthFrame({ title, children }: { title: string; children: ReactN
         </div>
       </section>
       <aside className="shop-auth-media" aria-hidden>
-        <Image src="/landing/wwake/hero-portrait.jpg" alt="" fill priority sizes="50vw" />
+        <Image src="/landing/wwake/auth-side.jpg" alt="" fill priority sizes="50vw" />
       </aside>
     </div>
   );
