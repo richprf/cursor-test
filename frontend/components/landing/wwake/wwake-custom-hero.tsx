@@ -30,19 +30,21 @@ export function WwakeCustomHero() {
       </div>
 
       <div className="ww-custom-hero-slides">
-        {CUSTOM_HERO_SLIDES.map((slide, index) => (
-          <button
-            key={slide.index}
-            type="button"
-            className={index === active ? 'is-on' : undefined}
-            onClick={() => setActive(index)}
-            onMouseEnter={() => setActive(index)}
-          >
-            <span>{slide.index}</span>
-            <strong>{slide.heading}</strong>
-            <p>{slide.copy}</p>
-          </button>
-        ))}
+        <div className="ww-custom-hero-slides-list">
+          {CUSTOM_HERO_SLIDES.map((slide, index) => (
+            <button
+              key={slide.index}
+              type="button"
+              className={index === active ? 'is-on' : undefined}
+              onClick={() => setActive(index)}
+              onMouseEnter={() => setActive(index)}
+            >
+              <span>{slide.index}</span>
+              <strong>{slide.heading}</strong>
+              <p>{slide.copy}</p>
+            </button>
+          ))}
+        </div>
         <nav className="ww-custom-hero-pager">
           <button type="button" aria-label="قبلی" onClick={() => setActive((active + total - 1) % total)}>
             [ &lt; ]

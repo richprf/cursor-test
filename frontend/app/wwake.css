@@ -1323,7 +1323,7 @@
   padding: 24px;
 }
 
-.ww-custom-hero-slides button {
+.ww-custom-hero-slides-list button {
   display: none;
   grid-template-columns: 56px 1fr;
   grid-template-rows: auto auto;
@@ -1333,23 +1333,23 @@
   transition: color 0.3s ease;
 }
 
-.ww-custom-hero-slides button.is-on {
+.ww-custom-hero-slides-list button.is-on {
   display: grid;
   color: #fff;
 }
 
-.ww-custom-hero-slides button:hover {
+.ww-custom-hero-slides-list button:hover {
   color: #fff;
 }
 
-.ww-custom-hero-slides span {
+.ww-custom-hero-slides-list span {
   grid-row: 1;
   font-size: 10px;
   line-height: 1.2;
   text-align: left;
 }
 
-.ww-custom-hero-slides strong {
+.ww-custom-hero-slides-list strong {
   grid-column: 2;
   margin-bottom: 32px;
   font-size: 14px;
@@ -1357,7 +1357,7 @@
   line-height: 1.25;
 }
 
-.ww-custom-hero-slides p {
+.ww-custom-hero-slides-list p {
   grid-column: 2;
   margin: 0;
   font-size: 14px;
@@ -1684,13 +1684,13 @@
     font-size: 40px;
   }
 
-  .ww-custom-hero-slides {
+  .ww-custom-hero-slides-list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
   }
 
-  .ww-custom-hero-slides button {
+  .ww-custom-hero-slides-list button {
     display: grid;
   }
 
