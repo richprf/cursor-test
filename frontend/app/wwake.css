@@ -1726,10 +1726,6 @@
 }
 
 @media (max-width: 989px) {
-  .ww-custom-values {
-    grid-template-columns: 1fr 1fr;
-  }
-
   .ww-custom-shop .ww-slide {
     flex-basis: calc(50% - 0.45rem);
   }
