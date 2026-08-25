@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import type { UserModel as User } from '../generated/prisma/models';
 
-const baseUser: User = {
+const baseUser: User & { shop: null } = {
   id: 'user-1',
   email: 'ali@example.com',
   name: 'Ali',
@@ -19,9 +19,11 @@ const baseUser: User = {
   passwordHash: null,
   provider: 'CREDENTIALS',
   googleId: null,
-  role: 'USER',
+  role: 'BUYER',
+  onboardingComplete: true,
   createdAt: new Date(),
   updatedAt: new Date(),
+  shop: null,
 };
 
 describe('AuthService', () => {
@@ -51,37 +53,85 @@ describe('AuthService', () => {
   describe('register', () => {
     it('stores a bcrypt hash and returns a signed access token', async () => {
       users.findByEmail.mockResolvedValue(null);
-      users.createWithPassword.mockImplementation(({ email, passwordHash, name }) =>
-        Promise.resolve({ ...baseUser, email, passwordHash, name: name ?? null }),
+      users.createWithPassword.mockImplementation(({ email, passwordHash, name, role }) =>
+        Promise.resolve({
+          ...baseUser,
+          email,
+          passwordHash,
+          name: name ?? null,
+          role: role === 'SELLER' ? 'SELLER' : 'BUYER',
+        }),
       );
 
       const result = await service.register({
         email: 'ali@example.com',
         password: 'supersecret1',
         name: 'Ali',
+        role: 'BUYER',
       });
 
       const { passwordHash } = users.createWithPassword.mock.calls[0][0];
       expect(passwordHash).not.toBe('supersecret1');
       await expect(bcrypt.compare('supersecret1', passwordHash)).resolves.toBe(true);
+      expect(users.createWithPassword).toHaveBeenCalledWith(
+        expect.objectContaining({ role: 'BUYER', shopName: undefined }),
+      );
 
       expect(result.user).toEqual({
         id: 'user-1',
         email: 'ali@example.com',
         name: 'Ali',
         image: null,
-        role: 'USER',
+        role: 'BUYER',
         provider: 'CREDENTIALS',
+        onboardingComplete: true,
+        shopName: null,
+        logoUrl: null,
       });
       expect(result.accessToken).toEqual(expect.any(String));
       expect(result.accessTokenExpires).toBeGreaterThan(Date.now());
+    });
+
+    it('creates a seller with a shop name', async () => {
+      users.findByEmail.mockResolvedValue(null);
+      users.createWithPassword.mockImplementation(({ email, passwordHash, name, shopName }) =>
+        Promise.resolve({
+          ...baseUser,
+          email,
+          passwordHash,
+          name: name ?? null,
+          role: 'SELLER',
+          shop: {
+            id: 'shop-1',
+            name: shopName ?? 'Ali Gold',
+            logoUrl: null,
+            userId: 'user-1',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        }),
+      );
+
+      const result = await service.register({
+        email: 'ali@example.com',
+        password: 'supersecret1',
+        name: 'Ali',
+        role: 'SELLER',
+        shopName: 'Ali Gold',
+      });
+
+      expect(users.createWithPassword).toHaveBeenCalledWith(
+        expect.objectContaining({ role: 'SELLER', shopName: 'Ali Gold' }),
+      );
+      expect(result.user.role).toBe('SELLER');
+      expect(result.user.shopName).toBe('Ali Gold');
     });
 
     it('rejects an email that is already taken', async () => {
       users.findByEmail.mockResolvedValue(baseUser);
 
       await expect(
-        service.register({ email: 'ali@example.com', password: 'supersecret1' }),
+        service.register({ email: 'ali@example.com', password: 'supersecret1', role: 'BUYER' }),
       ).rejects.toBeInstanceOf(ConflictException);
     });
 
@@ -90,7 +140,7 @@ describe('AuthService', () => {
       users.createWithPassword.mockRejectedValue(Object.assign(new Error('unique'), { code: 'P2002' }));
 
       await expect(
-        service.register({ email: 'ali@example.com', password: 'supersecret1' }),
+        service.register({ email: 'ali@example.com', password: 'supersecret1', role: 'BUYER' }),
       ).rejects.toBeInstanceOf(ConflictException);
     });
   });
@@ -156,6 +206,7 @@ describe('AuthService', () => {
         provider: 'GOOGLE',
         googleId: 'google-123',
         image: 'https://example.com/a.png',
+        onboardingComplete: false,
       });
 
       const result = await service.loginWithGoogle({ idToken: 'header.payload.signature' });
@@ -171,6 +222,7 @@ describe('AuthService', () => {
         image: 'https://example.com/a.png',
       });
       expect(result.accessToken).toEqual(expect.any(String));
+      expect(result.user.onboardingComplete).toBe(false);
     });
 
     it('rejects a token Google does not vouch for', async () => {

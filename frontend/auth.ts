@@ -1,8 +1,9 @@
 import NextAuth, { CredentialsSignin } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
-import { BackendError, exchangeGoogleIdToken, login } from '@/lib/backend';
+import { BackendError, exchangeGoogleIdToken, getMe, login } from '@/lib/backend';
 import { loginSchema } from '@/lib/validation';
+import type { BackendUser } from '@/types/api';
 
 /**
  * NextAuth is only the session layer: NestJS stays the source of truth for users
@@ -28,7 +29,18 @@ class TooManyRequests extends CredentialsSignin {
 
 const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60; // keep in sync with JWT_EXPIRES_IN
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+function copyBackendUser(tokenTarget: Record<string, unknown>, user: BackendUser) {
+  tokenTarget.userId = user.id;
+  tokenTarget.role = user.role;
+  tokenTarget.onboardingComplete = user.onboardingComplete;
+  tokenTarget.shopName = user.shopName;
+  tokenTarget.logoUrl = user.logoUrl;
+  tokenTarget.name = user.name;
+  tokenTarget.email = user.email;
+  tokenTarget.picture = user.image;
+}
+
+export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   // NestJS owns the user data, so there is nothing to persist here.
   session: { strategy: 'jwt', maxAge: SESSION_MAX_AGE_SECONDS },
   pages: { signIn: '/login', error: '/login' },
@@ -57,6 +69,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             name: user.name,
             image: user.image,
             role: user.role,
+            onboardingComplete: user.onboardingComplete,
+            shopName: user.shopName,
+            logoUrl: user.logoUrl,
             accessToken,
             accessTokenExpires,
           };
@@ -74,11 +89,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       // Credentials: `user` is exactly what `authorize()` returned above.
       if (account?.provider === 'credentials' && user) {
         token.userId = user.id;
         token.role = user.role;
+        token.onboardingComplete = user.onboardingComplete;
+        token.shopName = user.shopName;
+        token.logoUrl = user.logoUrl;
         token.accessToken = user.accessToken;
         token.accessTokenExpires = user.accessTokenExpires;
         delete token.error;
@@ -94,14 +112,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const { user: backendUser, accessToken, accessTokenExpires } =
           await exchangeGoogleIdToken(account.id_token);
 
-        token.userId = backendUser.id;
-        token.role = backendUser.role;
-        token.name = backendUser.name;
-        token.email = backendUser.email;
-        token.picture = backendUser.image;
+        copyBackendUser(token as unknown as Record<string, unknown>, backendUser);
         token.accessToken = accessToken;
         token.accessTokenExpires = accessTokenExpires;
         delete token.error;
+      }
+
+      // After complete-profile (or a logo upload) pull the latest role/shop from Nest.
+      if (trigger === 'update' && token.accessToken) {
+        try {
+          const me = await getMe(token.accessToken);
+          copyBackendUser(token as unknown as Record<string, unknown>, me);
+        } catch (error) {
+          console.error('[auth] session update failed to refresh /auth/me', error);
+        }
       }
 
       // There is no refresh token, so an expired access token means "sign in again".
@@ -117,7 +141,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // components may need it); drop it below to keep the token server-only.
     session({ session, token }) {
       session.user.id = token.userId ?? session.user.id;
-      session.user.role = token.role ?? 'USER';
+      session.user.role = token.role ?? 'BUYER';
+      session.user.onboardingComplete = token.onboardingComplete ?? true;
+      session.user.shopName = token.shopName ?? null;
+      session.user.logoUrl = token.logoUrl ?? null;
       session.accessToken = token.accessToken;
       session.error = token.error;
       return session;

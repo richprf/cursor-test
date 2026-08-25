@@ -1,4 +1,4 @@
-import type { AuthResponse, BackendUser } from '@/types/api';
+import type { AccountRole, AuthResponse, BackendUser } from '@/types/api';
 import type { GoldPriceSnapshot } from '@/lib/gold-price';
 
 /**
@@ -25,10 +25,15 @@ function apiUrl(path: string): string {
 }
 
 async function request<T>(path: string, init: RequestInit): Promise<T> {
+  const headers = new Headers(init.headers);
+  if (!headers.has('Content-Type') && init.body && !(init.body instanceof FormData)) {
+    headers.set('Content-Type', 'application/json');
+  }
+
   const response = await fetch(apiUrl(path), {
     cache: 'no-store',
     ...init,
-    headers: { 'Content-Type': 'application/json', ...init.headers },
+    headers,
   });
 
   const body: unknown = await response.json().catch(() => null);
@@ -60,6 +65,8 @@ export function register(input: {
   email: string;
   password: string;
   name?: string;
+  role: AccountRole;
+  shopName?: string;
 }): Promise<AuthResponse> {
   return request<AuthResponse>('/auth/register', {
     method: 'POST',
@@ -75,6 +82,27 @@ export function exchangeGoogleIdToken(idToken: string): Promise<AuthResponse> {
   return request<AuthResponse>('/auth/oauth/google', {
     method: 'POST',
     body: JSON.stringify({ idToken }),
+  });
+}
+
+export function completeProfile(
+  accessToken: string,
+  input: { role: AccountRole; shopName?: string },
+): Promise<BackendUser> {
+  return request<BackendUser>('/auth/complete-profile', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify(input),
+  });
+}
+
+export function uploadShopLogo(accessToken: string, file: File): Promise<BackendUser> {
+  const body = new FormData();
+  body.append('file', file);
+  return request<BackendUser>('/auth/shop/logo', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body,
   });
 }
 

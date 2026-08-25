@@ -45,6 +45,77 @@
   line-height: 1.2;
 }
 
+.shop-auth-lead {
+  margin: -8px 0 20px;
+  color: #6d7175;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.shop-auth-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.shop-auth-fieldset legend {
+  margin: 0 0 8px;
+  color: #202223;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.shop-auth-roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.shop-auth-role {
+  height: 44px;
+  border: 1px solid #8c9196;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #202223;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.shop-auth-role:hover {
+  background: #f6f6f7;
+}
+
+.shop-auth-role.is-active {
+  border-color: #303030;
+  background: #303030;
+  color: #ffffff;
+}
+
+.shop-auth-role.is-active:hover {
+  background: #1a1a1a;
+}
+
+.shop-auth-seller {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shop-auth-field input[type='file'] {
+  height: auto;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.shop-auth-hint {
+  margin: 0;
+  color: #6d7175;
+  font-size: 12px;
+}
+
 .shop-auth-alert {
   margin: 0 0 16px;
   padding: 12px 14px;

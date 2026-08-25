@@ -21,7 +21,8 @@ enum AuthProvider {
 }
 
 enum Role {
-  USER
+  BUYER
+  SELLER
   ADMIN
 }
 
@@ -39,10 +40,29 @@ model User {
   provider AuthProvider @default(CREDENTIALS)
   googleId String?      @unique
 
-  role Role @default(USER)
+  role Role @default(BUYER)
+
+  /// False for a brand-new Google account until the user picks buyer/seller.
+  onboardingComplete Boolean @default(true)
+
+  shop Shop?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
+}
+
+model Shop {
+  id      String  @id @default(uuid())
+  name    String
+  logoUrl String?
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("shops")
 }

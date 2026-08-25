@@ -2,26 +2,46 @@
 
 import { AuthError } from 'next-auth';
 import { redirect, unstable_rethrow } from 'next/navigation';
-import { signIn } from '@/auth';
-import { BackendError, register as registerOnBackend } from '@/lib/backend';
-import { registerSchema, type RegisterInput } from '@/lib/validation';
+import { signIn, auth } from '@/auth';
+import { BackendError, register as registerOnBackend, uploadShopLogo } from '@/lib/backend';
+import { dashboardPath } from '@/lib/dashboard';
+import { registerSchema } from '@/lib/validation';
 
 export type RegisterResult = { error: string } | { ok: true };
+
+const MAX_LOGO_BYTES = 2 * 1024 * 1024;
 
 /**
  * Creates the account on NestJS and immediately starts a session, so the user
  * lands on the dashboard instead of having to log in again.
  */
-export async function registerAction(input: RegisterInput): Promise<RegisterResult> {
-  const parsed = registerSchema.safeParse(input);
+export async function registerAction(formData: FormData): Promise<RegisterResult> {
+  const parsed = registerSchema.safeParse({
+    name: String(formData.get('name') ?? ''),
+    email: String(formData.get('email') ?? ''),
+    password: String(formData.get('password') ?? ''),
+    role: formData.get('role'),
+    shopName: String(formData.get('shopName') ?? ''),
+  });
   if (!parsed.success) {
     return { error: 'اطلاعات وارد شده معتبر نیست.' };
   }
 
-  const { email, password, name } = parsed.data;
+  const logo = fileFromForm(formData.get('logo'));
+  if (logo && logo.size > MAX_LOGO_BYTES) {
+    return { error: 'حجم لوگو باید حداکثر ۲ مگابایت باشد.' };
+  }
+
+  const { email, password, name, role, shopName } = parsed.data;
 
   try {
-    await registerOnBackend({ email, password, name: name || undefined });
+    await registerOnBackend({
+      email,
+      password,
+      name: name || undefined,
+      role,
+      shopName: role === 'SELLER' ? shopName || undefined : undefined,
+    });
   } catch (error) {
     if (error instanceof BackendError) {
       if (error.status === 409) return { error: 'این ایمیل قبلاً ثبت شده است.' };
@@ -46,5 +66,20 @@ export async function registerAction(input: RegisterInput): Promise<RegisterResu
     return { error: 'حساب ساخته شد، اما ورود خودکار انجام نشد. لطفاً وارد شوید.' };
   }
 
-  redirect('/dashboard');
+  if (logo && role === 'SELLER') {
+    const session = await auth();
+    if (session?.accessToken) {
+      try {
+        await uploadShopLogo(session.accessToken, logo);
+      } catch (error) {
+        console.error('[register] logo upload failed', error);
+      }
+    }
+  }
+
+  redirect(dashboardPath(role));
+}
+
+function fileFromForm(value: FormDataEntryValue | null): File | null {
+  return value instanceof File && value.size > 0 ? value : null;
 }

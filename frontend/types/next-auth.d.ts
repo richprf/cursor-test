@@ -13,12 +13,18 @@ declare module 'next-auth' {
     user: {
       id: string;
       role: UserRole;
+      onboardingComplete: boolean;
+      shopName?: string | null;
+      logoUrl?: string | null;
     } & DefaultSession['user'];
   }
 
   /** What `CredentialsProvider.authorize()` returns. */
   interface User {
     role?: UserRole;
+    onboardingComplete?: boolean;
+    shopName?: string | null;
+    logoUrl?: string | null;
     accessToken?: string;
     accessTokenExpires?: number;
   }
@@ -31,6 +37,9 @@ declare module '@auth/core/jwt' {
     /** Id of the user row in Postgres (not the Google `sub`). */
     userId?: string;
     role?: UserRole;
+    onboardingComplete?: boolean;
+    shopName?: string | null;
+    logoUrl?: string | null;
     accessToken?: string;
     accessTokenExpires?: number;
     error?: 'AccessTokenExpired';

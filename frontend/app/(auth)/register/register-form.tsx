@@ -6,29 +6,43 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { registerSchema, type RegisterInput } from '@/lib/validation';
+import { AccountTypeFields } from '@/components/auth/account-type-fields';
 import { GoogleIcon, Spinner } from '@/components/ui';
 import { registerAction } from './actions';
 
 export function RegisterForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const [googlePending, setGooglePending] = useState(false);
+  const [logo, setLogo] = useState<File | null>(null);
 
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: '', email: '', password: '' },
+    defaultValues: { name: '', email: '', password: '', role: 'BUYER', shopName: '' },
   });
+
+  const role = watch('role');
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
-    const result = await registerAction(values);
+    const formData = new FormData();
+    formData.set('name', values.name ?? '');
+    formData.set('email', values.email);
+    formData.set('password', values.password);
+    formData.set('role', values.role);
+    formData.set('shopName', values.shopName ?? '');
+    if (logo) formData.set('logo', logo);
+
+    const result = await registerAction(formData);
     if ('error' in result) {
       setFormError(result.error);
     }
-    // On success the server action redirects to /dashboard.
+    // On success the server action redirects to the role dashboard.
   });
 
   const disabled = isSubmitting || googlePending;
@@ -38,6 +52,16 @@ export function RegisterForm() {
       {formError ? <p className="shop-auth-alert">{formError}</p> : null}
 
       <form onSubmit={onSubmit} className="shop-auth-form" noValidate>
+        <AccountTypeFields
+          role={role}
+          onRoleChange={(next) => setValue('role', next, { shouldValidate: true })}
+          shopName={register('shopName')}
+          shopNameError={errors.shopName}
+          onLogoChange={setLogo}
+          logoFileName={logo?.name ?? null}
+          disabled={disabled}
+        />
+
         <div className="shop-auth-field">
           <label htmlFor="name">Name</label>
           <input

@@ -1,4 +1,5 @@
-export type UserRole = 'USER' | 'ADMIN';
+export type AccountRole = 'BUYER' | 'SELLER';
+export type UserRole = AccountRole | 'ADMIN';
 
 export interface BackendUser {
   id: string;
@@ -7,6 +8,9 @@ export interface BackendUser {
   image: string | null;
   role: UserRole;
   provider: 'CREDENTIALS' | 'GOOGLE';
+  onboardingComplete: boolean;
+  shopName: string | null;
+  logoUrl: string | null;
 }
 
 /** Response shape of `/auth/login`, `/auth/register` and `/auth/oauth/google`. */

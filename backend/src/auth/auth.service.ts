@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -10,12 +11,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client, type TokenPayload } from 'google-auth-library';
 import * as bcrypt from 'bcrypt';
-import { UsersService, type PublicUser } from '../users/users.service';
+import { UsersService, type PublicUser, type UserWithShop } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { GoogleOAuthDto } from './dto/google-oauth.dto';
+import { CompleteProfileDto } from './dto/complete-profile.dto';
 import type { AuthResponse, JwtPayload } from './types/auth.types';
-import type { UserModel as User } from '../generated/prisma/models';
+import { publicLogoUrl } from './logo-upload';
 
 const BCRYPT_ROUNDS = 12;
 
@@ -48,6 +50,8 @@ export class AuthService {
         email: dto.email,
         passwordHash,
         name: dto.name,
+        role: dto.role,
+        shopName: dto.shopName,
       });
 
       return this.buildAuthResponse(user);
@@ -111,6 +115,23 @@ export class AuthService {
     return this.buildAuthResponse(user);
   }
 
+  async completeProfile(userId: string, dto: CompleteProfileDto): Promise<PublicUser> {
+    const user = await this.users.completeProfile(userId, {
+      role: dto.role,
+      shopName: dto.shopName,
+    });
+    return UsersService.toPublicUser(user);
+  }
+
+  async saveShopLogo(userId: string, file?: Express.Multer.File): Promise<PublicUser> {
+    if (!file) {
+      throw new BadRequestException('Upload a JPG, PNG, WEBP or GIF image (max 2 MB)');
+    }
+
+    const user = await this.users.setShopLogo(userId, publicLogoUrl(file.filename));
+    return UsersService.toPublicUser(user);
+  }
+
   async me(userId: string): Promise<PublicUser> {
     const user = await this.users.findById(userId);
     if (!user) {
@@ -144,7 +165,7 @@ export class AuthService {
     }
   }
 
-  private async buildAuthResponse(user: User): Promise<AuthResponse> {
+  private async buildAuthResponse(user: UserWithShop): Promise<AuthResponse> {
     const payload: JwtPayload = { sub: user.id, email: user.email, role: user.role };
     const accessToken = await this.jwt.signAsync(payload);
     const decoded = this.jwt.decode<JwtPayload | null>(accessToken);
@@ -165,4 +186,3 @@ function isPrismaCode(error: unknown, code: string): boolean {
     (error as { code: unknown }).code === code
   );
 }
-

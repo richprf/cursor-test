@@ -1,11 +1,24 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { GoogleOAuthDto } from './dto/google-oauth.dto';
+import { CompleteProfileDto } from './dto/complete-profile.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { logoUploadOptions } from './logo-upload';
 import type { PublicUser } from '../users/users.service';
 import type { AuthResponse } from './types/auth.types';
 
@@ -33,6 +46,30 @@ export class AuthController {
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   google(@Body() dto: GoogleOAuthDto): Promise<AuthResponse> {
     return this.auth.loginWithGoogle(dto);
+  }
+
+  /** First-time Google users pick buyer/seller (and a shop name) here. */
+  @Post('complete-profile')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  completeProfile(
+    @CurrentUser() user: PublicUser,
+    @Body() dto: CompleteProfileDto,
+  ): Promise<PublicUser> {
+    return this.auth.completeProfile(user.id, dto);
+  }
+
+  @Post('shop/logo')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file', logoUploadOptions))
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  uploadLogo(
+    @CurrentUser() user: PublicUser,
+    @UploadedFile() file?: Express.Multer.File,
+  ): Promise<PublicUser> {
+    return this.auth.saveShopLogo(user.id, file);
   }
 
   @Get('me')
