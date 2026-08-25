@@ -19,7 +19,7 @@ export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: s
     <>
       <header className="absolute inset-x-0 top-0 z-50 text-white">
         <div className="mx-auto flex h-[49px] w-full max-w-[1600px] items-center justify-between gap-4 px-6">
-          <Link href="/" aria-label="زرین‌سرمایه">
+          <Link href="/" aria-label="پژواک">
             <Brand compact />
           </Link>
 

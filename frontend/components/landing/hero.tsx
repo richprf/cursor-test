@@ -69,7 +69,7 @@ export function Hero({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string 
               طلای طلافروشان را ببینید. حضوری بخرید یا پیک بگیرید.
             </p>
             <p data-hero-copy className="hero-v1-desc">
-              زرین‌سرمایه خودش طلا نمی‌فروشد. مغازه‌دارها لیست طلایشان را می‌گذارند، شما می‌بینید و از
+              پژواک خودش طلا نمی‌فروشد. مغازه‌دارها لیست طلایشان را می‌گذارند، شما می‌بینید و از
               همان فروشنده می‌خرید یا ما برایتان پیک می‌فرستیم.
             </p>
             <p data-hero-copy className="hero-v1-price">

@@ -62,7 +62,7 @@ export function SiteFooter() {
       <div className="footer-v1-shell">
         <div className="footer-v1-layout">
           <Reveal y={28}>
-            <Link href="/" aria-label="زرین‌سرمایه" className="footer-v1-logo-link">
+            <Link href="/" aria-label="پژواک" className="footer-v1-logo-link">
               <Brand compact />
             </Link>
           </Reveal>
@@ -111,7 +111,7 @@ export function SiteFooter() {
           </Reveal>
         </div>
 
-        <p className="footer-v1-wordmark">زرین‌سرمایه</p>
+        <p className="footer-v1-wordmark">پژواک</p>
       </div>
     </footer>
   );

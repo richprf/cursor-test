@@ -19,8 +19,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: 'زرین‌سرمایه | آگهی طلای طلافروشان',
-    template: '%s | زرین‌سرمایه',
+    default: 'پژواک | آگهی طلای طلافروشان',
+    template: '%s | پژواک',
   },
   description:
     'طلافروش‌ها طلایشان را آگهی می‌کنند؛ شما می‌بینید و از همان مغازه می‌خرید یا با پیک دریافت می‌کنید.',

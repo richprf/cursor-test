@@ -37,7 +37,7 @@ export function Services() {
               و مشتری
             </h2>
             <p className="services-v1-desc">
-              آگهی بگذارید، ببینید، حضوری بخرید یا پیک بگیرید. زرین‌سرمایه خودش طلا نمی‌فروشد.
+              آگهی بگذارید، ببینید، حضوری بخرید یا پیک بگیرید. پژواک خودش طلا نمی‌فروشد.
             </p>
           </div>
           <a href="#features" className="about-v1-btn">

@@ -33,7 +33,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
         <BrandMark className={compact ? 'size-6' : 'size-7'} />
       </span>
       <span className={`font-bold tracking-tight ${compact ? 'text-sm' : 'text-gold-gradient text-lg'}`}>
-        زرین‌سرمایه
+        پژواک
       </span>
     </div>
   );

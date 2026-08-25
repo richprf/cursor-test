@@ -18,8 +18,8 @@ export function WwakeHeader({ accountHref, accountLabel }: { accountHref: string
         </Link>
       </nav>
 
-      <Link href="/" className="ww-header-logo" aria-label="زرین‌سرمایه">
-        زرین‌سرمایه
+      <Link href="/" className="ww-header-logo" aria-label="پژواک">
+        پژواک
       </Link>
 
       <div className="ww-header-right">
