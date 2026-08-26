@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { CATALOG, CATALOG_FILTERS } from '@/lib/wwake-data';
+import { productHref } from '@/lib/wwake-product';
 import { toPersianNumber } from '@/lib/format';
 
 const PAGE_SIZE = 8;
@@ -60,18 +62,20 @@ export function GoldList() {
       <div id="gold-grid" className="gold-grid">
         {visible.map((item) => (
           <article key={item.id} className={`gold-cell is-${item.size}`}>
-            <div className="gold-cell-media">
-              {'badge' in item && item.badge ? <span className="ww-badge">{item.badge}</span> : null}
-              <Image src={item.image} alt={item.title} fill sizes="(min-width: 990px) 22vw, 50vw" />
-              <Image src={item.hover} alt="" fill sizes="(min-width: 990px) 22vw, 50vw" className="is-hover" />
-            </div>
-            <div className="gold-cell-copy">
-              <h2>{item.title}</h2>
-              <p>
-                <span>{item.category}</span>
-                <span dir="ltr">{item.price}</span>
-              </p>
-            </div>
+            <Link href={productHref(item.id)} className="gold-cell-link">
+              <div className="gold-cell-media">
+                {'badge' in item && item.badge ? <span className="ww-badge">{item.badge}</span> : null}
+                <Image src={item.image} alt={item.title} fill sizes="(min-width: 990px) 22vw, 50vw" />
+                <Image src={item.hover} alt="" fill sizes="(min-width: 990px) 22vw, 50vw" className="is-hover" />
+              </div>
+              <div className="gold-cell-copy">
+                <h2>{item.title}</h2>
+                <p>
+                  <span>{item.category}</span>
+                  <span dir="ltr">{item.price}</span>
+                </p>
+              </div>
+            </Link>
           </article>
         ))}
       </div>

@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toPersianNumber } from '@/lib/format';
-import { SHOP_TABS } from '@/lib/wwake-data';
+import { CATALOG, SHOP_TABS } from '@/lib/wwake-data';
+import { productHref } from '@/lib/wwake-product';
 
 export function WwakeShop() {
   const [tab, setTab] = useState(0);
@@ -106,23 +107,29 @@ export function WwakeShop() {
       </div>
 
       <div ref={scrollerRef} className="ww-slider" data-lenis-prevent>
-        {current.products.map((product) => (
-          <article key={product.title} data-slide className="ww-card ww-slide">
-            <div className="ww-card-media">
-              {'badge' in product && product.badge ? <span className="ww-badge">{product.badge}</span> : null}
-              <Image src={product.image} alt={product.title} fill sizes="(min-width: 990px) 22vw, 70vw" />
-              <Image
-                src={product.hover}
-                alt=""
-                fill
-                sizes="(min-width: 990px) 22vw, 70vw"
-                className="is-hover"
-              />
-            </div>
-            <h3>{product.title}</h3>
-            <p dir="ltr">{product.price}</p>
-          </article>
-        ))}
+        {current.products.map((product) => {
+          const item = CATALOG.find((entry) => entry.title === product.title);
+          const href = item ? productHref(item.id) : '/shop';
+          return (
+            <article key={product.title} data-slide className="ww-card ww-slide">
+              <Link href={href}>
+                <div className="ww-card-media">
+                  {'badge' in product && product.badge ? <span className="ww-badge">{product.badge}</span> : null}
+                  <Image src={product.image} alt={product.title} fill sizes="(min-width: 990px) 22vw, 70vw" />
+                  <Image
+                    src={product.hover}
+                    alt=""
+                    fill
+                    sizes="(min-width: 990px) 22vw, 70vw"
+                    className="is-hover"
+                  />
+                </div>
+                <h3>{product.title}</h3>
+                <p dir="ltr">{product.price}</p>
+              </Link>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
