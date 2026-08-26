@@ -1,5 +1,7 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { JOURNAL } from '@/lib/wwake-data';
+import { collectionHref } from '@/lib/wwake-collections';
 
 export function WwakeIntro() {
   return (
@@ -10,9 +12,9 @@ export function WwakeIntro() {
         همیشه بوده‌اند و منتظر دیده شدن. هر قطعه جهانی است برای خودش، و بخشی از گفت‌وگویی بزرگ‌تر با بقیه — اشاره‌هایی که
         به آن‌ها برمی‌گردیم و پاسخ می‌دهیم.
       </p>
-      <a href="#shop" className="ww-link">
+      <Link href="/shop" className="ww-link">
         کشف مجموعه
-      </a>
+      </Link>
     </section>
   );
 }
@@ -24,33 +26,33 @@ export function WwakeMega() {
         <Image src="/landing/wwake/aqua.jpg" alt="" width={1200} height={1500} />
         <div className="ww-mega-copy">
           <h2>آکوامارین</h2>
-          <a href="#shop" className="ww-link">
+          <Link href={collectionHref('aquamarine')} className="ww-link">
             خرید [۱۰]
-          </a>
+          </Link>
           <p>
             آکوامارین نامش را از چیزی گرفته که شبیه آن است: نه عمق تاریک دریا، که آب‌های شفاف کم‌عمق جایی که نور از آن
             می‌گذرد. از آبی آسمان تا فیروزه‌ای‌سبز، آکوامارین گونه‌ای از بریل است؛ همان کانی که نخستین عدسی عینک را در
             اروپا از آن تراشیدند.
           </p>
-          <a href="#shop" className="ww-link">
+          <Link href={collectionHref('aquamarine')} className="ww-link">
             خرید آکوامارین
-          </a>
+          </Link>
         </div>
       </article>
       <article className="ww-mega-item">
         <Image src="/landing/wwake/moon.jpg" alt="" width={1200} height={1500} />
         <div className="ww-mega-copy">
           <h2>مون‌استون</h2>
-          <a href="#shop" className="ww-link">
+          <Link href={collectionHref('moonstones')} className="ww-link">
             خرید [۱۴]
-          </a>
+          </Link>
           <p>
             مون‌استون درخشش خودش را می‌گیرد، در چیدمانی نامتقارن. هر قطعه جهانی است برای خودش؛ یک‌بار در ساختن شکل
             می‌گیرد و بار دیگر در هر بار پوشیدن.
           </p>
-          <a href="#shop" className="ww-link">
+          <Link href={collectionHref('moonstones')} className="ww-link">
             خرید مون‌استون
-          </a>
+          </Link>
         </div>
       </article>
     </section>
@@ -93,9 +95,9 @@ export function WwakeJournal() {
 
 const FOOTER_TILES = [
   { title: 'View All', count: '334', image: '/landing/wwake/tile-view.jpg', href: '/shop' },
-  { title: 'Ceremonial', count: '123', image: '/landing/wwake/tile-ceremonial.jpg', href: '#values' },
-  { title: 'One Of A Kinds', count: '46', image: '/landing/wwake/tile-ooak.jpg', href: '#values' },
-  { title: 'Personalized & Bespoke Rings', count: '47', image: '/landing/wwake/tile-personal.jpg', href: '#values' },
+  { title: 'Ceremonial', count: '123', image: '/landing/wwake/tile-ceremonial.jpg', href: '/collections/ceremonial' },
+  { title: 'One Of A Kinds', count: '46', image: '/landing/wwake/tile-ooak.jpg', href: '/collections/ooak' },
+  { title: 'Personalized & Bespoke Rings', count: '47', image: '/landing/wwake/tile-personal.jpg', href: '/custom' },
   { title: 'Visit Us', image: '/landing/wwake/tile-visit.jpg', href: '#visit' },
   { title: 'Custom', image: '/landing/wwake/tile-custom.jpg', href: '/custom' },
   { title: 'Ethos', image: '/landing/wwake/tile-ethos.jpg', href: '#journal' },
@@ -210,7 +212,7 @@ export function WwakeFooter() {
             <a href="#visit" className="ww-link">
               <span>Visit Us</span>
             </a>
-            <a href="#shop" className="ww-link">
+            <a href="/shop" className="ww-link">
               <span>Try At Home</span>
             </a>
             <a href="#visit" className="ww-link">
@@ -228,9 +230,9 @@ export function WwakeFooter() {
             <a href="#visit" className="ww-link">
               <span>Materials</span>
             </a>
-            <a href="#values" className="ww-link">
+            <Link href="/collections/diamond" className="ww-link">
               <span>Diamond Guide</span>
-            </a>
+            </Link>
             <a href="/custom" className="ww-link">
               <span>Custom</span>
             </a>

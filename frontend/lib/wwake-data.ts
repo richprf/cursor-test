@@ -194,10 +194,10 @@ export const CATALOG_FILTERS = [
 ] as const;
 
 export const TILES = [
-  { title: 'مشاهدهٔ همه', count: '۳۳۴', image: '/landing/wwake/tile-view.jpg', href: '#shop' },
-  { title: 'آیینی', count: '۱۲۳', image: '/landing/wwake/tile-ceremonial.jpg', href: '#values' },
-  { title: 'تک‌نسخه‌ها', count: '۴۶', image: '/landing/wwake/tile-ooak.jpg', href: '#values' },
-  { title: 'انگشتر سفارشی', count: '۴۷', image: '/landing/wwake/tile-personal.jpg', href: '#values' },
+  { title: 'مشاهدهٔ همه', count: '۳۳۴', image: '/landing/wwake/tile-view.jpg', href: '/shop' },
+  { title: 'آیینی', count: '۱۲۳', image: '/landing/wwake/tile-ceremonial.jpg', href: '/collections/ceremonial' },
+  { title: 'تک‌نسخه‌ها', count: '۴۶', image: '/landing/wwake/tile-ooak.jpg', href: '/collections/ooak' },
+  { title: 'انگشتر سفارشی', count: '۴۷', image: '/landing/wwake/tile-personal.jpg', href: '/custom' },
   { title: 'بازدید', image: '/landing/wwake/tile-visit.jpg', href: '#visit' },
   { title: 'سفارشی', image: '/landing/wwake/tile-custom.jpg', href: '/custom' },
   { title: 'منشور', image: '/landing/wwake/tile-ethos.jpg', href: '#journal' },

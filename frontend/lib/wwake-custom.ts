@@ -152,9 +152,9 @@ export const CUSTOM_PRODUCTS = [
 ] as const;
 
 export const CUSTOM_COLLECTIONS = [
-  { index: '۱', title: 'گوهر خودتان را انتخاب کنید', count: '۱۹' },
-  { index: '۲', title: 'تک‌نسخه‌ها', count: '۴۶' },
-  { index: '۳', title: 'آویز و پلاک', count: '۳۸' },
+  { index: '۱', title: 'گوهر خودتان را انتخاب کنید', count: '۱۹', href: '/collections/sapphire' },
+  { index: '۲', title: 'تک‌نسخه‌ها', count: '۴۶', href: '/collections/ooak' },
+  { index: '۳', title: 'آویز و پلاک', count: '۳۸', href: '/collections/charms' },
 ] as const;
 
 export type CustomMedia = { image: string; video?: string };

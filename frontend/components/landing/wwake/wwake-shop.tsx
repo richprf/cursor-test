@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { toPersianNumber } from '@/lib/format';
 import { CATALOG, SHOP_TABS } from '@/lib/wwake-data';
+import { collectionHref } from '@/lib/wwake-collections';
 import { productHref } from '@/lib/wwake-product';
 
 export function WwakeShop() {
@@ -76,20 +77,18 @@ export function WwakeShop() {
       <div className="ww-shop-controls">
         <div className="ww-tabs" role="tablist">
           {SHOP_TABS.map((item, tabIndex) => (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={tabIndex === tab}
-              className={`ww-tab${tabIndex === tab ? ' is-on' : ''}`}
-              onClick={() => setTab(tabIndex)}
-            >
-              <span>{item.index}</span>
-              <span>{item.title}</span>
+            <div key={item.id} className={`ww-tab${tabIndex === tab ? ' is-on' : ''}`}>
+              <button type="button" role="tab" aria-selected={tabIndex === tab} onClick={() => setTab(tabIndex)}>
+                <span>{item.index}</span>
+                <span>{item.title}</span>
+              </button>
               <span className="ww-tab-count">
-                <span className="ww-link">خرید</span> [{item.count}]
+                <Link href={collectionHref(item.id)} className="ww-link">
+                  خرید
+                </Link>{' '}
+                [{item.count}]
               </span>
-            </button>
+            </div>
           ))}
         </div>
 

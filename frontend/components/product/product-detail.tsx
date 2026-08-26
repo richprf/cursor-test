@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AutoPlayVideo } from '@/components/landing/wwake/auto-play-video';
 import { toPersianNumber } from '@/lib/format';
+import { ALL_PRODUCTS, categoryCollectionHref } from '@/lib/wwake-collections';
 import { CATALOG } from '@/lib/wwake-data';
 import {
   PRODUCT_ETHOS,
@@ -16,7 +17,9 @@ import {
 
 function hrefForTitle(title: string) {
   const item = CATALOG.find((entry) => entry.title === title);
-  return item ? productHref(item.id) : '/shop';
+  if (item) return productHref(item.id);
+  const collectionItem = ALL_PRODUCTS.find((entry) => entry.title === title);
+  return collectionItem ? productHref(collectionItem.handle) : '/shop';
 }
 
 function ProductCard({
@@ -115,7 +118,7 @@ export function ProductDetail({ product }: { product: ProductRecord }) {
               خانه
             </Link>
             <span>/</span>
-            <Link href="/shop" className="ww-link">
+            <Link href={categoryCollectionHref(product.category)} className="ww-link">
               {product.category}
             </Link>
             <span>/</span>

@@ -1,3 +1,4 @@
+import { ALL_PRODUCTS, TYPE_LABELS, getCollectionProduct, type CollectionProduct } from '@/lib/wwake-collections';
 import { CATALOG, SHOP_TABS, type WwakeProduct } from '@/lib/wwake-data';
 
 export const RING_SIZES = [
@@ -195,6 +196,48 @@ export const PRODUCT_FAQ = [
   },
 ] as const;
 
+function fromCollectionProduct(item: CollectionProduct): ProductRecord {
+  const index = ALL_PRODUCTS.findIndex((entry) => entry.handle === item.handle);
+  const prev = ALL_PRODUCTS[(index - 1 + ALL_PRODUCTS.length) % ALL_PRODUCTS.length];
+  const next = ALL_PRODUCTS[(index + 1) % ALL_PRODUCTS.length];
+  const related = ALL_PRODUCTS.filter((entry) => entry.type === item.type).slice(0, 8);
+  return {
+    slug: item.handle,
+    title: item.title,
+    price: item.price,
+    category: TYPE_LABELS[item.type],
+    description: item.title,
+    caption: 'ساخته‌شده با مواد مسئولانه در کارگاه.',
+    gallery: item.images,
+    details: [MATERIAL_LINE(item), 'ساخت کارگاه', 'پرداخت دستی'],
+    sizeFit: FEATURED.sizeFit,
+    sourcing: FEATURED.sourcing,
+    delivery: FEATURED.delivery,
+    madeToOrder: !item.readyToShip,
+    pair: related.slice(0, 4).map((entry) => ({
+      title: entry.title,
+      href: productHref(entry.handle),
+      image: entry.images[0],
+      hover: entry.images[1],
+      badge: entry.badge,
+    })),
+    related: related.map((entry) => ({
+      title: entry.title,
+      price: entry.price,
+      image: entry.images[0],
+      hover: entry.images[1] ?? entry.images[0],
+      badge: entry.badge,
+    })),
+    prev: { title: prev.title, href: productHref(prev.handle), image: prev.images[0] },
+    next: { title: next.title, href: productHref(next.handle), image: next.images[0] },
+  };
+}
+
+function MATERIAL_LINE(item: CollectionProduct) {
+  const material = item.material === '10k' ? 'طلای زرد بازیافتی جامد ۱۰ عیار' : 'طلای زرد بازیافتی جامد ۱۴ عیار';
+  return material;
+}
+
 function fromCatalog(item: (typeof CATALOG)[number], index: number): ProductRecord {
   const prev = CATALOG[(index - 1 + CATALOG.length) % CATALOG.length];
   const next = CATALOG[(index + 1) % CATALOG.length];
@@ -227,11 +270,17 @@ function fromCatalog(item: (typeof CATALOG)[number], index: number): ProductReco
 
 export function getProduct(slug: string): ProductRecord | undefined {
   if (slug === FEATURED_PRODUCT_SLUG || slug === 'rings-2') return FEATURED;
+  const collectionItem = getCollectionProduct(slug);
+  if (collectionItem) return fromCollectionProduct(collectionItem);
   const index = CATALOG.findIndex((item) => item.id === slug);
   if (index < 0) return undefined;
   return fromCatalog(CATALOG[index], index);
 }
 
 export function productSlugs() {
-  return [FEATURED_PRODUCT_SLUG, ...CATALOG.map((item) => item.id)];
+  const catalogIds = CATALOG.map((item) => item.id);
+  const collectionIds = ALL_PRODUCTS.map((item) => item.handle).filter(
+    (handle) => handle !== FEATURED_PRODUCT_SLUG && !catalogIds.includes(handle),
+  );
+  return [FEATURED_PRODUCT_SLUG, ...catalogIds, ...collectionIds];
 }

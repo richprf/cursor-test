@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { collectionHref } from '@/lib/wwake-collections';
 
 type Item = {
   id: string;
@@ -34,9 +36,9 @@ export function WwakeList({
 
         <div className="ww-list-title-row">
           <h2 className="ww-list-title">{heading}</h2>
-          <a href="#shop" className="ww-link">
+          <Link href="/shop" className="ww-link">
             کشف کنید
-          </a>
+          </Link>
         </div>
 
         <div className="ww-accordion">
@@ -44,8 +46,7 @@ export function WwakeList({
             const open = index === active;
             return (
               <div key={item.id}>
-                <button
-                  type="button"
+                <div
                   className="ww-acc-head"
                   onClick={() => setActive(index)}
                   onMouseEnter={() => setActive(index)}
@@ -53,9 +54,12 @@ export function WwakeList({
                   <span>{item.index}</span>
                   <span className="ww-acc-title">{item.title}</span>
                   <span className="ww-acc-count">
-                    <span className="ww-link">خرید</span> [{item.count}]
+                    <Link href={collectionHref(item.id)} className="ww-link" onClick={(event) => event.stopPropagation()}>
+                      خرید
+                    </Link>{' '}
+                    [{item.count}]
                   </span>
-                </button>
+                </div>
                 {open ? (
                   <div className="ww-acc-body">
                     <Image src={item.product} alt={item.title} width={144} height={180} />

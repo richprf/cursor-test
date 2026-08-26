@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { toPersianNumber } from '@/lib/format';
 import { STACK_PINS } from '@/lib/wwake-data';
+import { collectionHref } from '@/lib/wwake-collections';
 
 export function WwakeStacking() {
   const [active, setActive] = useState(0);
@@ -41,29 +43,32 @@ export function WwakeStacking() {
 
       <div className="ww-stack-head">
         <h2>گردنبند</h2>
-        <a href="#shop" className="ww-link">
+        <Link href={collectionHref('necklaces')} className="ww-link">
           خرید
-        </a>
+        </Link>
         <span>[۶۹]</span>
       </div>
 
       <div className="ww-stack-rail">
         {STACK_PINS.map((pin, index) => (
-          <button
+          <div
             key={pin.title}
-            type="button"
             className={`ww-stack-item${index === active ? ' is-on' : ''}`}
             onMouseEnter={() => setActive(index)}
             onClick={() => setActive(index)}
+            role="button"
+            tabIndex={0}
           >
             <Image src={pin.image} alt="" width={68} height={85} />
             <span>
               <strong>
                 {pin.index} {pin.title}
               </strong>
-              <span className="ww-link">خرید</span>
+              <Link href={collectionHref('necklaces')} className="ww-link" onClick={(event) => event.stopPropagation()}>
+                خرید
+              </Link>
             </span>
-          </button>
+          </div>
         ))}
         <div className="ww-pager">
           <button type="button" onClick={() => setActive((i) => (i + STACK_PINS.length - 1) % STACK_PINS.length)}>

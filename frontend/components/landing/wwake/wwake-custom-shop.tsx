@@ -64,7 +64,7 @@ export function WwakeCustomShop() {
       <div className="ww-shop-controls">
         <div className="ww-tabs" role="tablist">
           {CUSTOM_COLLECTIONS.map((item) => (
-            <Link key={item.title} href="/shop" className="ww-tab">
+            <Link key={item.title} href={item.href} className="ww-tab">
               <span>{item.index}</span>
               <span>{item.title}</span>
               <span className="ww-tab-count">
