@@ -66,6 +66,7 @@ function sortProducts(products: CollectionProduct[], sort: SortId) {
 
 function ProductSlideCard({ product }: { product: CollectionProduct }) {
   const [index, setIndex] = useState(0);
+  const [active, setActive] = useState(false);
   const total = product.images.length;
   const href = `/products/${product.handle}`;
 
@@ -76,7 +77,11 @@ function ProductSlideCard({ product }: { product: CollectionProduct }) {
   };
 
   return (
-    <article className="ww-col-card">
+    <article
+      className={`ww-col-card${active ? ' is-active' : ''}`}
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+    >
       <div className="ww-col-card-media">
         {product.badge ? <span className="ww-col-badge">{product.badge}</span> : null}
         <Link href={href} className="ww-col-card-hit" aria-label={product.title}>
