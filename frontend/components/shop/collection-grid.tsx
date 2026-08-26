@@ -65,6 +65,8 @@ function sortProducts(products: CollectionProduct[], sort: SortId) {
   }
 }
 
+const PEEK_RATIO = 0.14;
+
 function ProductSlideCard({ product }: { product: CollectionProduct }) {
   const router = useRouter();
   const trackRef = useRef<HTMLDivElement>(null);
@@ -73,29 +75,47 @@ function ProductSlideCard({ product }: { product: CollectionProduct }) {
   const [active, setActive] = useState(false);
   const total = product.images.length;
   const href = `/products/${product.handle}`;
+  const nextSrc = total > 1 ? product.images[(index + 1) % total] : product.images[0];
+
+  const trackPosition = (slideIndex: number, extra = 0, animate = true) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const slide = track.children[slideIndex] as HTMLElement | undefined;
+    const offset = slide?.offsetLeft ?? slideIndex * track.clientWidth;
+    track.style.transition = animate ? 'transform 0.3s ease' : 'none';
+    track.style.transform = `translateX(${-offset + extra}px)`;
+  };
+
+  const peekPx = () => {
+    if (!active || total < 2 || drag.current.dragging) return 0;
+    if (typeof window !== 'undefined' && !window.matchMedia('(hover: hover)').matches) return 0;
+    const slide = trackRef.current?.children[index] as HTMLElement | undefined;
+    return (slide?.offsetWidth ?? 0) * PEEK_RATIO;
+  };
 
   const goTo = (nextIndex: number, animate = true) => {
     const wrapped = ((nextIndex % total) + total) % total;
     setIndex(wrapped);
-    const track = trackRef.current;
-    if (!track) return;
-    const slide = track.children[wrapped] as HTMLElement | undefined;
-    const offset = slide?.offsetLeft ?? wrapped * track.clientWidth;
-    track.style.transition = animate ? 'transform 0.3s ease' : 'none';
-    track.style.transform = `translateX(${-offset}px)`;
+    trackPosition(wrapped, active && total > 1 ? (trackRef.current?.clientWidth ?? 0) * PEEK_RATIO : 0, animate);
   };
 
   useLayoutEffect(() => {
-    goTo(index, false);
+    trackPosition(index, peekPx(), false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.handle, total]);
 
+  useLayoutEffect(() => {
+    if (drag.current.dragging) return;
+    trackPosition(index, peekPx(), true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, index]);
+
   useEffect(() => {
-    const onResize = () => goTo(index, false);
+    const onResize = () => trackPosition(index, peekPx(), false);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, total]);
+  }, [index, active, total]);
 
   const clientX = (event: MouseEvent | TouchEvent) =>
     'touches' in event ? (event.touches[0]?.clientX ?? 0) : event.clientX;
@@ -174,17 +194,19 @@ function ProductSlideCard({ product }: { product: CollectionProduct }) {
   return (
     <article
       className={`ww-col-card${active ? ' is-active' : ''}`}
-      onMouseEnter={() => {
-        setActive(true);
-        goTo(index, false);
-      }}
+      onMouseEnter={() => setActive(true)}
       onMouseLeave={() => {
         setActive(false);
-        if (!drag.current.tracking) goTo(index);
+        if (!drag.current.tracking) trackPosition(index, 0, true);
       }}
     >
       <div className="ww-col-slider" dir="ltr">
         {product.badge ? <span className="ww-col-badge">{product.badge}</span> : null}
+        {total > 1 ? (
+          <div className="ww-col-slider-peek" aria-hidden="true">
+            <Image src={nextSrc} alt="" fill sizes="(min-width: 990px) 25vw, 50vw" draggable={false} />
+          </div>
+        ) : null}
         <div
           ref={trackRef}
           className="ww-col-slider-track"

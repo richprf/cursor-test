@@ -2506,7 +2506,25 @@
   direction: ltr;
 }
 
+.ww-col-slider-peek {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ww-col-slider-peek img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
 .ww-col-slider-track {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: nowrap;
   align-items: stretch;
@@ -2514,6 +2532,7 @@
   width: 100%;
   touch-action: pan-y;
   user-select: none;
+  background: #f4f2ef;
 }
 
 .ww-col-card.is-active .ww-col-slider {
@@ -2525,6 +2544,7 @@
   flex: 0 0 100%;
   min-width: 0;
   height: 100%;
+  background: #f4f2ef;
 }
 
 .ww-col-slider-slide img {
