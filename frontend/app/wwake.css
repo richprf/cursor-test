@@ -46,6 +46,12 @@
   background-size: 100% 1px;
 }
 
+.ww-link:hover {
+  color: var(--ww-ink);
+  background-size: 0 1px;
+  background-position: right bottom;
+}
+
 .ww-underline {
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0 1px;
