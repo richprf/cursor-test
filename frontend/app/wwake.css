@@ -1817,10 +1817,12 @@
 
 .ww-pdp-video {
   position: relative;
-  margin: 32px 0 24px;
+  width: 100%;
   max-width: 240px;
   aspect-ratio: 1 / 1.25;
   overflow: hidden;
+  background: #f4f2ef;
+  margin: 32px 0 24px;
 }
 
 .ww-pdp-video video {
