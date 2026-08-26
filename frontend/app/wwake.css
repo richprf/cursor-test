@@ -431,6 +431,8 @@
 
 .ww-card-media img {
   object-fit: cover;
+  object-position: center center;
+  max-width: none;
 }
 
 .ww-card-media .is-hover {
@@ -2495,27 +2497,46 @@
   text-align: center;
 }
 
-.ww-col-card-media {
+.ww-col-slider {
   position: relative;
   aspect-ratio: 2.4 / 3;
   overflow: hidden;
   background: #f4f2ef;
+  cursor: grab;
+  direction: ltr;
 }
 
-.ww-col-card-hit {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+.ww-col-slider-track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  height: 100%;
+  width: 100%;
+  touch-action: pan-y;
+  user-select: none;
 }
 
-.ww-col-card-media img {
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.ww-col-card.is-active .ww-col-slider {
+  cursor: grab;
 }
 
-.ww-col-card-media img.is-on {
-  opacity: 1;
+.ww-col-slider-slide {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+.ww-col-slider-slide img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  opacity: 1 !important;
+  pointer-events: none;
 }
 
 .ww-col-badge {

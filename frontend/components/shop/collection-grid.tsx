@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState, type CSSProperties, type MouseEvent } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent, type TouchEvent as ReactTouchEvent } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AutoPlayVideo } from '@/components/landing/wwake/auto-play-video';
 import { toPersianNumber } from '@/lib/format';
 import {
@@ -65,37 +66,146 @@ function sortProducts(products: CollectionProduct[], sort: SortId) {
 }
 
 function ProductSlideCard({ product }: { product: CollectionProduct }) {
+  const router = useRouter();
+  const trackRef = useRef<HTMLDivElement>(null);
+  const drag = useRef({ startX: 0, delta: 0, dragging: false, tracking: false, skipClick: false });
   const [index, setIndex] = useState(0);
   const [active, setActive] = useState(false);
   const total = product.images.length;
   const href = `/products/${product.handle}`;
 
-  const step = (direction: number, event: MouseEvent) => {
+  const goTo = (nextIndex: number, animate = true) => {
+    const wrapped = ((nextIndex % total) + total) % total;
+    setIndex(wrapped);
+    const track = trackRef.current;
+    if (!track) return;
+    const slide = track.children[wrapped] as HTMLElement | undefined;
+    const offset = slide?.offsetLeft ?? wrapped * track.clientWidth;
+    track.style.transition = animate ? 'transform 0.3s ease' : 'none';
+    track.style.transform = `translateX(${-offset}px)`;
+  };
+
+  useLayoutEffect(() => {
+    goTo(index, false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.handle, total]);
+
+  useEffect(() => {
+    const onResize = () => goTo(index, false);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, total]);
+
+  const clientX = (event: MouseEvent | TouchEvent) =>
+    'touches' in event ? (event.touches[0]?.clientX ?? 0) : event.clientX;
+
+  const onPointerDown = (event: ReactMouseEvent | ReactTouchEvent) => {
+    drag.current = { startX: clientX(event.nativeEvent), delta: 0, dragging: false, tracking: true, skipClick: false };
+  };
+
+  const onPointerMove = (event: MouseEvent | TouchEvent) => {
+    if (!drag.current.tracking) return;
+    const delta = clientX(event) - drag.current.startX;
+    drag.current.delta = delta;
+    if (!drag.current.dragging && Math.abs(delta) > 5) {
+      drag.current.dragging = true;
+      setActive(true);
+    }
+    if (!drag.current.dragging) return;
+    const track = trackRef.current;
+    const slide = track?.children[index] as HTMLElement | undefined;
+    const base = slide?.offsetLeft ?? index * (track?.clientWidth ?? 0);
+    if (track) {
+      track.style.transition = 'none';
+      track.style.transform = `translateX(${-base + delta}px)`;
+    }
+    if ('cancelable' in event && event.cancelable) event.preventDefault();
+  };
+
+  const finishDrag = () => {
+    if (!drag.current.tracking) return;
+    const { delta, dragging } = drag.current;
+    drag.current.tracking = false;
+    drag.current.startX = 0;
+    if (!dragging) {
+      drag.current.dragging = false;
+      return;
+    }
+    drag.current.skipClick = true;
+    drag.current.dragging = false;
+    drag.current.delta = 0;
+    const width = (trackRef.current?.children[index] as HTMLElement | undefined)?.offsetWidth ?? 1;
+    if (delta < -width * 0.2) goTo(index + 1);
+    else if (delta > width * 0.2) goTo(index - 1);
+    else goTo(index);
+  };
+
+  useEffect(() => {
+    const move = (event: MouseEvent | TouchEvent) => onPointerMove(event);
+    const up = () => finishDrag();
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+    document.addEventListener('touchmove', move, { passive: false });
+    document.addEventListener('touchend', up);
+    return () => {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+      document.removeEventListener('touchmove', move);
+      document.removeEventListener('touchend', up);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, total]);
+
+  const step = (direction: number, event: ReactMouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    setIndex((current) => (current + direction + total) % total);
+    goTo(index + direction);
+  };
+
+  const openProduct = () => {
+    if (drag.current.skipClick || drag.current.dragging) {
+      drag.current.skipClick = false;
+      return;
+    }
+    router.push(href);
   };
 
   return (
     <article
       className={`ww-col-card${active ? ' is-active' : ''}`}
-      onMouseEnter={() => setActive(true)}
-      onMouseLeave={() => setActive(false)}
+      onMouseEnter={() => {
+        setActive(true);
+        goTo(index, false);
+      }}
+      onMouseLeave={() => {
+        setActive(false);
+        if (!drag.current.tracking) goTo(index);
+      }}
     >
-      <div className="ww-col-card-media">
+      <div className="ww-col-slider" dir="ltr">
         {product.badge ? <span className="ww-col-badge">{product.badge}</span> : null}
-        <Link href={href} className="ww-col-card-hit" aria-label={product.title}>
+        <div
+          ref={trackRef}
+          className="ww-col-slider-track"
+          onMouseDown={onPointerDown}
+          onTouchStart={onPointerDown}
+          onClick={openProduct}
+          role="link"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              openProduct();
+            }
+          }}
+        >
           {product.images.map((src, imageIndex) => (
-            <Image
-              key={src}
-              src={src}
-              alt={imageIndex === index ? product.title : ''}
-              fill
-              sizes="(min-width: 990px) 25vw, 50vw"
-              className={imageIndex === index ? 'is-on' : ''}
-            />
+            <div key={src} className="ww-col-slider-slide">
+              <Image src={src} alt={imageIndex === 0 ? product.title : ''} fill sizes="(min-width: 990px) 25vw, 50vw" draggable={false} />
+            </div>
           ))}
-        </Link>
+        </div>
         {total > 1 ? (
           <div className="ww-col-slider-nav">
             <button type="button" aria-label="قبلی" onClick={(event) => step(-1, event)}>
