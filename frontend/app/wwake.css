@@ -41,10 +41,9 @@
   transition: color 0.35s ease-out, background-size 0.35s ease-out;
 }
 
-.ww-link:hover {
+.ww-link.is-on {
   color: var(--ww-ink);
-  background-size: 0 1px;
-  background-position: right bottom;
+  background-size: 100% 1px;
 }
 
 .ww-underline {
