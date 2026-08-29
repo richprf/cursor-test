@@ -20,3 +20,26 @@ export interface AuthResponse {
   /** Epoch milliseconds. */
   accessTokenExpires: number;
 }
+
+export interface WishlistItem {
+  id: string;
+  productId: string;
+  createdAt: string;
+}
+
+export interface WishlistResponse {
+  items: WishlistItem[];
+}
+
+export interface CartItem {
+  id: string;
+  productId: string;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CartResponse {
+  items: CartItem[];
+  totalItems: number;
+}

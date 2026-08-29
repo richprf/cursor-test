@@ -14,6 +14,9 @@ import {
   productHref,
   type ProductRecord,
 } from '@/lib/wwake-product';
+import { catalogIdFromTitle } from '@/lib/catalog-product';
+import { ProductBagButtons } from '@/components/shop/product-bag-buttons';
+import { useShopBag } from '@/components/shop/shop-bag-provider';
 
 function hrefForTitle(title: string) {
   const item = CATALOG.find((entry) => entry.title === title);
@@ -37,6 +40,7 @@ function ProductCard({
   badge?: string;
   price?: string;
 }) {
+  const productId = catalogIdFromTitle(title);
   return (
     <article className="ww-card">
       <Link href={href} className="ww-pdp-card-link">
@@ -50,6 +54,7 @@ function ProductCard({
         <h3>{title}</h3>
         {price ? <p dir="ltr">{price}</p> : null}
       </Link>
+      {productId ? <ProductBagButtons productId={productId} /> : null}
     </article>
   );
 }
@@ -64,6 +69,7 @@ export function ProductDetail({ product }: { product: ProductRecord }) {
   const [accOpen, setAccOpen] = useState<number | null>(0);
   const [sticky, setSticky] = useState(false);
   const [added, setAdded] = useState(false);
+  const bag = useShopBag();
   const buyRef = useRef<HTMLButtonElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
   const ethosStep = PRODUCT_ETHOS[ethos] ?? PRODUCT_ETHOS[0];
@@ -92,7 +98,10 @@ export function ProductDetail({ product }: { product: ProductRecord }) {
       return;
     }
     setAdded(true);
+    void bag.addToCart(product.slug);
   };
+
+  const inCart = bag.cartQuantity(product.slug) > 0;
 
   const scrollMedia = (direction: number) => {
     const next = (mediaIndex + direction + mediaCount) % mediaCount;
@@ -211,8 +220,10 @@ export function ProductDetail({ product }: { product: ProductRecord }) {
 
           <p className="ww-pdp-ship">ارسال جهانی؛ عوارض از قبل محاسبه می‌شود</p>
 
+          <ProductBagButtons productId={product.slug} variant="inline" />
+
           <button ref={buyRef} type="button" className="ww-pdp-buy" onClick={addToCart}>
-            <span>{size ? (added ? 'به سبد افزوده شد' : 'افزودن به سبد') : 'انتخاب سایز'}</span>
+            <span>{size ? (added || inCart ? 'به سبد افزوده شد' : 'افزودن به سبد') : 'انتخاب سایز'}</span>
             <span dir="ltr">{product.price}</span>
           </button>
 
@@ -373,7 +384,7 @@ export function ProductDetail({ product }: { product: ProductRecord }) {
             سایز {size ?? ''}
           </button>
           <button type="button" className="ww-pdp-buy" onClick={addToCart}>
-            <span>{size ? (added ? 'به سبد افزوده شد' : 'افزودن به سبد') : 'انتخاب سایز'}</span>
+            <span>{size ? (added || inCart ? 'به سبد افزوده شد' : 'افزودن به سبد') : 'انتخاب سایز'}</span>
             <span dir="ltr">{product.price}</span>
           </button>
         </div>

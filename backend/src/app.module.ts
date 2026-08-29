@@ -5,9 +5,11 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthThrottlerGuard } from './common/guards/auth-throttler.guard';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { CartModule } from './cart/cart.module';
 import { GoldPriceModule } from './gold-price/gold-price.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
+import { WishlistModule } from './wishlist/wishlist.module';
 import { validateEnv } from './config/env.validation';
 
 @Module({
@@ -24,6 +26,8 @@ import { validateEnv } from './config/env.validation';
     PrismaModule,
     UsersModule,
     AuthModule,
+    WishlistModule,
+    CartModule,
     GoldPriceModule,
   ],
   controllers: [AppController],

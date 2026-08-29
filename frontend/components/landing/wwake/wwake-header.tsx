@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { HeaderCartLink } from '@/components/landing/wwake/header-cart-link';
 
 export function WwakeHeader({ accountHref, accountLabel }: { accountHref: string; accountLabel: string }) {
   return (
@@ -30,9 +31,7 @@ export function WwakeHeader({ accountHref, accountLabel }: { accountHref: string
         <Link href={accountHref} className="ww-underline">
           {accountLabel}
         </Link>
-        <span className="ww-header-cart">
-          سبد <span>[۰]</span>
-        </span>
+        <HeaderCartLink />
       </div>
     </header>
   );

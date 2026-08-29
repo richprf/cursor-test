@@ -20,6 +20,7 @@ import {
   type StoneKind,
   type WwakeCollection,
 } from '@/lib/wwake-collections';
+import { ProductBagButtons } from '@/components/shop/product-bag-buttons';
 
 type Filters = {
   types: ProductType[];
@@ -202,6 +203,7 @@ function ProductSlideCard({ product }: { product: CollectionProduct }) {
     >
       <div className="ww-col-slider" dir="ltr">
         {product.badge ? <span className="ww-col-badge">{product.badge}</span> : null}
+        <ProductBagButtons productId={product.handle} />
         {total > 1 ? (
           <div className="ww-col-slider-peek" aria-hidden="true">
             <Image src={nextSrc} alt="" fill sizes="(min-width: 990px) 25vw, 50vw" draggable={false} />

@@ -7,6 +7,7 @@ import { toPersianNumber } from '@/lib/format';
 import { CATALOG, SHOP_TABS } from '@/lib/wwake-data';
 import { collectionHref } from '@/lib/wwake-collections';
 import { productHref } from '@/lib/wwake-product';
+import { ProductBagButtons } from '@/components/shop/product-bag-buttons';
 
 export function WwakeShop() {
   const [tab, setTab] = useState(0);
@@ -126,6 +127,7 @@ export function WwakeShop() {
                 <h3>{product.title}</h3>
                 <p dir="ltr">{product.price}</p>
               </Link>
+              {item ? <ProductBagButtons productId={item.id} /> : null}
             </article>
           );
         })}

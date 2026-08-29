@@ -1,4 +1,12 @@
-import type { AccountRole, AuthResponse, BackendUser } from '@/types/api';
+import type {
+  AccountRole,
+  AuthResponse,
+  BackendUser,
+  CartItem,
+  CartResponse,
+  WishlistItem,
+  WishlistResponse,
+} from '@/types/api';
 import type { GoldPriceSnapshot } from '@/lib/gold-price';
 
 /**
@@ -116,5 +124,69 @@ export function getMe(accessToken: string): Promise<BackendUser> {
   return request<BackendUser>('/auth/me', {
     method: 'GET',
     headers: { Authorization: `Bearer ${accessToken}` },
+  });
+}
+
+function bearer(accessToken: string): HeadersInit {
+  return { Authorization: `Bearer ${accessToken}` };
+}
+
+export function getWishlist(accessToken: string): Promise<WishlistResponse> {
+  return request<WishlistResponse>('/wishlist', {
+    method: 'GET',
+    headers: bearer(accessToken),
+  });
+}
+
+export function addWishlistItem(accessToken: string, productId: string): Promise<WishlistItem> {
+  return request<WishlistItem>('/wishlist', {
+    method: 'POST',
+    headers: bearer(accessToken),
+    body: JSON.stringify({ productId }),
+  });
+}
+
+export function removeWishlistItem(accessToken: string, productId: string): Promise<{ productId: string }> {
+  return request<{ productId: string }>(`/wishlist/${encodeURIComponent(productId)}`, {
+    method: 'DELETE',
+    headers: bearer(accessToken),
+  });
+}
+
+export function getCart(accessToken: string): Promise<CartResponse> {
+  return request<CartResponse>('/cart', {
+    method: 'GET',
+    headers: bearer(accessToken),
+  });
+}
+
+export function addCartItem(
+  accessToken: string,
+  productId: string,
+  quantity = 1,
+): Promise<CartItem> {
+  return request<CartItem>('/cart', {
+    method: 'POST',
+    headers: bearer(accessToken),
+    body: JSON.stringify({ productId, quantity }),
+  });
+}
+
+export function updateCartItem(
+  accessToken: string,
+  productId: string,
+  quantity: number,
+): Promise<CartItem> {
+  return request<CartItem>(`/cart/${encodeURIComponent(productId)}`, {
+    method: 'PATCH',
+    headers: bearer(accessToken),
+    body: JSON.stringify({ quantity }),
+  });
+}
+
+export function removeCartItem(accessToken: string, productId: string): Promise<{ productId: string }> {
+  return request<{ productId: string }>(`/cart/${encodeURIComponent(productId)}`, {
+    method: 'DELETE',
+    headers: bearer(accessToken),
   });
 }

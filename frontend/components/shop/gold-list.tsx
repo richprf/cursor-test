@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { CATALOG, CATALOG_FILTERS } from '@/lib/wwake-data';
 import { productHref } from '@/lib/wwake-product';
 import { toPersianNumber } from '@/lib/format';
+import { ProductBagButtons } from '@/components/shop/product-bag-buttons';
 
 const PAGE_SIZE = 8;
 
@@ -76,6 +77,7 @@ export function GoldList() {
                 </p>
               </div>
             </Link>
+            <ProductBagButtons productId={item.id} />
           </article>
         ))}
       </div>

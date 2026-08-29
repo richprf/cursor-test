@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Noto_Sans_Arabic, Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
+import { AppProviders } from '@/components/app-providers';
 import './globals.css';
 
 const notoArabic = Noto_Sans_Arabic({
@@ -35,7 +36,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       suppressHydrationWarning
     >
       <body className="min-h-dvh antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <AppProviders>{children}</AppProviders>
+        </ThemeProvider>
       </body>
     </html>
   );
