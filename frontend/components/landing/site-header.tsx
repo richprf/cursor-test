@@ -1,0 +1,63 @@
+'use client';
+
+import Link from 'next/link';
+import { Brand } from '@/components/brand';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { TIMING } from '@/lib/motion';
+
+export const NAV_LINKS = [
+  { href: '#partners', label: 'همکاری‌ها' },
+  { href: '#about', label: 'درباره ما' },
+  { href: '#services', label: 'خدمات' },
+  { href: '#features', label: 'ویژگی‌ها' },
+  { href: '#work', label: 'نحوهٔ کار' },
+  { href: '#blog', label: 'مقالات' },
+];
+
+export function SiteHeader({ ctaHref, ctaLabel }: { ctaHref: string; ctaLabel: string }) {
+  return (
+    <>
+      <header className="absolute inset-x-0 top-0 z-50 text-white">
+        <div className="mx-auto flex h-[49px] w-full max-w-[1600px] items-center justify-between gap-4 px-6">
+          <Link href="/" aria-label="پژواک">
+            <Brand compact />
+          </Link>
+
+          <nav className="hidden items-center gap-7 text-[13px] font-medium tracking-tight lg:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="relative ps-3 text-white/75 transition before:absolute before:start-0 before:top-1/2 before:size-1.5 before:-translate-y-1/2 before:rounded-full before:bg-gold-500 before:opacity-0 hover:text-white hover:before:opacity-100"
+                style={{
+                  transitionDuration: `${TIMING.hoverCopy}s`,
+                  transitionTimingFunction: 'cubic-bezier(0.165, 0.84, 0.44, 1)',
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle className="hidden rounded-none border-current/20 bg-transparent lg:grid" />
+            <Link href={ctaHref} className="border border-white/30 px-3.5 py-1.5 text-xs font-semibold tracking-tight">
+              {ctaLabel}
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <nav className="nav-glass" aria-label="منوی موبایل">
+        <div className="nav-glass-links">
+          {NAV_LINKS.map((link) => (
+            <a key={link.href} href={link.href} className="nav-glass-link">
+              {link.label}
+            </a>
+          ))}
+        </div>
+        <ThemeToggle className="nav-glass-theme" />
+      </nav>
+    </>
+  );
+}

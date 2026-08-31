@@ -1,0 +1,123 @@
+// Prisma schema — PostgreSQL is the source of truth for users.
+// Prisma 7 generates a Rust-free client into src/, so the client is imported like
+// any other module in the project (see src/prisma/prisma.service.ts).
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+  runtime      = "nodejs"
+}
+
+// The connection URL lives in prisma.config.ts (CLI) and in the driver adapter
+// (runtime) — Prisma 7 no longer accepts `url` here.
+datasource db {
+  provider = "postgresql"
+}
+
+enum AuthProvider {
+  CREDENTIALS
+  GOOGLE
+}
+
+enum Role {
+  BUYER
+  SELLER
+  ADMIN
+}
+
+model User {
+  id    String  @id @default(uuid())
+  email String  @unique
+  name  String?
+  image String?
+
+  /// Null for accounts that only sign in through Google.
+  passwordHash String?
+
+  /// How the account was created; a Google sign-in on an existing
+  /// credentials account links `googleId` instead of changing this.
+  provider AuthProvider @default(CREDENTIALS)
+  googleId String?      @unique
+
+  role Role @default(BUYER)
+
+  /// False for a brand-new Google account until the user picks buyer/seller.
+  onboardingComplete Boolean @default(true)
+
+  shop Shop?
+
+  products Product[]
+  wishlist Wishlist[]
+  cartItems CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+/// Catalog products live in the Next.js app; `productId` is the product handle/slug.
+model Wishlist {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("wishlists")
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("cart_items")
+}
+
+model Shop {
+  id      String  @id @default(uuid())
+  name    String
+  logoUrl String?
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("shops")
+}
+
+/// Gold pieces a seller lists for the public shop.
+model Product {
+  id          String  @id @default(uuid())
+  sellerId    String
+  seller      User    @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+
+  name        String
+  imageUrl    String?
+  weightGrams Float
+  karat       Int
+  /// Manual price in toman (no live-gold calculation yet).
+  price       Int
+  description String?
+  quantity    Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sellerId])
+  @@map("products")
+}
