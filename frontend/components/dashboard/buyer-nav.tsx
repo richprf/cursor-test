@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import { Heart, ShoppingBag, UserRound } from 'lucide-react';
 import { toPersianNumber } from '@/lib/format';
-import { useShopBag } from '@/components/shop/shop-bag-provider';
+import type { RootState } from '@/store';
+import { selectCartCount, selectWishlistCount } from '@/store/selectors';
 
 const LINKS = [
   { href: '/dashboard/buyer', label: 'پروفایل', exact: true },
@@ -14,14 +16,15 @@ const LINKS = [
 
 export function BuyerNav() {
   const pathname = usePathname();
-  const bag = useShopBag();
+  const wishlistCount = useSelector((state: RootState) => selectWishlistCount(state));
+  const cartCount = useSelector((state: RootState) => selectCartCount(state));
 
   return (
     <nav className="flex flex-wrap items-center justify-center gap-2">
       {LINKS.map((link) => {
         const active = link.exact ? pathname === link.href : pathname.startsWith(link.href);
         const count =
-          link.count === 'wishlist' ? bag.wishlistCount : link.count === 'cart' ? bag.cartCount : null;
+          link.count === 'wishlist' ? wishlistCount : link.count === 'cart' ? cartCount : null;
         const Icon = link.exact ? UserRound : link.count === 'wishlist' ? Heart : ShoppingBag;
         return (
           <Link

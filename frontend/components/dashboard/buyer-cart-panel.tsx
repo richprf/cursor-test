@@ -2,23 +2,28 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
 import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { BuyerPanel } from '@/components/dashboard/buyer-panel';
-import { useShopBag } from '@/components/shop/shop-bag-provider';
 import { formatUsd, getCatalogSnapshot } from '@/lib/catalog-product';
 import { toPersianNumber } from '@/lib/format';
 import { primaryButtonClass, secondaryButtonClass } from '@/components/ui';
+import type { AppDispatch, RootState } from '@/store';
+import { removeCartItem, updateCartQuantity } from '@/store/cartSlice';
+import { selectCartItems, selectShopReady } from '@/store/selectors';
 
 export function BuyerCartPanel() {
-  const bag = useShopBag();
-  const items = [...bag.cartQuantities.entries()]
-    .map(([id, quantity]) => ({ id, quantity, product: getCatalogSnapshot(id) }))
+  const dispatch = useDispatch<AppDispatch>();
+  const ready = useSelector((state: RootState) => selectShopReady(state));
+  const cartItems = useSelector((state: RootState) => selectCartItems(state));
+  const items = cartItems
+    .map((item) => ({ ...item, product: getCatalogSnapshot(item.productId) }))
     .filter((row) => row.product);
   const total = items.reduce((sum, row) => sum + row.product!.priceValue * row.quantity, 0);
 
   return (
     <BuyerPanel title="سبد خرید">
-      {!bag.ready ? (
+      {!ready ? (
         <p className="text-sm text-muted">در حال همگام‌سازی با سرور…</p>
       ) : items.length === 0 ? (
         <div className="rounded-xl border border-dashed border-gold-500/30 bg-gold-500/5 px-5 py-8 text-center">
@@ -31,8 +36,8 @@ export function BuyerCartPanel() {
       ) : (
         <>
           <ul className="divide-y divide-border/70 rounded-xl border border-border bg-background-elevated">
-            {items.map(({ id, quantity, product }) => (
-              <li key={id} className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
+            {items.map(({ productId, quantity, product }) => (
+              <li key={productId} className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
                 <Link href={product!.href} className="relative size-20 shrink-0 overflow-hidden rounded-xl bg-background">
                   {product!.image ? (
                     <Image src={product!.image} alt={product!.title} fill sizes="80px" className="object-cover" />
@@ -55,7 +60,7 @@ export function BuyerCartPanel() {
                       type="button"
                       className="grid size-9 place-items-center text-gold-700"
                       aria-label="کاهش تعداد"
-                      onClick={() => void bag.setCartQuantity(id, quantity - 1)}
+                      onClick={() => void dispatch(updateCartQuantity({ productId, quantity: quantity - 1 }))}
                     >
                       <Minus className="size-4" />
                     </button>
@@ -65,7 +70,7 @@ export function BuyerCartPanel() {
                       className="grid size-9 place-items-center text-gold-700 disabled:opacity-40"
                       aria-label="افزایش تعداد"
                       disabled={quantity >= 99}
-                      onClick={() => void bag.setCartQuantity(id, quantity + 1)}
+                      onClick={() => void dispatch(updateCartQuantity({ productId, quantity: quantity + 1 }))}
                     >
                       <Plus className="size-4" />
                     </button>
@@ -73,7 +78,7 @@ export function BuyerCartPanel() {
                   <button
                     type="button"
                     className={`${secondaryButtonClass} !w-auto px-3 py-2 text-xs`}
-                    onClick={() => void bag.removeFromCart(id)}
+                    onClick={() => void dispatch(removeCartItem(productId))}
                   >
                     <Trash2 className="size-3.5" aria-hidden />
                     حذف

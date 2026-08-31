@@ -16,7 +16,11 @@ import {
 } from '@/lib/wwake-product';
 import { catalogIdFromTitle } from '@/lib/catalog-product';
 import { ProductBagButtons } from '@/components/shop/product-bag-buttons';
-import { useShopBag } from '@/components/shop/shop-bag-provider';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '@/store';
+import { addCartItem } from '@/store/cartSlice';
+import { selectCartQuantity } from '@/store/selectors';
+import { useRequireSignIn } from '@/store/use-require-sign-in';
 
 function hrefForTitle(title: string) {
   const item = CATALOG.find((entry) => entry.title === title);
@@ -69,7 +73,9 @@ export function ProductDetail({ product }: { product: ProductRecord }) {
   const [accOpen, setAccOpen] = useState<number | null>(0);
   const [sticky, setSticky] = useState(false);
   const [added, setAdded] = useState(false);
-  const bag = useShopBag();
+  const dispatch = useDispatch<AppDispatch>();
+  const requireSignIn = useRequireSignIn();
+  const inCart = useSelector((state: RootState) => selectCartQuantity(product.slug)(state) > 0);
   const buyRef = useRef<HTMLButtonElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
   const ethosStep = PRODUCT_ETHOS[ethos] ?? PRODUCT_ETHOS[0];
@@ -97,11 +103,10 @@ export function ProductDetail({ product }: { product: ProductRecord }) {
       openSize();
       return;
     }
+    if (!requireSignIn()) return;
     setAdded(true);
-    void bag.addToCart(product.slug);
+    void dispatch(addCartItem({ productId: product.slug }));
   };
-
-  const inCart = bag.cartQuantity(product.slug) > 0;
 
   const scrollMedia = (direction: number) => {
     const next = (mediaIndex + direction + mediaCount) % mediaCount;

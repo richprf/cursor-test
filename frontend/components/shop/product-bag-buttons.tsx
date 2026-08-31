@@ -1,8 +1,13 @@
 'use client';
 
 import type { MouseEvent } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Heart, ShoppingBag } from 'lucide-react';
-import { useShopBag } from '@/components/shop/shop-bag-provider';
+import type { AppDispatch, RootState } from '@/store';
+import { addCartItem, removeCartItem } from '@/store/cartSlice';
+import { selectCartQuantity, selectIsWished } from '@/store/selectors';
+import { useRequireSignIn } from '@/store/use-require-sign-in';
+import { toggleWishlistItem } from '@/store/wishlistSlice';
 
 export function ProductBagButtons({
   productId,
@@ -13,9 +18,10 @@ export function ProductBagButtons({
   className?: string;
   variant?: 'overlay' | 'inline';
 }) {
-  const bag = useShopBag();
-  const wished = bag.isWished(productId);
-  const inCart = bag.cartQuantity(productId) > 0;
+  const dispatch = useDispatch<AppDispatch>();
+  const requireSignIn = useRequireSignIn();
+  const wished = useSelector((state: RootState) => selectIsWished(productId)(state));
+  const inCart = useSelector((state: RootState) => selectCartQuantity(productId)(state) > 0);
 
   const stop = (event: MouseEvent) => {
     event.preventDefault();
@@ -36,7 +42,8 @@ export function ProductBagButtons({
         title={wished ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'}
         onClick={(event) => {
           stop(event);
-          void bag.toggleWishlist(productId);
+          if (!requireSignIn()) return;
+          void dispatch(toggleWishlistItem(productId));
         }}
       >
         <Heart size={16} fill={wished ? 'currentColor' : 'none'} strokeWidth={1.6} />
@@ -49,8 +56,9 @@ export function ProductBagButtons({
         title={inCart ? 'در سبد خرید' : 'افزودن به سبد خرید'}
         onClick={(event) => {
           stop(event);
-          if (inCart) void bag.removeFromCart(productId);
-          else void bag.addToCart(productId);
+          if (!requireSignIn()) return;
+          if (inCart) void dispatch(removeCartItem(productId));
+          else void dispatch(addCartItem({ productId }));
         }}
       >
         <ShoppingBag size={16} fill={inCart ? 'currentColor' : 'none'} strokeWidth={1.6} />

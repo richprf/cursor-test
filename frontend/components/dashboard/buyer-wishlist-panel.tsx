@@ -2,21 +2,25 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
 import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
 import { BuyerPanel } from '@/components/dashboard/buyer-panel';
-import { useShopBag } from '@/components/shop/shop-bag-provider';
 import { getCatalogSnapshot } from '@/lib/catalog-product';
 import { primaryButtonClass, secondaryButtonClass } from '@/components/ui';
+import type { AppDispatch, RootState } from '@/store';
+import { moveWishlistToCart } from '@/store/cartSlice';
+import { selectShopReady, selectWishlistIds } from '@/store/selectors';
+import { removeWishlistItem } from '@/store/wishlistSlice';
 
 export function BuyerWishlistPanel() {
-  const bag = useShopBag();
-  const items = [...bag.wishlistIds]
-    .map((id) => ({ id, product: getCatalogSnapshot(id) }))
-    .filter((row) => row.product);
+  const dispatch = useDispatch<AppDispatch>();
+  const ready = useSelector((state: RootState) => selectShopReady(state));
+  const wishlistIds = useSelector((state: RootState) => selectWishlistIds(state));
+  const items = wishlistIds.map((id) => ({ id, product: getCatalogSnapshot(id) })).filter((row) => row.product);
 
   return (
     <BuyerPanel title="علاقه‌مندی‌ها">
-      {!bag.ready ? (
+      {!ready ? (
         <p className="text-sm text-muted">در حال همگام‌سازی با سرور…</p>
       ) : items.length === 0 ? (
         <Empty copy="هنوز محصولی به علاقه‌مندی‌ها اضافه نکرده‌اید." />
@@ -41,7 +45,7 @@ export function BuyerWishlistPanel() {
                 <button
                   type="button"
                   className={`${secondaryButtonClass} !w-auto px-3 py-2 text-xs`}
-                  onClick={() => void bag.toggleWishlist(id)}
+                  onClick={() => void dispatch(removeWishlistItem(id))}
                 >
                   <Trash2 className="size-3.5" aria-hidden />
                   حذف
@@ -49,7 +53,7 @@ export function BuyerWishlistPanel() {
                 <button
                   type="button"
                   className={`${primaryButtonClass} !w-auto px-3 py-2 text-xs`}
-                  onClick={() => void bag.moveWishlistToCart(id)}
+                  onClick={() => void dispatch(moveWishlistToCart(id))}
                 >
                   <ShoppingBag className="size-3.5" aria-hidden />
                   انتقال به سبد

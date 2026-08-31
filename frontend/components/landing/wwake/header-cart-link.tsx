@@ -1,16 +1,20 @@
 'use client';
 
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 import { toPersianNumber } from '@/lib/format';
-import { useShopBag } from '@/components/shop/shop-bag-provider';
+import type { RootState } from '@/store';
+import { selectCartCount } from '@/store/selectors';
+import { useSignedIn } from '@/store/use-require-sign-in';
 
 export function HeaderCartLink() {
-  const bag = useShopBag();
-  const href = bag.signedIn ? '/dashboard/buyer/cart' : '/login?callbackUrl=/dashboard/buyer/cart';
+  const signedIn = useSignedIn();
+  const cartCount = useSelector((state: RootState) => selectCartCount(state));
+  const href = signedIn ? '/dashboard/buyer/cart' : '/login?callbackUrl=/dashboard/buyer/cart';
 
   return (
     <Link href={href} className="ww-header-cart">
-      سبد <span>[{toPersianNumber(bag.cartCount)}]</span>
+      سبد <span>[{toPersianNumber(cartCount)}]</span>
     </Link>
   );
 }
