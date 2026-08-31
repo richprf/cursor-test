@@ -1,6 +1,6 @@
 import { Brand } from '@/components/brand';
-import { BuyerNav } from '@/components/dashboard/buyer-nav';
 import { DashboardShell, DashboardSidebarBody } from '@/components/dashboard/dashboard-shell';
+import { SellerNav } from '@/components/dashboard/seller-nav';
 import { SignOutButton } from '@/components/sign-out-button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import type { ReactNode } from 'react';
@@ -8,13 +8,13 @@ import type { ReactNode } from 'react';
 const signOutClass =
   'inline-flex w-full items-center justify-start rounded-xl px-3 py-2 text-sm text-muted transition hover:bg-background-elevated hover:text-foreground';
 
-export default function BuyerDashboardLayout({ children }: { children: ReactNode }) {
+export default function SellerDashboardLayout({ children }: { children: ReactNode }) {
   return (
     <DashboardShell
       sidebar={
         <DashboardSidebarBody
           brand={<Brand compact />}
-          nav={<BuyerNav />}
+          nav={<SellerNav />}
           footer={<SidebarSettings />}
         />
       }
@@ -22,7 +22,7 @@ export default function BuyerDashboardLayout({ children }: { children: ReactNode
         <div className="flex items-center justify-between gap-3">
           <Brand compact />
           <div className="min-w-0 flex-1">
-            <BuyerNav compact />
+            <SellerNav compact />
           </div>
           <ThemeToggle />
         </div>

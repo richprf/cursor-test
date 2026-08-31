@@ -92,6 +92,14 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Dashboard canvas: warmer paper in light, deeper black in dark — does not change the storefront. */
+.dash-canvas {
+  background: #f3f1ec;
+}
+.dark .dash-canvas {
+  background: #09090b;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   body,
   .theme-fade {

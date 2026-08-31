@@ -1,10 +1,11 @@
 import { BackendError, getMe } from '@/lib/backend';
 import { publicAssetPath } from '@/lib/dashboard';
 import { requireDashboardSession } from '@/lib/require-dashboard';
-import { Alert, Card } from '@/components/ui';
-import { Brand } from '@/components/brand';
-import { SignOutButton } from '@/components/sign-out-button';
-import { ThemeToggleDock } from '@/components/theme-toggle';
+import { Alert } from '@/components/ui';
+import { KpiCard, Verdict } from '@/components/dashboard/kpi-card';
+import { Sparkline } from '@/components/dashboard/sparkline';
+import { toPersianNumber } from '@/lib/format';
+import { Box, CircleDollarSign, Receipt, Store } from 'lucide-react';
 import type { BackendUser } from '@/types/api';
 
 export const metadata = { title: 'داشبورد فروشنده' };
@@ -28,50 +29,75 @@ export default async function SellerDashboardPage() {
   const shopName = profile?.shopName ?? session.user.shopName ?? 'مغازه شما';
   const logoSrc = publicAssetPath(profile?.logoUrl ?? session.user.logoUrl);
   const greetingName = profile?.name ?? session.user.name ?? 'فروشنده';
+  const emptyTrend = [0, 0, 0, 0, 0, 0];
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-7 p-6">
-      <ThemeToggleDock />
-      <Brand />
-
-      <Card>
-        <div className="mb-6 flex items-center gap-4">
-          {logoSrc ? (
-            // eslint-disable-next-line @next/next/no-img-element -- upload host is rewritten, not in next.config images
-            <img
-              src={logoSrc}
-              alt=""
-              className="size-14 rounded-xl object-cover ring-2 ring-gold-500/40"
-            />
-          ) : session.user.image ? (
-            // eslint-disable-next-line @next/next/no-img-element -- avatar host is not configured in next.config
-            <img
-              src={session.user.image}
-              alt=""
-              className="size-14 rounded-xl object-cover ring-2 ring-gold-500/40"
-            />
-          ) : (
-            <div className="grid size-14 place-items-center rounded-xl border border-gold-500/30 bg-gold-500/10 text-lg font-semibold text-gold-700">
-              {shopName.charAt(0)}
-            </div>
-          )}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gold-700">فروشنده</p>
-            <h1 className="text-lg font-semibold">{shopName}</h1>
-            <p dir="ltr" className="text-sm text-muted">
-              {session.user.email}
-            </p>
+    <>
+      <div className="mb-10 flex items-start gap-5">
+        {logoSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element -- upload host is rewritten, not in next.config images
+          <img src={logoSrc} alt="" className="size-16 rounded-2xl object-cover ring-1 ring-border" />
+        ) : session.user.image ? (
+          // eslint-disable-next-line @next/next/no-img-element -- avatar host is not configured in next.config
+          <img src={session.user.image} alt="" className="size-16 rounded-2xl object-cover ring-1 ring-border" />
+        ) : (
+          <div className="grid size-16 place-items-center rounded-2xl border border-border bg-surface text-xl font-semibold text-gold-700">
+            {shopName.charAt(0)}
           </div>
+        )}
+        <Verdict
+          eyebrow="مغازه"
+          value={shopName}
+          detail={
+            <>
+              {greetingName} عزیز، خوش آمدید. از اینجا بعداً محصولات و آگهی‌های مغازه را مدیریت می‌کنید.
+            </>
+          }
+        />
+      </div>
+
+      {profileError && (
+        <div className="mb-8">
+          <Alert>{profileError}</Alert>
         </div>
+      )}
 
-        <p className="mb-5 text-sm leading-7 text-muted">
-          {greetingName} عزیز، خوش آمدید. از اینجا بعداً محصولات و آگهی‌های مغازه را مدیریت می‌کنید.
-        </p>
+      <div className="mb-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard
+          icon={<CircleDollarSign className="size-4" aria-hidden />}
+          label="فروش"
+          value={<span dir="ltr">$0.00</span>}
+          hint="هنوز سفارشی ثبت نشده است"
+          trend={<Sparkline points={emptyTrend} className="text-gold-600" />}
+        />
+        <KpiCard
+          icon={<Box className="size-4" aria-hidden />}
+          label="محصولات"
+          value={toPersianNumber(0)}
+          hint="کاتالوگ مغازه هنوز خالی است"
+          trend={<Sparkline points={emptyTrend} className="text-gold-600" />}
+        />
+        <KpiCard
+          icon={<Receipt className="size-4" aria-hidden />}
+          label="سفارش‌ها"
+          value={toPersianNumber(0)}
+          hint="وقتی خریدی انجام شود اینجا دیده می‌شود"
+          trend={<Sparkline points={emptyTrend} className="text-gold-600" />}
+        />
+        <KpiCard
+          icon={<Store className="size-4" aria-hidden />}
+          label="وضعیت"
+          value="فعال"
+          hint={profile?.provider === 'GOOGLE' ? 'ورود با گوگل' : 'ورود با ایمیل'}
+        />
+      </div>
 
-        {profileError && <Alert>{profileError}</Alert>}
-
-        {profile && (
-          <dl className="divide-y divide-border/70 rounded-xl border border-border bg-background-elevated text-sm">
+      {profile && (
+        <section className="overflow-hidden rounded-2xl border border-border/80 bg-surface">
+          <div className="border-b border-border/70 px-6 py-4">
+            <h2 className="text-sm font-medium">جزئیات حساب</h2>
+          </div>
+          <dl>
             <Row label="نام مغازه" value={shopName} />
             <Row label="نقش" value="فروشنده" />
             <Row
@@ -79,21 +105,17 @@ export default async function SellerDashboardPage() {
               value={profile.provider === 'GOOGLE' ? 'گوگل' : 'ایمیل و رمز عبور'}
             />
           </dl>
-        )}
-
-        <div className="mt-6">
-          <SignOutButton />
-        </div>
-      </Card>
-    </main>
+        </section>
+      )}
+    </>
   );
 }
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 px-4 py-3">
-      <dt className="text-muted">{label}</dt>
-      <dd>{value}</dd>
+    <div className="flex items-center justify-between gap-6 border-b border-border/60 px-6 py-4 last:border-b-0">
+      <dt className="text-sm text-muted">{label}</dt>
+      <dd className="text-sm">{value}</dd>
     </div>
   );
 }

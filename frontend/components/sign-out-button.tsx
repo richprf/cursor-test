@@ -2,7 +2,7 @@ import { signOut } from '@/auth';
 import { secondaryButtonClass } from '@/components/ui';
 
 /** Server action based sign-out — no client JavaScript required. */
-export function SignOutButton() {
+export function SignOutButton({ className = secondaryButtonClass }: { className?: string }) {
   return (
     <form
       action={async () => {
@@ -10,7 +10,7 @@ export function SignOutButton() {
         await signOut({ redirectTo: '/login' });
       }}
     >
-      <button type="submit" className={secondaryButtonClass}>
+      <button type="submit" className={className}>
         خروج از حساب
       </button>
     </form>
