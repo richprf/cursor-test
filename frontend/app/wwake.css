@@ -2871,3 +2871,26 @@
   }
 }
 
+.ww-seller-listings .ww-card {
+  scroll-margin-top: 6rem;
+}
+
+.ww-seller-listings .ww-card-media img,
+.ww-seller-placeholder {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ww-seller-placeholder {
+  background: linear-gradient(135deg, #f5c542 0%, #8a6a15 100%);
+}
+
+.ww-seller-shop {
+  color: var(--ww-grey);
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+

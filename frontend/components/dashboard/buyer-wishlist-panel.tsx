@@ -1,12 +1,13 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
 import { BuyerPanel, DashboardEmpty, DashboardTable } from '@/components/dashboard/buyer-panel';
-import { getCatalogSnapshot } from '@/lib/catalog-product';
+import { CatalogThumb } from '@/components/dashboard/catalog-thumb';
+import { formatCatalogPrice, getCatalogSnapshot } from '@/lib/catalog-product';
 import { primaryButtonClass } from '@/components/ui';
+import { useListingCatalog } from '@/lib/use-listing-catalog';
 import type { AppDispatch, RootState } from '@/store';
 import { moveWishlistToCart } from '@/store/cartSlice';
 import { selectShopReady, selectWishlistIds } from '@/store/selectors';
@@ -16,7 +17,10 @@ export function BuyerWishlistPanel() {
   const dispatch = useDispatch<AppDispatch>();
   const ready = useSelector((state: RootState) => selectShopReady(state));
   const wishlistIds = useSelector((state: RootState) => selectWishlistIds(state));
-  const items = wishlistIds.map((id) => ({ id, product: getCatalogSnapshot(id) })).filter((row) => row.product);
+  const listings = useListingCatalog();
+  const items = wishlistIds
+    .map((id) => ({ id, product: getCatalogSnapshot(id, listings) }))
+    .filter((row) => row.product);
 
   return (
     <BuyerPanel title="علاقه‌مندی‌ها">
@@ -48,15 +52,13 @@ export function BuyerWishlistPanel() {
                   <td className="px-5 py-4">
                     <Link href={product!.href} className="flex items-center gap-4">
                       <span className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-background-elevated">
-                        {product!.image ? (
-                          <Image src={product!.image} alt={product!.title} fill sizes="48px" className="object-cover" />
-                        ) : null}
+                        <CatalogThumb src={product!.image} alt={product!.title} />
                       </span>
                       <span className="truncate font-medium hover:text-gold-700">{product!.title}</span>
                     </Link>
                   </td>
-                  <td className="px-5 py-4 text-right tabular-nums text-muted" dir="ltr">
-                    {product!.price}
+                  <td className="px-5 py-4 text-right tabular-nums text-muted">
+                    {formatCatalogPrice(product!)}
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex justify-end gap-2">

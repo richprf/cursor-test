@@ -4,6 +4,8 @@ import type {
   BackendUser,
   CartItem,
   CartResponse,
+  ProductListing,
+  ProductsResponse,
   WishlistItem,
   WishlistResponse,
 } from '@/types/api';
@@ -186,6 +188,44 @@ export function updateCartItem(
 
 export function removeCartItem(accessToken: string, productId: string): Promise<{ productId: string }> {
   return request<{ productId: string }>(`/cart/${encodeURIComponent(productId)}`, {
+    method: 'DELETE',
+    headers: bearer(accessToken),
+  });
+}
+
+export function listProducts(): Promise<ProductsResponse> {
+  return request<ProductsResponse>('/products', { method: 'GET' });
+}
+
+export function listMyProducts(accessToken: string): Promise<ProductsResponse> {
+  return request<ProductsResponse>('/products/mine', {
+    method: 'GET',
+    headers: bearer(accessToken),
+  });
+}
+
+export function createProduct(accessToken: string, body: FormData): Promise<ProductListing> {
+  return request<ProductListing>('/products', {
+    method: 'POST',
+    headers: bearer(accessToken),
+    body,
+  });
+}
+
+export function updateProduct(
+  accessToken: string,
+  id: string,
+  body: FormData,
+): Promise<ProductListing> {
+  return request<ProductListing>(`/products/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: bearer(accessToken),
+    body,
+  });
+}
+
+export function deleteProduct(accessToken: string, id: string): Promise<{ id: string }> {
+  return request<{ id: string }>(`/products/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     headers: bearer(accessToken),
   });

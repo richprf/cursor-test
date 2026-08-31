@@ -43,3 +43,22 @@ export interface CartResponse {
   items: CartItem[];
   totalItems: number;
 }
+
+export interface ProductListing {
+  id: string;
+  sellerId: string;
+  name: string;
+  imageUrl: string | null;
+  weightGrams: number;
+  karat: number;
+  price: number;
+  description: string | null;
+  quantity: number | null;
+  shopName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductsResponse {
+  items: ProductListing[];
+}

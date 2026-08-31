@@ -3,6 +3,8 @@ import { LenisRoot } from '@/components/landing/lenis-root';
 import { WwakeHeader } from '@/components/landing/wwake/wwake-header';
 import { WwakeFooter } from '@/components/landing/wwake/wwake-rest';
 import { CollectionGrid } from '@/components/shop/collection-grid';
+import { SellerListings } from '@/components/shop/seller-listings';
+import { listProducts } from '@/lib/backend';
 import { getCollection } from '@/lib/wwake-collections';
 import '../wwake.css';
 
@@ -16,12 +18,18 @@ export default async function ShopPage() {
   const accountHref = session ? '/dashboard' : '/login';
   const accountLabel = session ? 'داشبورد' : 'ورود';
   const collection = getCollection('view-all');
+  const listings = await listProducts()
+    .then((data) => data.items)
+    .catch(() => []);
 
   return (
     <LenisRoot>
       <div className="wwake" dir="rtl" lang="fa">
         <WwakeHeader accountHref={accountHref} accountLabel={accountLabel} />
-        <main>{collection ? <CollectionGrid collection={collection} /> : null}</main>
+        <main>
+          <SellerListings items={listings} />
+          {collection ? <CollectionGrid collection={collection} /> : null}
+        </main>
         <WwakeFooter />
       </div>
     </LenisRoot>

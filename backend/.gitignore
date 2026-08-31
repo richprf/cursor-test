@@ -31,6 +31,8 @@ yarn-error.log*
 # Prisma Client is generated from prisma/schema.prisma (npm run prisma:generate)
 /src/generated
 
-# Shop logos uploaded at runtime
+# Shop logos and product photos uploaded at runtime
 /uploads/shops/*
 !/uploads/shops/.gitkeep
+/uploads/products/*
+!/uploads/products/.gitkeep
