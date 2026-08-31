@@ -1,4 +1,4 @@
-import { BackendError, getMe } from '@/lib/backend';
+import { BackendError, getMe, listMyProducts } from '@/lib/backend';
 import { publicAssetPath } from '@/lib/dashboard';
 import { requireDashboardSession } from '@/lib/require-dashboard';
 import { Alert } from '@/components/ui';
@@ -15,6 +15,7 @@ export default async function SellerDashboardPage() {
 
   let profile: BackendUser | null = null;
   let profileError: string | null = null;
+  let productCount = 0;
 
   try {
     profile = await getMe(session.accessToken);
@@ -24,6 +25,12 @@ export default async function SellerDashboardPage() {
     } else {
       profileError = 'خواندن اطلاعات از سرور NestJS ناموفق بود.';
     }
+  }
+
+  try {
+    productCount = (await listMyProducts(session.accessToken)).items.length;
+  } catch {
+    productCount = 0;
   }
 
   const shopName = profile?.shopName ?? session.user.shopName ?? 'مغازه شما';
@@ -50,7 +57,7 @@ export default async function SellerDashboardPage() {
           value={shopName}
           detail={
             <>
-              {greetingName} عزیز، خوش آمدید. از اینجا بعداً محصولات و آگهی‌های مغازه را مدیریت می‌کنید.
+              {greetingName} عزیز، خوش آمدید. محصولات طلا را از بخش محصولات مدیریت کنید.
             </>
           }
         />
@@ -73,8 +80,8 @@ export default async function SellerDashboardPage() {
         <KpiCard
           icon={<Box className="size-4" aria-hidden />}
           label="محصولات"
-          value={toPersianNumber(0)}
-          hint="کاتالوگ مغازه هنوز خالی است"
+          value={toPersianNumber(productCount)}
+          hint={productCount ? 'قطعه در کاتالوگ مغازه' : 'کاتالوگ مغازه هنوز خالی است'}
           trend={<Sparkline points={emptyTrend} className="text-gold-600" />}
         />
         <KpiCard

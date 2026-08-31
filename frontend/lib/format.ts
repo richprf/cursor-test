@@ -10,3 +10,7 @@ export function toPersianNumber(value: number): string {
     .replace(/\d/g, (digit) => PERSIAN_DIGITS[Number(digit)])
     .replace(/,/g, '٬');
 }
+
+export function formatToman(value: number): string {
+  return `${toPersianNumber(Math.round(value))} تومان`;
+}

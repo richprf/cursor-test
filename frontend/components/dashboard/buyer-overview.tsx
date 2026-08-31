@@ -2,10 +2,11 @@
 
 import { useSelector } from 'react-redux';
 import { Heart, ShoppingBag } from 'lucide-react';
-import { formatUsd, getCatalogSnapshot } from '@/lib/catalog-product';
+import { formatMixedTotals, getCatalogSnapshot } from '@/lib/catalog-product';
 import { toPersianNumber } from '@/lib/format';
 import { KpiCard, Verdict } from '@/components/dashboard/kpi-card';
 import { Sparkline } from '@/components/dashboard/sparkline';
+import { useListingCatalog } from '@/lib/use-listing-catalog';
 import type { RootState } from '@/store';
 import { selectCartCount, selectCartItems, selectShopReady, selectWishlistCount } from '@/store/selectors';
 
@@ -14,9 +15,16 @@ export function BuyerOverview() {
   const cartCount = useSelector((state: RootState) => selectCartCount(state));
   const wishlistCount = useSelector((state: RootState) => selectWishlistCount(state));
   const cartItems = useSelector((state: RootState) => selectCartItems(state));
-  const total = cartItems.reduce((sum, item) => {
-    const product = getCatalogSnapshot(item.productId);
-    return sum + (product?.priceValue ?? 0) * item.quantity;
+  const listings = useListingCatalog();
+  const usdTotal = cartItems.reduce((sum, item) => {
+    const product = getCatalogSnapshot(item.productId, listings);
+    if (!product || product.currency === 'TOMAN') return sum;
+    return sum + product.priceValue * item.quantity;
+  }, 0);
+  const tomanTotal = cartItems.reduce((sum, item) => {
+    const product = getCatalogSnapshot(item.productId, listings);
+    if (!product || product.currency !== 'TOMAN') return sum;
+    return sum + product.priceValue * item.quantity;
   }, 0);
   const spark = cartItems.length ? cartItems.map((item) => item.quantity) : [0, 0, 0, 0];
 
@@ -25,8 +33,8 @@ export function BuyerOverview() {
       <Verdict
         eyebrow="مجموع سبد خرید"
         value={
-          <span dir="ltr" className="inline-block">
-            {ready ? formatUsd(total) : '—'}
+          <span className="inline-block">
+            {ready ? formatMixedTotals(usdTotal, tomanTotal) : '—'}
           </span>
         }
         detail={

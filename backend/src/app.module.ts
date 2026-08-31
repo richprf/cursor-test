@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { CartModule } from './cart/cart.module';
 import { GoldPriceModule } from './gold-price/gold-price.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { validateEnv } from './config/env.validation';
@@ -26,6 +27,7 @@ import { validateEnv } from './config/env.validation';
     PrismaModule,
     UsersModule,
     AuthModule,
+    ProductsModule,
     WishlistModule,
     CartModule,
     GoldPriceModule,

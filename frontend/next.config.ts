@@ -5,7 +5,7 @@ const nestApiUrl = process.env.NEST_API_URL?.replace(/\/$/, '');
 const nextConfig: NextConfig = {
   async rewrites() {
     if (!nestApiUrl) return [];
-    // Shop logos live on Nest (`/uploads/shops/...`); serve them same-origin.
+    // Uploaded shop logos and product photos live on Nest (`/uploads/...`); serve them same-origin.
     return [{ source: '/uploads/:path*', destination: `${nestApiUrl}/uploads/:path*` }];
   },
 };

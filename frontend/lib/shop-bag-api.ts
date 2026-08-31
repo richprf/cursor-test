@@ -1,4 +1,4 @@
-import type { CartItem, CartResponse, WishlistItem, WishlistResponse } from '@/types/api';
+import type { CartItem, CartResponse, ProductListing, ProductsResponse, WishlistItem, WishlistResponse } from '@/types/api';
 
 async function readJson<T>(response: Response): Promise<T> {
   const body: unknown = await response.json().catch(() => null);
@@ -57,5 +57,35 @@ export function patchCart(productId: string, quantity: number): Promise<CartItem
 export function deleteCart(productId: string): Promise<{ productId: string }> {
   return fetch(`/api/cart/${encodeURIComponent(productId)}`, { method: 'DELETE' }).then((response) =>
     readJson<{ productId: string }>(response),
+  );
+}
+
+export function fetchProducts(): Promise<ProductsResponse> {
+  return fetch('/api/products', { cache: 'no-store' }).then((response) =>
+    readJson<ProductsResponse>(response),
+  );
+}
+
+export function fetchMyProducts(): Promise<ProductsResponse> {
+  return fetch('/api/products/mine', { cache: 'no-store' }).then((response) =>
+    readJson<ProductsResponse>(response),
+  );
+}
+
+export function postProduct(body: FormData): Promise<ProductListing> {
+  return fetch('/api/products', { method: 'POST', body }).then((response) =>
+    readJson<ProductListing>(response),
+  );
+}
+
+export function patchProduct(id: string, body: FormData): Promise<ProductListing> {
+  return fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'PATCH', body }).then(
+    (response) => readJson<ProductListing>(response),
+  );
+}
+
+export function deleteListing(id: string): Promise<{ id: string }> {
+  return fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' }).then((response) =>
+    readJson<{ id: string }>(response),
   );
 }

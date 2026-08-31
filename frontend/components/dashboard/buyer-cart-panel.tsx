@@ -1,13 +1,14 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { BuyerPanel, DashboardEmpty, DashboardTable } from '@/components/dashboard/buyer-panel';
-import { formatUsd, getCatalogSnapshot } from '@/lib/catalog-product';
+import { CatalogThumb } from '@/components/dashboard/catalog-thumb';
+import { formatCatalogPrice, formatMixedTotals, getCatalogSnapshot } from '@/lib/catalog-product';
 import { toPersianNumber } from '@/lib/format';
 import { primaryButtonClass } from '@/components/ui';
+import { useListingCatalog } from '@/lib/use-listing-catalog';
 import type { AppDispatch, RootState } from '@/store';
 import { removeCartItem, updateCartQuantity } from '@/store/cartSlice';
 import { selectCartItems, selectShopReady } from '@/store/selectors';
@@ -16,10 +17,16 @@ export function BuyerCartPanel() {
   const dispatch = useDispatch<AppDispatch>();
   const ready = useSelector((state: RootState) => selectShopReady(state));
   const cartItems = useSelector((state: RootState) => selectCartItems(state));
+  const listings = useListingCatalog();
   const items = cartItems
-    .map((item) => ({ ...item, product: getCatalogSnapshot(item.productId) }))
+    .map((item) => ({ ...item, product: getCatalogSnapshot(item.productId, listings) }))
     .filter((row) => row.product);
-  const total = items.reduce((sum, row) => sum + row.product!.priceValue * row.quantity, 0);
+  const usdTotal = items
+    .filter((row) => row.product!.currency !== 'TOMAN')
+    .reduce((sum, row) => sum + row.product!.priceValue * row.quantity, 0);
+  const tomanTotal = items
+    .filter((row) => row.product!.currency === 'TOMAN')
+    .reduce((sum, row) => sum + row.product!.priceValue * row.quantity, 0);
 
   return (
     <BuyerPanel title="سبد خرید">
@@ -54,15 +61,13 @@ export function BuyerCartPanel() {
                     <td className="px-5 py-4">
                       <Link href={product!.href} className="flex items-center gap-4">
                         <span className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-background-elevated">
-                          {product!.image ? (
-                            <Image src={product!.image} alt={product!.title} fill sizes="48px" className="object-cover" />
-                          ) : null}
+                          <CatalogThumb src={product!.image} alt={product!.title} />
                         </span>
                         <span className="truncate font-medium hover:text-gold-700">{product!.title}</span>
                       </Link>
                     </td>
-                    <td className="px-5 py-4 text-right tabular-nums text-muted" dir="ltr">
-                      {product!.price}
+                    <td className="px-5 py-4 text-right tabular-nums text-muted">
+                      {formatCatalogPrice(product!)}
                     </td>
                     <td className="px-5 py-4">
                       <div className="mx-auto inline-flex items-center rounded-lg border border-border">
@@ -86,8 +91,8 @@ export function BuyerCartPanel() {
                         </button>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-right font-medium tabular-nums" dir="ltr">
-                      {formatUsd(product!.priceValue * quantity)}
+                    <td className="px-5 py-4 text-right font-medium tabular-nums">
+                      {formatCatalogPrice(product!, quantity)}
                     </td>
                     <td className="px-5 py-4 text-end">
                       <button
@@ -106,8 +111,8 @@ export function BuyerCartPanel() {
           </DashboardTable>
           <div className="mt-8 flex items-baseline justify-between border-t border-border/70 pt-6">
             <span className="text-sm text-muted">مجموع سبد</span>
-            <strong className="text-3xl font-semibold tracking-tight tabular-nums" dir="ltr">
-              {formatUsd(total)}
+            <strong className="text-3xl font-semibold tracking-tight tabular-nums">
+              {formatMixedTotals(usdTotal, tomanTotal)}
             </strong>
           </div>
         </>

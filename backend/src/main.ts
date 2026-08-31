@@ -5,12 +5,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'node:path';
 import { AppModule } from './app.module';
 import { ensureShopUploadDir } from './auth/logo-upload';
+import { ensureProductUploadDir } from './products/product-upload';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(ConfigService);
 
   ensureShopUploadDir();
+  ensureProductUploadDir();
   app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' });
 
   app.useGlobalPipes(
