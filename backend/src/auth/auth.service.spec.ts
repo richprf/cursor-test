@@ -254,6 +254,77 @@ describe('AuthService', () => {
       );
     });
 
+    it('rejects a token revoked by logout even inside the rotation grace window', async () => {
+      prisma.refreshToken.findUnique.mockResolvedValue({
+        id: 'rt-old',
+        userId: 'user-1',
+        tokenHash: 'hash',
+        expiresAt: new Date(Date.now() + 60_000),
+        revokedAt: new Date(),
+        replacedById: null,
+        user: baseUser,
+      });
+
+      await expect(service.refresh('a'.repeat(32))).rejects.toBeInstanceOf(UnauthorizedException);
+      expect(prisma.refreshToken.updateMany).toHaveBeenCalled();
+    });
+
+    it('allows a concurrent reuse while the rotated successor is still live', async () => {
+      prisma.refreshToken.findUnique.mockImplementation(({ where }: { where: { tokenHash?: string; id?: string } }) => {
+        if (where.id === 'rt-new') {
+          return Promise.resolve({
+            id: 'rt-new',
+            userId: 'user-1',
+            tokenHash: 'hash-new',
+            expiresAt: new Date(Date.now() + 60_000),
+            revokedAt: null,
+            replacedById: null,
+          });
+        }
+        return Promise.resolve({
+          id: 'rt-old',
+          userId: 'user-1',
+          tokenHash: 'hash',
+          expiresAt: new Date(Date.now() + 60_000),
+          revokedAt: new Date(),
+          replacedById: 'rt-new',
+          user: baseUser,
+        });
+      });
+      prisma.refreshToken.create.mockResolvedValue({ id: 'rt-grace' });
+
+      const result = await service.refresh('a'.repeat(32));
+      expect(result.refreshToken).toEqual(expect.any(String));
+      expect(prisma.refreshToken.updateMany).not.toHaveBeenCalled();
+    });
+
+    it('rejects a rotated token after logout revoked the successor', async () => {
+      prisma.refreshToken.findUnique.mockImplementation(({ where }: { where: { tokenHash?: string; id?: string } }) => {
+        if (where.id === 'rt-new') {
+          return Promise.resolve({
+            id: 'rt-new',
+            userId: 'user-1',
+            tokenHash: 'hash-new',
+            expiresAt: new Date(Date.now() + 60_000),
+            revokedAt: new Date(),
+            replacedById: null,
+          });
+        }
+        return Promise.resolve({
+          id: 'rt-old',
+          userId: 'user-1',
+          tokenHash: 'hash',
+          expiresAt: new Date(Date.now() + 60_000),
+          revokedAt: new Date(),
+          replacedById: 'rt-new',
+          user: baseUser,
+        });
+      });
+
+      await expect(service.refresh('a'.repeat(32))).rejects.toBeInstanceOf(UnauthorizedException);
+      expect(prisma.refreshToken.updateMany).toHaveBeenCalled();
+    });
+
     it('revokes the family when a token is reused after the grace window', async () => {
       prisma.refreshToken.findUnique.mockResolvedValue({
         id: 'rt-old',
@@ -266,6 +337,26 @@ describe('AuthService', () => {
       });
 
       await expect(service.refresh('a'.repeat(32))).rejects.toBeInstanceOf(UnauthorizedException);
+      expect(prisma.refreshToken.updateMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1', revokedAt: null },
+        data: { revokedAt: expect.any(Date) },
+      });
+    });
+  });
+
+  describe('logout', () => {
+    it('revokes every live refresh token for the user', async () => {
+      prisma.refreshToken.findUnique.mockResolvedValue({
+        id: 'rt-current',
+        userId: 'user-1',
+        tokenHash: 'hash',
+        expiresAt: new Date(Date.now() + 60_000),
+        revokedAt: null,
+        replacedById: null,
+      });
+
+      await service.logout('a'.repeat(32));
+
       expect(prisma.refreshToken.updateMany).toHaveBeenCalledWith({
         where: { userId: 'user-1', revokedAt: null },
         data: { revokedAt: expect.any(Date) },

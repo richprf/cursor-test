@@ -193,11 +193,22 @@ export class AuthService {
     }
 
     if (row.revokedAt) {
-      const age = Date.now() - row.revokedAt.getTime();
-      if (age < REFRESH_REUSE_GRACE_MS) {
-        // Concurrent jwt callbacks can race after rotation; mint a fresh pair
-        // instead of treating the second call as theft.
-        return this.buildAuthResponse(row.user);
+      const rotatedRecently =
+        Boolean(row.replacedById) && Date.now() - row.revokedAt.getTime() < REFRESH_REUSE_GRACE_MS;
+      if (rotatedRecently && row.replacedById) {
+        const replacement = await this.prisma.refreshToken.findUnique({
+          where: { id: row.replacedById },
+        });
+        // Only concurrent rotation is forgiven, and only while the successor is
+        // still live. Logout (and theft after logout) revokes the successor, so
+        // the previous token must not mint another pair during the grace window.
+        if (
+          replacement &&
+          !replacement.revokedAt &&
+          replacement.expiresAt.getTime() > Date.now()
+        ) {
+          return this.buildAuthResponse(row.user);
+        }
       }
       await this.revokeAllRefreshTokens(row.userId);
       throw new UnauthorizedException('Refresh token has been revoked');
@@ -218,11 +229,10 @@ export class AuthService {
     if (refreshToken) {
       const tokenHash = hashRefreshToken(refreshToken);
       const row = await this.prisma.refreshToken.findUnique({ where: { tokenHash } });
-      if (row && !row.revokedAt) {
-        await this.prisma.refreshToken.update({
-          where: { id: row.id },
-          data: { revokedAt: new Date() },
-        });
+      if (row) {
+        // Drop every live token for this user so rotation siblings (and other
+        // devices) cannot keep the session alive after sign-out.
+        await this.revokeAllRefreshTokens(row.userId);
       }
       return;
     }
