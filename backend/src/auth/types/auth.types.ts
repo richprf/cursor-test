@@ -14,4 +14,5 @@ export interface AuthResponse {
   accessToken: string;
   /** Access token expiry as epoch milliseconds, so the client can refresh in time. */
   accessTokenExpires: number;
+  refreshToken: string;
 }

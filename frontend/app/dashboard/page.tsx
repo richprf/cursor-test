@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { dashboardPath } from '@/lib/dashboard';
+import { hasUsableAccessToken } from '@/lib/session-status';
 
 export const metadata = { title: 'داشبورد' };
 
@@ -8,7 +9,7 @@ export const metadata = { title: 'داشبورد' };
 export default async function DashboardIndexPage() {
   const session = await auth();
 
-  if (!session?.accessToken || session.error === 'AccessTokenExpired') {
+  if (!hasUsableAccessToken(session)) {
     redirect('/login?error=SessionRequired');
   }
 

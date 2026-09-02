@@ -1,11 +1,12 @@
 import { auth } from '@/auth';
 import { BackendError } from '@/lib/backend';
+import { hasUsableAccessToken } from '@/lib/session-status';
 
 export async function requireAccessToken(): Promise<
   { accessToken: string } | { response: Response }
 > {
   const session = await auth();
-  if (!session?.accessToken || session.error === 'AccessTokenExpired') {
+  if (!hasUsableAccessToken(session)) {
     return {
       response: Response.json({ message: 'برای ادامه وارد شوید.' }, { status: 401 }),
     };

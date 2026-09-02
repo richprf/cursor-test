@@ -5,6 +5,7 @@ import { Alert } from '@/components/ui';
 import { KpiCard, Verdict } from '@/components/dashboard/kpi-card';
 import { Sparkline } from '@/components/dashboard/sparkline';
 import { toPersianNumber } from '@/lib/format';
+import { ConnectGoogleButton } from '@/components/connect-google-button';
 import { Box, CircleDollarSign, Receipt, Store } from 'lucide-react';
 import type { BackendUser } from '@/types/api';
 
@@ -111,6 +112,14 @@ export default async function SellerDashboardPage() {
               label="روش ورود"
               value={profile.provider === 'GOOGLE' ? 'گوگل' : 'ایمیل و رمز عبور'}
             />
+            {profile.provider === 'CREDENTIALS' && !profile.googleLinked ? (
+              <div className="flex items-center justify-between gap-6 px-6 py-4">
+                <dt className="text-sm text-muted">حساب گوگل</dt>
+                <dd>
+                  <ConnectGoogleButton callbackUrl="/dashboard/seller" />
+                </dd>
+              </div>
+            ) : null}
           </dl>
         </section>
       )}

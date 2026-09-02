@@ -9,6 +9,7 @@ export type UserWithShop = User & { shop: Shop | null };
 export type PublicUser = Pick<User, 'id' | 'email' | 'name' | 'image' | 'role' | 'provider' | 'onboardingComplete'> & {
   shopName: string | null;
   logoUrl: string | null;
+  googleLinked: boolean;
 };
 
 export interface GoogleProfile {
@@ -30,6 +31,10 @@ export class UsersService {
 
   findById(id: string): Promise<UserWithShop | null> {
     return this.prisma.user.findUnique({ where: { id }, include: withShop });
+  }
+
+  findByGoogleId(googleId: string): Promise<UserWithShop | null> {
+    return this.prisma.user.findUnique({ where: { googleId }, include: withShop });
   }
 
   createWithPassword(input: {
@@ -58,32 +63,36 @@ export class UsersService {
   }
 
   /**
-   * Creates the account on first Google sign-in, and otherwise links the Google
-   * identity to the existing account with that email. `provider` is left alone so
-   * a user who registered with a password keeps being able to use it.
-   *
-   * Brand-new Google users still need to pick buyer/seller (and a shop name),
-   * because Google does not provide that.
+   * Creates the account on first Google sign-in. Linking a Google identity onto
+   * an existing password account is *not* done here — that would be an account
+   * takeover if the attacker can mint a Google token for the same email.
    */
-  upsertGoogleUser(profile: GoogleProfile): Promise<UserWithShop> {
-    const email = normalizeEmail(profile.email);
-
-    return this.prisma.user.upsert({
-      where: { email },
-      update: {
-        googleId: profile.googleId,
-        // Refresh the profile details Google returned, keep ours when it sent none.
-        name: profile.name ?? undefined,
-        image: profile.image ?? undefined,
-      },
-      create: {
-        email,
+  createGoogleUser(profile: GoogleProfile): Promise<UserWithShop> {
+    return this.prisma.user.create({
+      data: {
+        email: normalizeEmail(profile.email),
         googleId: profile.googleId,
         name: profile.name ?? null,
         image: profile.image ?? null,
         provider: AuthProvider.GOOGLE,
         role: Role.BUYER,
         onboardingComplete: false,
+      },
+      include: withShop,
+    });
+  }
+
+  /**
+   * Attaches a verified Google identity to an already-authenticated account.
+   * `provider` is left alone so a password user can keep signing in with email.
+   */
+  linkGoogleIdentity(userId: string, profile: GoogleProfile): Promise<UserWithShop> {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        googleId: profile.googleId,
+        name: profile.name ?? undefined,
+        image: profile.image ?? undefined,
       },
       include: withShop,
     });
@@ -161,6 +170,7 @@ export class UsersService {
       onboardingComplete: user.onboardingComplete,
       shopName: shop?.name ?? null,
       logoUrl: shop?.logoUrl ?? null,
+      googleLinked: Boolean(user.googleId),
     };
   }
 }

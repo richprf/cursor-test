@@ -2,13 +2,14 @@ import { redirect } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { auth } from '@/auth';
 import type { AccountRole } from '@/types/api';
+import { hasUsableAccessToken } from '@/lib/session-status';
 
 type AuthedSession = Session & { accessToken: string };
 
 export async function requireDashboardSession(expected: AccountRole): Promise<AuthedSession> {
   const session = await auth();
 
-  if (!session?.accessToken || session.error === 'AccessTokenExpired') {
+  if (!hasUsableAccessToken(session)) {
     redirect('/login?error=SessionRequired');
   }
 

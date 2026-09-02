@@ -8,7 +8,9 @@ import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
+import { CredentialsAccountExistsException } from './credentials-account-exists.exception';
 import { UsersService } from '../users/users.service';
+import type { PrismaService } from '../prisma/prisma.service';
 import type { UserModel as User } from '../generated/prisma/models';
 
 const baseUser: User & { shop: null } = {
@@ -28,30 +30,64 @@ const baseUser: User & { shop: null } = {
 
 describe('AuthService', () => {
   let users: jest.Mocked<
-    Pick<UsersService, 'findByEmail' | 'findById' | 'createWithPassword' | 'upsertGoogleUser'>
+    Pick<
+      UsersService,
+      | 'findByEmail'
+      | 'findById'
+      | 'findByGoogleId'
+      | 'createWithPassword'
+      | 'createGoogleUser'
+      | 'linkGoogleIdentity'
+    >
   >;
+  let prisma: {
+    refreshToken: {
+      create: jest.Mock;
+      findUnique: jest.Mock;
+      update: jest.Mock;
+      updateMany: jest.Mock;
+    };
+  };
   let service: AuthService;
 
   beforeEach(() => {
     users = {
       findByEmail: jest.fn(),
       findById: jest.fn(),
+      findByGoogleId: jest.fn(),
       createWithPassword: jest.fn(),
-      upsertGoogleUser: jest.fn(),
+      createGoogleUser: jest.fn(),
+      linkGoogleIdentity: jest.fn(),
+    };
+    prisma = {
+      refreshToken: {
+        create: jest.fn().mockResolvedValue({ id: 'rt-1' }),
+        findUnique: jest.fn(),
+        update: jest.fn(),
+        updateMany: jest.fn(),
+      },
     };
 
-    const jwt = new JwtService({ secret: 'test-secret', signOptions: { expiresIn: '1h' } });
+    const jwt = new JwtService({ secret: 'test-secret', signOptions: { expiresIn: '15m' } });
     const config = {
-      get: jest.fn((key: string) =>
-        key === 'GOOGLE_CLIENT_ID' ? 'client-id.apps.googleusercontent.com' : undefined,
-      ),
+      get: jest.fn((key: string, fallback?: string) => {
+        if (key === 'GOOGLE_CLIENT_ID') return 'client-id.apps.googleusercontent.com';
+        if (key === 'JWT_EXPIRES_IN') return '15m';
+        if (key === 'JWT_REFRESH_EXPIRES_IN') return '30d';
+        return fallback;
+      }),
     } as unknown as ConfigService;
 
-    service = new AuthService(users as unknown as UsersService, jwt, config);
+    service = new AuthService(
+      users as unknown as UsersService,
+      jwt,
+      config,
+      prisma as unknown as PrismaService,
+    );
   });
 
   describe('register', () => {
-    it('stores a bcrypt hash and returns a signed access token', async () => {
+    it('stores a bcrypt hash and returns access and refresh tokens', async () => {
       users.findByEmail.mockResolvedValue(null);
       users.createWithPassword.mockImplementation(({ email, passwordHash, name, role }) =>
         Promise.resolve({
@@ -87,9 +123,12 @@ describe('AuthService', () => {
         onboardingComplete: true,
         shopName: null,
         logoUrl: null,
+        googleLinked: false,
       });
       expect(result.accessToken).toEqual(expect.any(String));
+      expect(result.refreshToken).toEqual(expect.any(String));
       expect(result.accessTokenExpires).toBeGreaterThan(Date.now());
+      expect(prisma.refreshToken.create).toHaveBeenCalled();
     });
 
     it('creates a seller with a shop name', async () => {
@@ -154,6 +193,7 @@ describe('AuthService', () => {
 
       const result = await service.login({ email: 'ali@example.com', password: 'supersecret1' });
       expect(result.user.id).toBe('user-1');
+      expect(result.refreshToken).toEqual(expect.any(String));
     });
 
     it('rejects a wrong password', async () => {
@@ -184,6 +224,55 @@ describe('AuthService', () => {
     });
   });
 
+  describe('refresh', () => {
+    it('rotates a valid refresh token', async () => {
+      prisma.refreshToken.findUnique.mockResolvedValue({
+        id: 'rt-old',
+        userId: 'user-1',
+        tokenHash: 'hash',
+        expiresAt: new Date(Date.now() + 60_000),
+        revokedAt: null,
+        replacedById: null,
+        user: baseUser,
+      });
+      prisma.refreshToken.create.mockResolvedValue({ id: 'rt-new' });
+
+      const result = await service.refresh('a'.repeat(32));
+
+      expect(result.user.id).toBe('user-1');
+      expect(result.refreshToken).toEqual(expect.any(String));
+      expect(prisma.refreshToken.update).toHaveBeenCalledWith({
+        where: { id: 'rt-old' },
+        data: { revokedAt: expect.any(Date), replacedById: 'rt-new' },
+      });
+    });
+
+    it('rejects an unknown refresh token', async () => {
+      prisma.refreshToken.findUnique.mockResolvedValue(null);
+      await expect(service.refresh('missing-token-value-here')).rejects.toBeInstanceOf(
+        UnauthorizedException,
+      );
+    });
+
+    it('revokes the family when a token is reused after the grace window', async () => {
+      prisma.refreshToken.findUnique.mockResolvedValue({
+        id: 'rt-old',
+        userId: 'user-1',
+        tokenHash: 'hash',
+        expiresAt: new Date(Date.now() + 60_000),
+        revokedAt: new Date(Date.now() - 60_000),
+        replacedById: 'rt-new',
+        user: baseUser,
+      });
+
+      await expect(service.refresh('a'.repeat(32))).rejects.toBeInstanceOf(UnauthorizedException);
+      expect(prisma.refreshToken.updateMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1', revokedAt: null },
+        data: { revokedAt: expect.any(Date) },
+      });
+    });
+  });
+
   describe('loginWithGoogle', () => {
     const verifyIdToken = jest.spyOn(OAuth2Client.prototype, 'verifyIdToken');
 
@@ -193,7 +282,7 @@ describe('AuthService', () => {
       verifyIdToken.mockResolvedValue({ getPayload: () => payload } as never);
     }
 
-    it('verifies the id_token against the configured client id and upserts the user', async () => {
+    it('verifies the id_token against the configured client id and creates a Google user', async () => {
       mockGooglePayload({
         sub: 'google-123',
         email: 'ali@example.com',
@@ -201,7 +290,9 @@ describe('AuthService', () => {
         name: 'Ali From Google',
         picture: 'https://example.com/a.png',
       });
-      users.upsertGoogleUser.mockResolvedValue({
+      users.findByGoogleId.mockResolvedValue(null);
+      users.findByEmail.mockResolvedValue(null);
+      users.createGoogleUser.mockResolvedValue({
         ...baseUser,
         provider: 'GOOGLE',
         googleId: 'google-123',
@@ -215,23 +306,44 @@ describe('AuthService', () => {
         idToken: 'header.payload.signature',
         audience: ['client-id.apps.googleusercontent.com'],
       });
-      expect(users.upsertGoogleUser).toHaveBeenCalledWith({
+      expect(users.createGoogleUser).toHaveBeenCalledWith({
         googleId: 'google-123',
         email: 'ali@example.com',
         name: 'Ali From Google',
         image: 'https://example.com/a.png',
       });
       expect(result.accessToken).toEqual(expect.any(String));
+      expect(result.refreshToken).toEqual(expect.any(String));
       expect(result.user.onboardingComplete).toBe(false);
+      expect(result.user.googleLinked).toBe(true);
+    });
+
+    it('refuses to auto-link a credentials account that has a password', async () => {
+      mockGooglePayload({
+        sub: 'google-123',
+        email: 'ali@example.com',
+        email_verified: true,
+      });
+      users.findByGoogleId.mockResolvedValue(null);
+      users.findByEmail.mockResolvedValue({
+        ...baseUser,
+        passwordHash: await bcrypt.hash('supersecret1', 4),
+      });
+
+      await expect(service.loginWithGoogle({ idToken: 'a.b.c' })).rejects.toBeInstanceOf(
+        CredentialsAccountExistsException,
+      );
+      expect(users.createGoogleUser).not.toHaveBeenCalled();
+      expect(users.linkGoogleIdentity).not.toHaveBeenCalled();
     });
 
     it('rejects a token Google does not vouch for', async () => {
-      verifyIdToken.mockRejectedValue(new Error('Invalid token signature'));
+      verifyIdToken.mockRejectedValue(new Error('Invalid token signature') as never);
 
       await expect(service.loginWithGoogle({ idToken: 'a.b.c' })).rejects.toBeInstanceOf(
         UnauthorizedException,
       );
-      expect(users.upsertGoogleUser).not.toHaveBeenCalled();
+      expect(users.createGoogleUser).not.toHaveBeenCalled();
     });
 
     it('rejects an unverified Google email', async () => {
@@ -240,13 +352,18 @@ describe('AuthService', () => {
       await expect(service.loginWithGoogle({ idToken: 'a.b.c' })).rejects.toThrow(
         'Google email address is not verified',
       );
-      expect(users.upsertGoogleUser).not.toHaveBeenCalled();
+      expect(users.createGoogleUser).not.toHaveBeenCalled();
     });
 
     it('refuses to sign in when no audience is configured', async () => {
       const jwt = new JwtService({ secret: 'test-secret' });
       const config = { get: jest.fn(() => undefined) } as unknown as ConfigService;
-      const unconfigured = new AuthService(users as unknown as UsersService, jwt, config);
+      const unconfigured = new AuthService(
+        users as unknown as UsersService,
+        jwt,
+        config,
+        prisma as unknown as PrismaService,
+      );
 
       await expect(unconfigured.loginWithGoogle({ idToken: 'a.b.c' })).rejects.toBeInstanceOf(
         InternalServerErrorException,

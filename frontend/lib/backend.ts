@@ -20,6 +20,7 @@ export class BackendError extends Error {
   constructor(
     readonly status: number,
     message: string,
+    readonly code?: string,
   ) {
     super(message);
     this.name = 'BackendError';
@@ -49,7 +50,11 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
   const body: unknown = await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new BackendError(response.status, extractMessage(body) ?? response.statusText);
+    throw new BackendError(
+      response.status,
+      extractMessage(body) ?? response.statusText,
+      extractCode(body),
+    );
   }
 
   return body as T;
@@ -62,6 +67,12 @@ function extractMessage(body: unknown): string | null {
   if (typeof message === 'string') return message;
   if (Array.isArray(message)) return message.join('، ');
   return null;
+}
+
+function extractCode(body: unknown): string | undefined {
+  if (typeof body !== 'object' || body === null) return undefined;
+  const { code } = body as { code?: unknown };
+  return typeof code === 'string' ? code : undefined;
 }
 
 export function login(input: { email: string; password: string }): Promise<AuthResponse> {
@@ -92,6 +103,43 @@ export function exchangeGoogleIdToken(idToken: string): Promise<AuthResponse> {
   return request<AuthResponse>('/auth/oauth/google', {
     method: 'POST',
     body: JSON.stringify({ idToken }),
+  });
+}
+
+/** Throws 409 `CREDENTIALS_ACCOUNT_EXISTS` when Google must not auto-link. */
+export function assertGoogleSignInAllowed(idToken: string): Promise<{ ok: true }> {
+  return request<{ ok: true }>('/auth/oauth/google/preflight', {
+    method: 'POST',
+    body: JSON.stringify({ idToken }),
+  });
+}
+
+export function linkGoogleAccount(accessToken: string, idToken: string): Promise<BackendUser> {
+  return request<BackendUser>('/auth/link-google', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ idToken }),
+  });
+}
+
+/**
+ * Trades a stored refresh token for a new Nest access token (and a rotated refresh token).
+ * Used by the NextAuth `jwt` callback when the access token is close to expiry.
+ */
+export function refreshAccessToken(token: { refreshToken?: string }): Promise<AuthResponse> {
+  if (!token.refreshToken) {
+    throw new BackendError(401, 'No refresh token');
+  }
+  return request<AuthResponse>('/auth/refresh', {
+    method: 'POST',
+    body: JSON.stringify({ refreshToken: token.refreshToken }),
+  });
+}
+
+export function revokeRefreshToken(refreshToken: string): Promise<{ ok: true }> {
+  return request<{ ok: true }>('/auth/logout', {
+    method: 'POST',
+    body: JSON.stringify({ refreshToken }),
   });
 }
 

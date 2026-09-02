@@ -1,6 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { auth } from '@/auth';
+import { rateLimitAuthRoute } from '@/lib/auth-rate-limit';
 import { dashboardPath } from '@/lib/dashboard';
+import { hasUsableAccessToken } from '@/lib/session-status';
 
 const PROTECTED_PREFIXES = ['/dashboard'];
 const GUEST_ONLY_PATHS = ['/login', '/register'];
@@ -12,9 +14,9 @@ const GUEST_ONLY_PATHS = ['/login', '/register'];
  * After Google's first sign-in the account is still missing a role, so those
  * sessions are sent to `/complete-profile` instead of a dashboard.
  */
-export default auth((req) => {
+const sessionGate = auth((req) => {
   const { pathname, search } = req.nextUrl;
-  const isSignedIn = Boolean(req.auth) && req.auth?.error !== 'AccessTokenExpired';
+  const isSignedIn = hasUsableAccessToken(req.auth);
   const role = req.auth?.user?.role;
   const needsOnboarding = isSignedIn && req.auth?.user?.onboardingComplete === false;
   const home = needsOnboarding ? '/complete-profile' : dashboardPath(role);
@@ -64,7 +66,18 @@ export default auth((req) => {
   return NextResponse.next();
 });
 
+export default function middleware(req: NextRequest) {
+  const limited = rateLimitAuthRoute(req);
+  if (limited) return limited;
+
+  // Do not wrap NextAuth's own handlers in `auth()` — they manage the session cookie.
+  if (req.nextUrl.pathname.startsWith('/api/auth')) {
+    return NextResponse.next();
+  }
+
+  return sessionGate(req, undefined as never);
+}
+
 export const config = {
-  // Skip the NextAuth route handlers, static assets and image optimizer.
-  matcher: ['/((?!api/auth|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };

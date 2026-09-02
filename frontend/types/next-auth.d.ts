@@ -9,13 +9,14 @@ declare module 'next-auth' {
   interface Session {
     accessToken?: string;
     /** Set when the NestJS token expired and the user has to sign in again. */
-    error?: 'AccessTokenExpired';
+    error?: 'AccessTokenExpired' | 'RefreshTokenExpired';
     user: {
       id: string;
       role: UserRole;
       onboardingComplete: boolean;
       shopName?: string | null;
       logoUrl?: string | null;
+      googleLinked?: boolean;
     } & DefaultSession['user'];
   }
 
@@ -25,8 +26,10 @@ declare module 'next-auth' {
     onboardingComplete?: boolean;
     shopName?: string | null;
     logoUrl?: string | null;
+    googleLinked?: boolean;
     accessToken?: string;
     accessTokenExpires?: number;
+    refreshToken?: string;
   }
 }
 
@@ -40,8 +43,10 @@ declare module '@auth/core/jwt' {
     onboardingComplete?: boolean;
     shopName?: string | null;
     logoUrl?: string | null;
+    googleLinked?: boolean;
     accessToken?: string;
     accessTokenExpires?: number;
-    error?: 'AccessTokenExpired';
+    refreshToken?: string;
+    error?: 'AccessTokenExpired' | 'RefreshTokenExpired';
   }
 }

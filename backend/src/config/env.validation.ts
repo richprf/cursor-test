@@ -32,7 +32,12 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsOptional()
-  JWT_EXPIRES_IN: string = '7d';
+  JWT_EXPIRES_IN: string = '15m';
+
+  /** Lifetime of the rotating refresh token stored in Postgres. */
+  @IsString()
+  @IsOptional()
+  JWT_REFRESH_EXPIRES_IN: string = '30d';
 
   /** Comma separated list of origins allowed to call this API. */
   @IsString()

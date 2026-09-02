@@ -6,11 +6,12 @@ import { useSession } from 'next-auth/react';
 import { store, type AppDispatch } from '@/store';
 import { fetchCartItems, setCart } from '@/store/cartSlice';
 import { fetchWishlistItems, setWishlist } from '@/store/wishlistSlice';
+import { hasUsableAccessToken } from '@/lib/session-status';
 
 function ShopBagSync() {
   const { data: session, status } = useSession();
   const dispatch = useDispatch<AppDispatch>();
-  const signedIn = Boolean(session?.accessToken) && session?.error !== 'AccessTokenExpired';
+  const signedIn = hasUsableAccessToken(session);
 
   useEffect(() => {
     if (status === 'loading') return;

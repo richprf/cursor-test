@@ -2,6 +2,7 @@ import { BackendError, getMe } from '@/lib/backend';
 import { requireDashboardSession } from '@/lib/require-dashboard';
 import { Alert } from '@/components/ui';
 import { BuyerOverview } from '@/components/dashboard/buyer-overview';
+import { ConnectGoogleButton } from '@/components/connect-google-button';
 import type { BackendUser } from '@/types/api';
 
 export const metadata = { title: 'داشبورد خریدار' };
@@ -59,6 +60,14 @@ export default async function BuyerDashboardPage() {
               label="روش ورود"
               value={profile.provider === 'GOOGLE' ? 'گوگل' : 'ایمیل و رمز عبور'}
             />
+            {profile.provider === 'CREDENTIALS' && !profile.googleLinked ? (
+              <div className="flex items-center justify-between gap-6 px-6 py-4">
+                <dt className="text-sm text-muted">حساب گوگل</dt>
+                <dd>
+                  <ConnectGoogleButton callbackUrl="/dashboard/buyer" />
+                </dd>
+              </div>
+            ) : null}
           </dl>
         )}
       </section>

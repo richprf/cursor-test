@@ -1,7 +1,16 @@
 import NextAuth, { CredentialsSignin } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
-import { BackendError, exchangeGoogleIdToken, getMe, login } from '@/lib/backend';
+import {
+  BackendError,
+  assertGoogleSignInAllowed,
+  exchangeGoogleIdToken,
+  getMe,
+  linkGoogleAccount,
+  login,
+  refreshAccessToken,
+  revokeRefreshToken,
+} from '@/lib/backend';
 import { loginSchema } from '@/lib/validation';
 import type { BackendUser } from '@/types/api';
 
@@ -27,7 +36,9 @@ class TooManyRequests extends CredentialsSignin {
   code = 'too_many_requests';
 }
 
-const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60; // keep in sync with JWT_EXPIRES_IN
+/** Keep the NextAuth cookie alive as long as a refresh token can still be used. */
+const SESSION_MAX_AGE_SECONDS = 30 * 24 * 60 * 60;
+const ACCESS_TOKEN_REFRESH_SKEW_MS = 60_000;
 
 function copyBackendUser(tokenTarget: Record<string, unknown>, user: BackendUser) {
   tokenTarget.userId = user.id;
@@ -38,11 +49,14 @@ function copyBackendUser(tokenTarget: Record<string, unknown>, user: BackendUser
   tokenTarget.name = user.name;
   tokenTarget.email = user.email;
   tokenTarget.picture = user.image;
+  tokenTarget.googleLinked = user.googleLinked;
 }
 
 export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
+  trustHost: true,
   // NestJS owns the user data, so there is nothing to persist here.
   session: { strategy: 'jwt', maxAge: SESSION_MAX_AGE_SECONDS },
+  jwt: { maxAge: SESSION_MAX_AGE_SECONDS },
   pages: { signIn: '/login', error: '/login' },
   providers: [
     Google({
@@ -61,7 +75,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         }
 
         try {
-          const { user, accessToken, accessTokenExpires } = await login(parsed.data);
+          const { user, accessToken, accessTokenExpires, refreshToken } = await login(parsed.data);
 
           return {
             id: user.id,
@@ -72,8 +86,10 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
             onboardingComplete: user.onboardingComplete,
             shopName: user.shopName,
             logoUrl: user.logoUrl,
+            googleLinked: user.googleLinked,
             accessToken,
             accessTokenExpires,
+            refreshToken,
           };
         } catch (error) {
           if (error instanceof BackendError && error.status === 401) {
@@ -89,6 +105,28 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn({ account }) {
+      if (account?.provider !== 'google') return true;
+      if (!account.id_token) return false;
+
+      // Already-authenticated users are linking Google; jwt handles `/auth/link-google`.
+      const session = await auth();
+      if (session?.accessToken && !session.error) return true;
+
+      try {
+        await assertGoogleSignInAllowed(account.id_token);
+        return true;
+      } catch (error) {
+        if (
+          error instanceof BackendError &&
+          (error.status === 409 || error.code === 'CREDENTIALS_ACCOUNT_EXISTS')
+        ) {
+          return '/login?error=OAuthAccountNotLinked';
+        }
+        return '/login?error=OAuthCallbackError';
+      }
+    },
+
     async jwt({ token, user, account, trigger }) {
       // Credentials: `user` is exactly what `authorize()` returned above.
       if (account?.provider === 'credentials' && user) {
@@ -97,8 +135,10 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         token.onboardingComplete = user.onboardingComplete;
         token.shopName = user.shopName;
         token.logoUrl = user.logoUrl;
+        token.googleLinked = user.googleLinked;
         token.accessToken = user.accessToken;
         token.accessTokenExpires = user.accessTokenExpires;
+        token.refreshToken = user.refreshToken;
         delete token.error;
       }
 
@@ -109,13 +149,24 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
           throw new Error('Google did not return an id_token');
         }
 
-        const { user: backendUser, accessToken, accessTokenExpires } =
-          await exchangeGoogleIdToken(account.id_token);
+        if (token.accessToken && token.userId) {
+          try {
+            const linked = await linkGoogleAccount(token.accessToken, account.id_token);
+            copyBackendUser(token as unknown as Record<string, unknown>, linked);
+            delete token.error;
+          } catch (error) {
+            console.error('[auth] linking Google to the current session failed', error);
+          }
+        } else {
+          const { user: backendUser, accessToken, accessTokenExpires, refreshToken } =
+            await exchangeGoogleIdToken(account.id_token);
 
-        copyBackendUser(token as unknown as Record<string, unknown>, backendUser);
-        token.accessToken = accessToken;
-        token.accessTokenExpires = accessTokenExpires;
-        delete token.error;
+          copyBackendUser(token as unknown as Record<string, unknown>, backendUser);
+          token.accessToken = accessToken;
+          token.accessTokenExpires = accessTokenExpires;
+          token.refreshToken = refreshToken;
+          delete token.error;
+        }
       }
 
       // After complete-profile (or a logo upload) pull the latest role/shop from Nest.
@@ -128,8 +179,23 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         }
       }
 
-      // There is no refresh token, so an expired access token means "sign in again".
-      if (token.accessTokenExpires && Date.now() >= token.accessTokenExpires) {
+      const expiresAt = token.accessTokenExpires;
+      const needsRefresh =
+        typeof expiresAt === 'number' && Date.now() >= expiresAt - ACCESS_TOKEN_REFRESH_SKEW_MS;
+
+      if (needsRefresh && token.refreshToken) {
+        try {
+          const refreshed = await refreshAccessToken(token);
+          token.accessToken = refreshed.accessToken;
+          token.accessTokenExpires = refreshed.accessTokenExpires;
+          token.refreshToken = refreshed.refreshToken;
+          delete token.error;
+        } catch (error) {
+          console.error('[auth] refresh token failed', error);
+          token.error = 'RefreshTokenExpired';
+        }
+      } else if (typeof expiresAt === 'number' && Date.now() >= expiresAt) {
+        // Older sessions issued before refresh tokens existed.
         token.error = 'AccessTokenExpired';
       }
 
@@ -145,9 +211,22 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       session.user.onboardingComplete = token.onboardingComplete ?? true;
       session.user.shopName = token.shopName ?? null;
       session.user.logoUrl = token.logoUrl ?? null;
+      session.user.googleLinked = token.googleLinked ?? false;
       session.accessToken = token.accessToken;
       session.error = token.error;
       return session;
+    },
+  },
+  events: {
+    async signOut(message) {
+      const refreshToken =
+        'token' in message ? (message.token as { refreshToken?: string }).refreshToken : undefined;
+      if (!refreshToken) return;
+      try {
+        await revokeRefreshToken(refreshToken);
+      } catch (error) {
+        console.error('[auth] failed to revoke refresh token on sign-out', error);
+      }
     },
   },
 });

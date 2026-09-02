@@ -5,6 +5,7 @@ import { auth, unstable_update } from '@/auth';
 import { BackendError, completeProfile, uploadShopLogo } from '@/lib/backend';
 import { dashboardPath } from '@/lib/dashboard';
 import { completeProfileSchema } from '@/lib/validation';
+import { hasUsableAccessToken } from '@/lib/session-status';
 
 export type CompleteProfileResult = { error: string };
 
@@ -12,7 +13,7 @@ const MAX_LOGO_BYTES = 2 * 1024 * 1024;
 
 export async function completeProfileAction(formData: FormData): Promise<CompleteProfileResult> {
   const session = await auth();
-  if (!session?.accessToken || session.error === 'AccessTokenExpired') {
+  if (!hasUsableAccessToken(session)) {
     redirect('/login?error=SessionRequired');
   }
 

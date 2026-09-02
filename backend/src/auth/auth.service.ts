@@ -8,16 +8,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, type JwtSignOptions } from '@nestjs/jwt';
+import { createHash, randomBytes } from 'node:crypto';
 import { OAuth2Client, type TokenPayload } from 'google-auth-library';
 import * as bcrypt from 'bcrypt';
-import { UsersService, type PublicUser, type UserWithShop } from '../users/users.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { UsersService, type PublicUser, type UserWithShop, type GoogleProfile } from '../users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { GoogleOAuthDto } from './dto/google-oauth.dto';
 import { CompleteProfileDto } from './dto/complete-profile.dto';
 import type { AuthResponse, JwtPayload } from './types/auth.types';
 import { publicLogoUrl } from './logo-upload';
+import { CredentialsAccountExistsException } from './credentials-account-exists.exception';
 
 const BCRYPT_ROUNDS = 12;
 
@@ -26,6 +29,19 @@ const BCRYPT_ROUNDS = 12;
  * email and a wrong password take a similar amount of time to answer.
  */
 const DUMMY_HASH = '$2b$12$C6UzMDM.H6dfI/f/IKcEe.CtM3n4qMs2/eiVQ0hcpiVMoTiCUAP2u';
+
+const DEFAULT_ACCESS_TTL = '15m';
+const DEFAULT_REFRESH_TTL = '30d';
+const REFRESH_REUSE_GRACE_MS = 10_000;
+
+type RefreshTokenRow = {
+  id: string;
+  userId: string;
+  tokenHash: string;
+  expiresAt: Date;
+  revokedAt: Date | null;
+  replacedById: string | null;
+};
 
 @Injectable()
 export class AuthService {
@@ -36,6 +52,7 @@ export class AuthService {
     private readonly users: UsersService,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async register(dto: RegisterDto): Promise<AuthResponse> {
@@ -92,27 +109,51 @@ export class AuthService {
   }
 
   /**
-   * Exchanges a Google `id_token` for an access token issued by this API,
-   * creating or linking the account on the way.
+   * Exchanges a Google `id_token` for tokens issued by this API. A credentials
+   * account with the same email is *not* auto-linked (see `linkGoogle`).
    */
   async loginWithGoogle(dto: GoogleOAuthDto): Promise<AuthResponse> {
-    const payload = await this.verifyGoogleIdToken(dto.idToken);
-
-    if (!payload.email) {
-      throw new UnauthorizedException('Google account did not expose an email address');
-    }
-    if (payload.email_verified === false) {
-      throw new UnauthorizedException('Google email address is not verified');
-    }
-
-    const user = await this.users.upsertGoogleUser({
-      googleId: payload.sub,
-      email: payload.email,
-      name: payload.name,
-      image: payload.picture,
-    });
-
+    const profile = await this.googleProfileFromIdToken(dto.idToken);
+    const user = await this.resolveGoogleSignIn(profile);
     return this.buildAuthResponse(user);
+  }
+
+  /**
+   * Same Google checks as sign-in, but does not mint tokens. NextAuth's `signIn`
+   * callback uses this so a credentials collision can redirect before a session
+   * is created.
+   */
+  async assertGoogleSignInAllowed(dto: GoogleOAuthDto): Promise<void> {
+    const profile = await this.googleProfileFromIdToken(dto.idToken);
+    await this.resolveGoogleSignIn(profile);
+  }
+
+  /**
+   * Attaches Google to the currently authenticated user after they have already
+   * proved ownership (password session). Email on the id_token must match.
+   */
+  async linkGoogle(userId: string, dto: GoogleOAuthDto): Promise<PublicUser> {
+    const profile = await this.googleProfileFromIdToken(dto.idToken);
+    const user = await this.users.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User no longer exists');
+    }
+
+    if (normalizeCompare(user.email) !== normalizeCompare(profile.email)) {
+      throw new BadRequestException('Google email does not match this account');
+    }
+
+    const taken = await this.users.findByGoogleId(profile.googleId);
+    if (taken && taken.id !== user.id) {
+      throw new ConflictException('This Google account is already linked to another user');
+    }
+
+    if (user.googleId && user.googleId !== profile.googleId) {
+      throw new ConflictException('This account is already linked to a different Google identity');
+    }
+
+    const linked = await this.users.linkGoogleIdentity(user.id, profile);
+    return UsersService.toPublicUser(linked);
   }
 
   async completeProfile(userId: string, dto: CompleteProfileDto): Promise<PublicUser> {
@@ -140,6 +181,98 @@ export class AuthService {
     return UsersService.toPublicUser(user);
   }
 
+  async refresh(refreshToken: string): Promise<AuthResponse> {
+    const tokenHash = hashRefreshToken(refreshToken);
+    const row = await this.prisma.refreshToken.findUnique({
+      where: { tokenHash },
+      include: { user: { include: { shop: true } } },
+    });
+
+    if (!row) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    if (row.revokedAt) {
+      const age = Date.now() - row.revokedAt.getTime();
+      if (age < REFRESH_REUSE_GRACE_MS) {
+        // Concurrent jwt callbacks can race after rotation; mint a fresh pair
+        // instead of treating the second call as theft.
+        return this.buildAuthResponse(row.user);
+      }
+      await this.revokeAllRefreshTokens(row.userId);
+      throw new UnauthorizedException('Refresh token has been revoked');
+    }
+
+    if (row.expiresAt.getTime() <= Date.now()) {
+      await this.prisma.refreshToken.update({
+        where: { id: row.id },
+        data: { revokedAt: new Date() },
+      });
+      throw new UnauthorizedException('Refresh token has expired');
+    }
+
+    return this.buildAuthResponse(row.user, row);
+  }
+
+  async logout(refreshToken?: string, userId?: string): Promise<void> {
+    if (refreshToken) {
+      const tokenHash = hashRefreshToken(refreshToken);
+      const row = await this.prisma.refreshToken.findUnique({ where: { tokenHash } });
+      if (row && !row.revokedAt) {
+        await this.prisma.refreshToken.update({
+          where: { id: row.id },
+          data: { revokedAt: new Date() },
+        });
+      }
+      return;
+    }
+
+    if (userId) {
+      await this.revokeAllRefreshTokens(userId);
+    }
+  }
+
+  private async resolveGoogleSignIn(profile: GoogleProfile): Promise<UserWithShop> {
+    const byGoogle = await this.users.findByGoogleId(profile.googleId);
+    if (byGoogle) {
+      return byGoogle;
+    }
+
+    const byEmail = await this.users.findByEmail(profile.email);
+    if (!byEmail) {
+      return this.users.createGoogleUser(profile);
+    }
+
+    if (byEmail.googleId && byEmail.googleId !== profile.googleId) {
+      throw new ConflictException('This email is already linked to a different Google identity');
+    }
+
+    if (byEmail.passwordHash && !byEmail.googleId) {
+      throw new CredentialsAccountExistsException();
+    }
+
+    // Google-only row that somehow lost its googleId — safe to reattach.
+    return this.users.linkGoogleIdentity(byEmail.id, profile);
+  }
+
+  private async googleProfileFromIdToken(idToken: string): Promise<GoogleProfile> {
+    const payload = await this.verifyGoogleIdToken(idToken);
+
+    if (!payload.email) {
+      throw new UnauthorizedException('Google account did not expose an email address');
+    }
+    if (payload.email_verified === false) {
+      throw new UnauthorizedException('Google email address is not verified');
+    }
+
+    return {
+      googleId: payload.sub,
+      email: payload.email,
+      name: payload.name,
+      image: payload.picture,
+    };
+  }
+
   private async verifyGoogleIdToken(idToken: string): Promise<TokenPayload> {
     const audience = (this.config.get<string>('GOOGLE_CLIENT_ID') ?? '')
       .split(',')
@@ -165,17 +298,78 @@ export class AuthService {
     }
   }
 
-  private async buildAuthResponse(user: UserWithShop): Promise<AuthResponse> {
+  private async buildAuthResponse(user: UserWithShop, rotateFrom?: RefreshTokenRow): Promise<AuthResponse> {
     const payload: JwtPayload = { sub: user.id, email: user.email, role: user.role };
-    const accessToken = await this.jwt.signAsync(payload);
+    const accessTtl = this.config.get<string>('JWT_EXPIRES_IN', DEFAULT_ACCESS_TTL);
+    const accessToken = await this.jwt.signAsync(payload, {
+      expiresIn: accessTtl as JwtSignOptions['expiresIn'],
+    });
     const decoded = this.jwt.decode<JwtPayload | null>(accessToken);
+    const issued = await this.issueRefreshToken(user.id);
+
+    if (rotateFrom && !rotateFrom.revokedAt) {
+      await this.prisma.refreshToken.update({
+        where: { id: rotateFrom.id },
+        data: { revokedAt: new Date(), replacedById: issued.id },
+      });
+    }
 
     return {
       user: UsersService.toPublicUser(user),
       accessToken,
       accessTokenExpires: (decoded?.exp ?? 0) * 1000,
+      refreshToken: issued.plain,
     };
   }
+
+  private async issueRefreshToken(userId: string): Promise<{ id: string; plain: string }> {
+    const plain = randomBytes(32).toString('base64url');
+    const ttl = this.config.get<string>('JWT_REFRESH_EXPIRES_IN', DEFAULT_REFRESH_TTL);
+    const row = await this.prisma.refreshToken.create({
+      data: {
+        userId,
+        tokenHash: hashRefreshToken(plain),
+        expiresAt: new Date(Date.now() + durationToMs(ttl, 30 * 24 * 60 * 60 * 1000)),
+      },
+      select: { id: true },
+    });
+    return { id: row.id, plain };
+  }
+
+  private async revokeAllRefreshTokens(userId: string): Promise<void> {
+    await this.prisma.refreshToken.updateMany({
+      where: { userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+  }
+}
+
+export function hashRefreshToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex');
+}
+
+function durationToMs(value: string, fallback: number): number {
+  const match = /^(\d+)\s*(ms|s|m|h|d)$/i.exec(value.trim());
+  if (!match) return fallback;
+  const amount = Number(match[1]);
+  switch (match[2].toLowerCase()) {
+    case 'ms':
+      return amount;
+    case 's':
+      return amount * 1000;
+    case 'm':
+      return amount * 60_000;
+    case 'h':
+      return amount * 3_600_000;
+    case 'd':
+      return amount * 86_400_000;
+    default:
+      return fallback;
+  }
+}
+
+function normalizeCompare(email: string): string {
+  return email.trim().toLowerCase();
 }
 
 function isPrismaCode(error: unknown, code: string): boolean {

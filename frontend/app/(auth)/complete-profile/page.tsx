@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import { AuthFrame } from '@/components/auth/auth-frame';
 import { dashboardPath } from '@/lib/dashboard';
+import { hasUsableAccessToken } from '@/lib/session-status';
 import { CompleteProfileForm } from './complete-profile-form';
 
 export const metadata = { title: 'Complete your profile' };
@@ -9,7 +10,7 @@ export const metadata = { title: 'Complete your profile' };
 export default async function CompleteProfilePage() {
   const session = await auth();
 
-  if (!session?.accessToken || session.error === 'AccessTokenExpired') {
+  if (!hasUsableAccessToken(session)) {
     redirect('/login?error=SessionRequired');
   }
 

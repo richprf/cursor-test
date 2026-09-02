@@ -19,6 +19,7 @@ import { CompleteProfileDto } from './dto/complete-profile.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { logoUploadOptions } from './logo-upload';
+import { LogoutDto, RefreshTokenDto } from './dto/refresh-token.dto';
 import type { PublicUser } from '../users/users.service';
 import type { AuthResponse } from './types/auth.types';
 
@@ -46,6 +47,42 @@ export class AuthController {
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   google(@Body() dto: GoogleOAuthDto): Promise<AuthResponse> {
     return this.auth.loginWithGoogle(dto);
+  }
+
+  /**
+   * Same Google checks as `/oauth/google` without minting tokens, so NextAuth can
+   * redirect a credentials collision before it creates a session.
+   */
+  @Post('oauth/google/preflight')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  async assertGoogleSignIn(@Body() dto: GoogleOAuthDto): Promise<{ ok: true }> {
+    await this.auth.assertGoogleSignInAllowed(dto);
+    return { ok: true };
+  }
+
+  /** Logged-in password users prove ownership, then attach Google. */
+  @Post('link-google')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  linkGoogle(@CurrentUser() user: PublicUser, @Body() dto: GoogleOAuthDto): Promise<PublicUser> {
+    return this.auth.linkGoogle(user.id, dto);
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
+  refresh(@Body() dto: RefreshTokenDto): Promise<AuthResponse> {
+    return this.auth.refresh(dto.refreshToken);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
+  async logout(@Body() dto?: LogoutDto): Promise<{ ok: true }> {
+    await this.auth.logout(dto?.refreshToken);
+    return { ok: true };
   }
 
   /** First-time Google users pick buyer/seller (and a shop name) here. */

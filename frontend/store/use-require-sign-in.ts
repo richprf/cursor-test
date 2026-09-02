@@ -3,10 +3,11 @@
 import { useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
+import { hasUsableAccessToken } from '@/lib/session-status';
 
 export function useSignedIn() {
   const { data: session } = useSession();
-  return Boolean(session?.accessToken) && session?.error !== 'AccessTokenExpired';
+  return hasUsableAccessToken(session);
 }
 
 /** Guests are sent to login before a cart/wishlist mutation hits the API. */

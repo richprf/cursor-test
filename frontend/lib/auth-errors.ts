@@ -21,7 +21,7 @@ export function authErrorMessage(
     case 'CredentialsSignin':
       return 'ایمیل یا رمز عبور اشتباه است.';
     case 'OAuthAccountNotLinked':
-      return 'این ایمیل قبلاً با روش دیگری ثبت شده است. با همان روش وارد شوید.';
+      return 'این ایمیل قبلاً با رمز عبور ثبت شده است. با ایمیل وارد شوید، سپس از داشبورد حساب گوگل را متصل کنید.';
     case 'AccessDenied':
       return 'دسترسی داده نشد. حساب گوگل شما اجازه ورود ندارد.';
     case 'Configuration':
@@ -30,6 +30,10 @@ export function authErrorMessage(
     case 'OAuthCallbackError':
     case 'OAuthSignInError':
       return 'ورود با گوگل کامل نشد. دوباره تلاش کنید.';
+    case 'SessionExpired':
+    case 'RefreshTokenExpired':
+    case 'AccessTokenExpired':
+      return 'نشست شما منقضی شده، دوباره وارد شوید.';
     case 'SessionRequired':
       return 'برای دیدن این صفحه ابتدا وارد شوید.';
     default:

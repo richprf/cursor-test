@@ -11,6 +11,7 @@ export interface BackendUser {
   onboardingComplete: boolean;
   shopName: string | null;
   logoUrl: string | null;
+  googleLinked: boolean;
 }
 
 /** Response shape of `/auth/login`, `/auth/register` and `/auth/oauth/google`. */
@@ -19,6 +20,7 @@ export interface AuthResponse {
   accessToken: string;
   /** Epoch milliseconds. */
   accessTokenExpires: number;
+  refreshToken: string;
 }
 
 export interface WishlistItem {

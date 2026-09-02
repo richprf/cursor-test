@@ -50,6 +50,7 @@ model User {
   products Product[]
   wishlist Wishlist[]
   cartItems CartItem[]
+  refreshTokens RefreshToken[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -120,4 +121,19 @@ model Product {
 
   @@index([sellerId])
   @@map("products")
+}
+
+/// Opaque refresh tokens hashed at rest so they can be rotated and revoked.
+model RefreshToken {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash    String    @unique
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  replacedById String?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
 }
