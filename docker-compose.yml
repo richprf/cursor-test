@@ -1,0 +1,23 @@
+# Postgres for local development: `docker compose up -d`
+# Matches the DATABASE_URL in backend/.env.example.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: auth-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: authapp
+      POSTGRES_PASSWORD: authapp
+      POSTGRES_DB: authdb
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U authapp -d authdb']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:

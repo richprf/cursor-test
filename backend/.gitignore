@@ -1,0 +1,38 @@
+# compiled output
+/dist
+/node_modules
+/build
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs
+/.idea
+/.vscode
+*.sw?
+
+# env
+.env
+.env.local
+.env.*.local
+
+# Prisma Client is generated from prisma/schema.prisma (npm run prisma:generate)
+/src/generated
+
+# Shop logos and product photos uploaded at runtime
+/uploads/shops/*
+!/uploads/shops/.gitkeep
+/uploads/products/*
+!/uploads/products/.gitkeep
