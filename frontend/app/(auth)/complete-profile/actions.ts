@@ -6,6 +6,7 @@ import { BackendError, completeProfile, uploadShopLogo } from '@/lib/backend';
 import { dashboardPath } from '@/lib/dashboard';
 import { completeProfileSchema } from '@/lib/validation';
 import { hasUsableAccessToken } from '@/lib/session-status';
+import { getServerAccessToken } from '@/lib/server-access-token';
 
 export type CompleteProfileResult = { error: string };
 
@@ -13,7 +14,8 @@ const MAX_LOGO_BYTES = 2 * 1024 * 1024;
 
 export async function completeProfileAction(formData: FormData): Promise<CompleteProfileResult> {
   const session = await auth();
-  if (!hasUsableAccessToken(session)) {
+  const accessToken = await getServerAccessToken();
+  if (!hasUsableAccessToken(session) || !accessToken) {
     redirect('/login?error=SessionRequired');
   }
 
@@ -34,7 +36,7 @@ export async function completeProfileAction(formData: FormData): Promise<Complet
   const { role, shopName } = parsed.data;
 
   try {
-    await completeProfile(session.accessToken, {
+    await completeProfile(accessToken, {
       role,
       shopName: role === 'SELLER' ? shopName || undefined : undefined,
     });
@@ -50,7 +52,7 @@ export async function completeProfileAction(formData: FormData): Promise<Complet
 
   if (file && role === 'SELLER') {
     try {
-      await uploadShopLogo(session.accessToken, file);
+      await uploadShopLogo(accessToken, file);
     } catch (error) {
       console.error('[complete-profile] logo upload failed', error);
     }

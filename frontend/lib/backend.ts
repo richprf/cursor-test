@@ -12,8 +12,9 @@ import type {
 import type { GoldPriceSnapshot } from '@/lib/gold-price';
 
 /**
- * Thin client for the NestJS API. Everything here runs on the server only —
- * the browser never sees the API access token or talks to NestJS directly.
+ * Thin client for the NestJS API. Server Components, Route Handlers, and
+ * NextAuth callbacks call this directly. The browser talks to `/api/proxy/...`
+ * instead, so it never sees `NEST_API_URL` or the access token.
  */
 
 export class BackendError extends Error {

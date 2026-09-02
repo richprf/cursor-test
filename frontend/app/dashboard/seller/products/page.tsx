@@ -1,5 +1,6 @@
 import { BackendError, listMyProducts } from '@/lib/backend';
 import { requireDashboardSession } from '@/lib/require-dashboard';
+import { getServerAccessToken } from '@/lib/server-access-token';
 import { Alert } from '@/components/ui';
 import { SellerProductsManager } from '@/components/dashboard/seller-products-manager';
 import { Verdict } from '@/components/dashboard/kpi-card';
@@ -8,13 +9,17 @@ import type { ProductListing } from '@/types/api';
 export const metadata = { title: 'محصولات مغازه' };
 
 export default async function SellerProductsPage() {
-  const session = await requireDashboardSession('SELLER');
+  await requireDashboardSession('SELLER');
+  const accessToken = await getServerAccessToken();
 
   let items: ProductListing[] = [];
   let loadError: string | null = null;
 
   try {
-    items = (await listMyProducts(session.accessToken)).items;
+    if (!accessToken) {
+      throw new BackendError(401, 'Missing access token');
+    }
+    items = (await listMyProducts(accessToken)).items;
   } catch (error) {
     if (error instanceof BackendError && error.status === 401) {
       loadError = 'نشست منقضی شده است. دوباره وارد شوید.';

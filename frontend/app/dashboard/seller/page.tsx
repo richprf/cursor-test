@@ -1,6 +1,7 @@
 import { BackendError, getMe, listMyProducts } from '@/lib/backend';
 import { publicAssetPath } from '@/lib/dashboard';
 import { requireDashboardSession } from '@/lib/require-dashboard';
+import { getServerAccessToken } from '@/lib/server-access-token';
 import { Alert } from '@/components/ui';
 import { KpiCard, Verdict } from '@/components/dashboard/kpi-card';
 import { Sparkline } from '@/components/dashboard/sparkline';
@@ -13,13 +14,17 @@ export const metadata = { title: 'داشبورد فروشنده' };
 
 export default async function SellerDashboardPage() {
   const session = await requireDashboardSession('SELLER');
+  const accessToken = await getServerAccessToken();
 
   let profile: BackendUser | null = null;
   let profileError: string | null = null;
   let productCount = 0;
 
   try {
-    profile = await getMe(session.accessToken);
+    if (!accessToken) {
+      throw new BackendError(401, 'Missing access token');
+    }
+    profile = await getMe(accessToken);
   } catch (error) {
     if (error instanceof BackendError && error.status === 401) {
       profileError = 'نشست منقضی شده است. دوباره وارد شوید.';
@@ -29,7 +34,7 @@ export default async function SellerDashboardPage() {
   }
 
   try {
-    productCount = (await listMyProducts(session.accessToken)).items.length;
+    productCount = accessToken ? (await listMyProducts(accessToken)).items.length : 0;
   } catch {
     productCount = 0;
   }

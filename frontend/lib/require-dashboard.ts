@@ -4,9 +4,7 @@ import { auth } from '@/auth';
 import type { AccountRole } from '@/types/api';
 import { hasUsableAccessToken } from '@/lib/session-status';
 
-type AuthedSession = Session & { accessToken: string };
-
-export async function requireDashboardSession(expected: AccountRole): Promise<AuthedSession> {
+export async function requireDashboardSession(expected: AccountRole): Promise<Session> {
   const session = await auth();
 
   if (!hasUsableAccessToken(session)) {
@@ -25,5 +23,5 @@ export async function requireDashboardSession(expected: AccountRole): Promise<Au
     redirect('/dashboard/seller');
   }
 
-  return session as AuthedSession;
+  return session;
 }

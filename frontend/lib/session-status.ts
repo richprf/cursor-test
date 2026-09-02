@@ -8,9 +8,12 @@ export function isSessionAuthError(error: string | undefined): error is SessionA
   return error === 'AccessTokenExpired' || error === 'RefreshTokenExpired';
 }
 
-export function hasUsableAccessToken(session: {
-  accessToken?: string;
-  error?: string;
-} | null | undefined): session is { accessToken: string; error?: string } {
-  return Boolean(session?.accessToken) && !isSessionAuthError(session?.error);
+/**
+ * Signed-in with a usable Nest session. The access token itself stays in the
+ * encrypted JWT cookie and is never copied onto the client session object.
+ */
+export function hasUsableAccessToken<
+  T extends { user?: { id?: string | null }; error?: string },
+>(session: T | null | undefined): session is T {
+  return Boolean(session?.user?.id) && !isSessionAuthError(session?.error);
 }

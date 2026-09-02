@@ -2,10 +2,11 @@
 
 import { AuthError } from 'next-auth';
 import { redirect, unstable_rethrow } from 'next/navigation';
-import { signIn, auth } from '@/auth';
+import { signIn } from '@/auth';
 import { BackendError, register as registerOnBackend, uploadShopLogo } from '@/lib/backend';
 import { dashboardPath } from '@/lib/dashboard';
 import { registerSchema } from '@/lib/validation';
+import { getServerAccessToken } from '@/lib/server-access-token';
 
 export type RegisterResult = { error: string } | { ok: true };
 
@@ -67,10 +68,10 @@ export async function registerAction(formData: FormData): Promise<RegisterResult
   }
 
   if (logo && role === 'SELLER') {
-    const session = await auth();
-    if (session?.accessToken) {
+    const accessToken = await getServerAccessToken();
+    if (accessToken) {
       try {
-        await uploadShopLogo(session.accessToken, logo);
+        await uploadShopLogo(accessToken, logo);
       } catch (error) {
         console.error('[register] logo upload failed', error);
       }

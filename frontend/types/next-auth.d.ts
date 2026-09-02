@@ -2,12 +2,12 @@ import type { DefaultSession } from 'next-auth';
 import type { UserRole } from '@/types/api';
 
 /**
- * The NestJS access token and the fields NestJS owns (id, role) are carried
- * through the NextAuth JWT and exposed on the session.
+ * NestJS-owned profile fields are copied onto the session for the UI.
+ * Access/refresh tokens stay on the encrypted JWT and are never put here —
+ * `/api/auth/session` would otherwise leak them to any script on the page.
  */
 declare module 'next-auth' {
   interface Session {
-    accessToken?: string;
     /** Set when the NestJS token expired and the user has to sign in again. */
     error?: 'AccessTokenExpired' | 'RefreshTokenExpired';
     user: {

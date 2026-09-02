@@ -1,5 +1,6 @@
 import { BackendError, getMe } from '@/lib/backend';
 import { requireDashboardSession } from '@/lib/require-dashboard';
+import { getServerAccessToken } from '@/lib/server-access-token';
 import { Alert } from '@/components/ui';
 import { BuyerOverview } from '@/components/dashboard/buyer-overview';
 import { ConnectGoogleButton } from '@/components/connect-google-button';
@@ -9,12 +10,16 @@ export const metadata = { title: 'داشبورد خریدار' };
 
 export default async function BuyerDashboardPage() {
   const session = await requireDashboardSession('BUYER');
+  const accessToken = await getServerAccessToken();
 
   let profile: BackendUser | null = null;
   let profileError: string | null = null;
 
   try {
-    profile = await getMe(session.accessToken);
+    if (!accessToken) {
+      throw new BackendError(401, 'Missing access token');
+    }
+    profile = await getMe(accessToken);
   } catch (error) {
     if (error instanceof BackendError && error.status === 401) {
       profileError = 'نشست منقضی شده است. دوباره وارد شوید.';

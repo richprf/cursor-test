@@ -22,7 +22,7 @@ function ShopBagSync() {
     }
     void dispatch(fetchWishlistItems());
     void dispatch(fetchCartItems());
-  }, [signedIn, status, session?.accessToken, dispatch]);
+  }, [signedIn, status, session?.user?.id, dispatch]);
 
   return null;
 }

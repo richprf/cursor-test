@@ -111,7 +111,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
 
       // Already-authenticated users are linking Google; jwt handles `/auth/link-google`.
       const session = await auth();
-      if (session?.accessToken && !session.error) return true;
+      if (session?.user?.id && !session.error) return true;
 
       try {
         await assertGoogleSignInAllowed(account.id_token);
@@ -202,9 +202,8 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       return token;
     },
 
-    // Note: whatever lands on `session` is also returned by `/api/auth/session`, so
-    // the access token is readable by the browser. That is intentional here (client
-    // components may need it); drop it below to keep the token server-only.
+    // Keep secrets off this object: `/api/auth/session` returns it to the browser.
+    // The Nest access/refresh tokens stay on the encrypted JWT cookie only.
     session({ session, token }) {
       session.user.id = token.userId ?? session.user.id;
       session.user.role = token.role ?? 'BUYER';
@@ -212,7 +211,6 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       session.user.shopName = token.shopName ?? null;
       session.user.logoUrl = token.logoUrl ?? null;
       session.user.googleLinked = token.googleLinked ?? false;
-      session.accessToken = token.accessToken;
       session.error = token.error;
       return session;
     },

@@ -14,14 +14,17 @@ async function readJson<T>(response: Response): Promise<T> {
   return body as T;
 }
 
+/** Authenticated NestJS calls — the BFF attaches the access token server-side. */
+function proxy(path: string, init?: RequestInit): Promise<Response> {
+  return fetch(`/api/proxy${path}`, { cache: 'no-store', ...init });
+}
+
 export function fetchWishlist(): Promise<WishlistResponse> {
-  return fetch('/api/wishlist', { cache: 'no-store' }).then((response) =>
-    readJson<WishlistResponse>(response),
-  );
+  return proxy('/wishlist').then((response) => readJson<WishlistResponse>(response));
 }
 
 export function postWishlist(productId: string): Promise<WishlistItem> {
-  return fetch('/api/wishlist', {
+  return proxy('/wishlist', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productId }),
@@ -29,17 +32,17 @@ export function postWishlist(productId: string): Promise<WishlistItem> {
 }
 
 export function deleteWishlist(productId: string): Promise<{ productId: string }> {
-  return fetch(`/api/wishlist/${encodeURIComponent(productId)}`, { method: 'DELETE' }).then(
+  return proxy(`/wishlist/${encodeURIComponent(productId)}`, { method: 'DELETE' }).then(
     (response) => readJson<{ productId: string }>(response),
   );
 }
 
 export function fetchCart(): Promise<CartResponse> {
-  return fetch('/api/cart', { cache: 'no-store' }).then((response) => readJson<CartResponse>(response));
+  return proxy('/cart').then((response) => readJson<CartResponse>(response));
 }
 
 export function postCart(productId: string, quantity = 1): Promise<CartItem> {
-  return fetch('/api/cart', {
+  return proxy('/cart', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ productId, quantity }),
@@ -47,7 +50,7 @@ export function postCart(productId: string, quantity = 1): Promise<CartItem> {
 }
 
 export function patchCart(productId: string, quantity: number): Promise<CartItem> {
-  return fetch(`/api/cart/${encodeURIComponent(productId)}`, {
+  return proxy(`/cart/${encodeURIComponent(productId)}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ quantity }),
@@ -55,11 +58,12 @@ export function patchCart(productId: string, quantity: number): Promise<CartItem
 }
 
 export function deleteCart(productId: string): Promise<{ productId: string }> {
-  return fetch(`/api/cart/${encodeURIComponent(productId)}`, { method: 'DELETE' }).then((response) =>
+  return proxy(`/cart/${encodeURIComponent(productId)}`, { method: 'DELETE' }).then((response) =>
     readJson<{ productId: string }>(response),
   );
 }
 
+/** Public seller listings — no auth header, so this stays off the BFF. */
 export function fetchProducts(): Promise<ProductsResponse> {
   return fetch('/api/products', { cache: 'no-store' }).then((response) =>
     readJson<ProductsResponse>(response),
@@ -67,25 +71,23 @@ export function fetchProducts(): Promise<ProductsResponse> {
 }
 
 export function fetchMyProducts(): Promise<ProductsResponse> {
-  return fetch('/api/products/mine', { cache: 'no-store' }).then((response) =>
-    readJson<ProductsResponse>(response),
-  );
+  return proxy('/products/mine').then((response) => readJson<ProductsResponse>(response));
 }
 
 export function postProduct(body: FormData): Promise<ProductListing> {
-  return fetch('/api/products', { method: 'POST', body }).then((response) =>
+  return proxy('/products', { method: 'POST', body }).then((response) =>
     readJson<ProductListing>(response),
   );
 }
 
 export function patchProduct(id: string, body: FormData): Promise<ProductListing> {
-  return fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'PATCH', body }).then(
-    (response) => readJson<ProductListing>(response),
+  return proxy(`/products/${encodeURIComponent(id)}`, { method: 'PATCH', body }).then((response) =>
+    readJson<ProductListing>(response),
   );
 }
 
 export function deleteListing(id: string): Promise<{ id: string }> {
-  return fetch(`/api/products/${encodeURIComponent(id)}`, { method: 'DELETE' }).then((response) =>
+  return proxy(`/products/${encodeURIComponent(id)}`, { method: 'DELETE' }).then((response) =>
     readJson<{ id: string }>(response),
   );
 }
