@@ -6,7 +6,7 @@ import { signIn } from '@/auth';
 import { BackendError, register as registerOnBackend, uploadShopLogo } from '@/lib/backend';
 import { dashboardPath } from '@/lib/dashboard';
 import { registerSchema } from '@/lib/validation';
-import { getServerAccessToken } from '@/lib/server-access-token';
+import { getServerAccessTokenFromHeaders } from '@/lib/server-auth';
 
 export type RegisterResult = { error: string } | { ok: true };
 
@@ -68,7 +68,7 @@ export async function registerAction(formData: FormData): Promise<RegisterResult
   }
 
   if (logo && role === 'SELLER') {
-    const accessToken = await getServerAccessToken();
+    const accessToken = await getServerAccessTokenFromHeaders();
     if (accessToken) {
       try {
         await uploadShopLogo(accessToken, logo);

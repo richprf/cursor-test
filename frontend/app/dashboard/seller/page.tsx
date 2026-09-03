@@ -1,7 +1,7 @@
 import { BackendError, getMe, listMyProducts } from '@/lib/backend';
 import { publicAssetPath } from '@/lib/dashboard';
 import { requireDashboardSession } from '@/lib/require-dashboard';
-import { getServerAccessToken } from '@/lib/server-access-token';
+import { getServerAccessTokenFromHeaders } from '@/lib/server-auth';
 import { Alert } from '@/components/ui';
 import { KpiCard, Verdict } from '@/components/dashboard/kpi-card';
 import { Sparkline } from '@/components/dashboard/sparkline';
@@ -14,7 +14,7 @@ export const metadata = { title: 'داشبورد فروشنده' };
 
 export default async function SellerDashboardPage() {
   const session = await requireDashboardSession('SELLER');
-  const accessToken = await getServerAccessToken();
+  const accessToken = await getServerAccessTokenFromHeaders();
 
   let profile: BackendUser | null = null;
   let profileError: string | null = null;

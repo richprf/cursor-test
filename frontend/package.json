@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:unit": "node --experimental-strip-types --test lib/server-auth.test.ts app/api/proxy/handler.test.ts",
     "higgsfield:i2v": "node scripts/higgsfield-i2v.mjs"
   },
   "dependencies": {

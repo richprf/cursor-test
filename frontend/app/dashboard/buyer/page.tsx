@@ -1,6 +1,6 @@
 import { BackendError, getMe } from '@/lib/backend';
 import { requireDashboardSession } from '@/lib/require-dashboard';
-import { getServerAccessToken } from '@/lib/server-access-token';
+import { getServerAccessTokenFromHeaders } from '@/lib/server-auth';
 import { Alert } from '@/components/ui';
 import { BuyerOverview } from '@/components/dashboard/buyer-overview';
 import { ConnectGoogleButton } from '@/components/connect-google-button';
@@ -10,7 +10,7 @@ export const metadata = { title: 'داشبورد خریدار' };
 
 export default async function BuyerDashboardPage() {
   const session = await requireDashboardSession('BUYER');
-  const accessToken = await getServerAccessToken();
+  const accessToken = await getServerAccessTokenFromHeaders();
 
   let profile: BackendUser | null = null;
   let profileError: string | null = null;

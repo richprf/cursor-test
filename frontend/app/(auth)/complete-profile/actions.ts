@@ -6,7 +6,7 @@ import { BackendError, completeProfile, uploadShopLogo } from '@/lib/backend';
 import { dashboardPath } from '@/lib/dashboard';
 import { completeProfileSchema } from '@/lib/validation';
 import { hasUsableAccessToken } from '@/lib/session-status';
-import { getServerAccessToken } from '@/lib/server-access-token';
+import { getServerAccessTokenFromHeaders } from '@/lib/server-auth';
 
 export type CompleteProfileResult = { error: string };
 
@@ -14,7 +14,7 @@ const MAX_LOGO_BYTES = 2 * 1024 * 1024;
 
 export async function completeProfileAction(formData: FormData): Promise<CompleteProfileResult> {
   const session = await auth();
-  const accessToken = await getServerAccessToken();
+  const accessToken = await getServerAccessTokenFromHeaders();
   if (!hasUsableAccessToken(session) || !accessToken) {
     redirect('/login?error=SessionRequired');
   }

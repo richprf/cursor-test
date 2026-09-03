@@ -1,6 +1,6 @@
 import { BackendError, listMyProducts } from '@/lib/backend';
 import { requireDashboardSession } from '@/lib/require-dashboard';
-import { getServerAccessToken } from '@/lib/server-access-token';
+import { getServerAccessTokenFromHeaders } from '@/lib/server-auth';
 import { Alert } from '@/components/ui';
 import { SellerProductsManager } from '@/components/dashboard/seller-products-manager';
 import { Verdict } from '@/components/dashboard/kpi-card';
@@ -10,7 +10,7 @@ export const metadata = { title: 'محصولات مغازه' };
 
 export default async function SellerProductsPage() {
   await requireDashboardSession('SELLER');
-  const accessToken = await getServerAccessToken();
+  const accessToken = await getServerAccessTokenFromHeaders();
 
   let items: ProductListing[] = [];
   let loadError: string | null = null;
